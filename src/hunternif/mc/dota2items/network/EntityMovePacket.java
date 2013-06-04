@@ -1,47 +1,45 @@
 package hunternif.mc.dota2items.network;
 
 import hunternif.mc.dota2items.Dota2Items;
-import hunternif.mc.dota2items.effect.Dota2Effect;
-import hunternif.mc.dota2items.mechanics.buff.Dota2EntityBuff;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.util.MathHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.IPacketHandler;
-import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
 
-public class Dota2ItemsPacketHandler implements IPacketHandler {
-	@Override
-	public void onPacketData(INetworkManager manager,
-			Packet250CustomPayload packet, Player player) {
-		if (packet.channel.equals(Dota2Items.CHANNEL)) {
-			
-			// Try parsing effect
-			Dota2Effect effect = Dota2Effect.fromPacket(packet);
-			if (effect != null) {
-				effect.render();
-				return;
-			}
-			
-			// Try parsing buff
-			Dota2EntityBuff buff = Dota2EntityBuff.fromPacket(packet);
-			if (buff != null) {
-				Dota2Items.mechanics.addBuff(buff);
-			}
-			
-			//try parsing entity move
-			parseEntityMove(packet);
+public class EntityMovePacket {
+	public static void sendMovePacket(Entity entity) {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		DataOutputStream outputStream = new DataOutputStream(bos);
+		try {
+			outputStream.writeInt(Dota2PacketID.MOVE);
+			outputStream.writeInt(entity.entityId);
+			outputStream.writeInt(MathHelper.floor_double(entity.posX));
+			outputStream.writeInt(MathHelper.floor_double(entity.posY));
+			outputStream.writeInt(MathHelper.floor_double(entity.posZ));
+			outputStream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
 		}
+		Packet250CustomPayload packet = new Packet250CustomPayload();
+		packet.channel = Dota2Items.CHANNEL;
+		packet.data = bos.toByteArray();
+		packet.length = bos.size();
+		PacketDispatcher.sendPacketToAllPlayers(packet);
 	}
 	
-	private static boolean parseEntityMove(Packet250CustomPayload packet) {
+	//NOTE I hope I can get rid of this
+	public static boolean parseAndApplyEntityMove(Packet250CustomPayload packet) {
 		DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
 		int entityID;
 		double x;
@@ -65,9 +63,7 @@ public class Dota2ItemsPacketHandler implements IPacketHandler {
 		if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
 			Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(entityID);
 			if (entity != null) {
-				entity.posX = x;
-				entity.posY = y;
-				entity.posZ = z;
+				entity.setPosition(x, y, z);
 				return true;
 			}
 		}

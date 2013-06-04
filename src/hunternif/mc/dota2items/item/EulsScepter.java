@@ -2,9 +2,11 @@ package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.Dota2ItemSounds;
 import hunternif.mc.dota2items.Dota2Items;
-import hunternif.mc.dota2items.mechanics.Dota2EntityStats;
-import hunternif.mc.dota2items.mechanics.buff.BuffCyclone;
-import hunternif.mc.dota2items.network.Dota2PacketID;
+import hunternif.mc.dota2items.core.EntityStats;
+import hunternif.mc.dota2items.mechanics.buff.Buff;
+import hunternif.mc.dota2items.mechanics.buff.BuffInstance;
+import hunternif.mc.dota2items.network.Dota2ItemsClientPacketHandler;
+import hunternif.mc.dota2items.network.EntityMovePacket;
 import hunternif.mc.dota2items.tileentity.TileEntityCyclone;
 
 import java.io.ByteArrayOutputStream;
@@ -28,7 +30,7 @@ public class EulsScepter extends CooldownItem {
 		super(id);
 		setUnlocalizedName(NAME);
 		setCooldown(30);
-		//moveSpeedFactor = 1.5f;
+		passiveBuff = Buff.eulsScepter;
 	}
 	
 	@Override
@@ -38,22 +40,43 @@ public class EulsScepter extends CooldownItem {
 	
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
+		return onUseEulsScepter(stack, player, entity);
+	}
+	
+	@Override
+	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world,
+			int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+		AxisAlignedBB box = AxisAlignedBB.getBoundingBox((double)x, (double)y-0.5, (double)z, (double)x+1, (double)y+1.5, (double)z+1);
+		List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, box);
+		if (list != null && !list.isEmpty()) {
+			//TODO Make sure that other entities within the area don't get stuck in the cyclone.
+			return onUseEulsScepter(itemStack, player, list.get(0));
+		} else {
+			playDenyGeneralSound(world);
+			return false;
+		}
+	}
+	
+	private boolean onUseEulsScepter(ItemStack stack, EntityPlayer player, Entity entity) {
 		if (!canUseItem(player)) {
 			return false;
 		}
 		if (entity.isDead) {
+			// Why would this ever happen?
+			playDenyGeneralSound(player.worldObj);
 			return false;
 		}
 		if (isOnCooldown(stack)) {
 			playDenyCooldownSound(player.worldObj);
 			return false;
 		}
-		Dota2EntityStats stats = Dota2Items.mechanics.getEntityStats(entity);
-		if (stats == null) {
-			stats = new Dota2EntityStats(entity);
-			Dota2Items.mechanics.putEntityStats(stats);
+		EntityStats entityStats = Dota2Items.mechanics.entityStats.get(entity);
+		if (entityStats == null) {
+			entityStats = new EntityStats();
+			Dota2Items.mechanics.entityStats.put(entity, entityStats);
 		}
-		if (stats.isMagicImmune()) {
+		if (entityStats.isMagicImmune()) {
+			playMagicImmuneSound(player.worldObj);
 			return false;
 		}
 		
@@ -64,68 +87,26 @@ public class EulsScepter extends CooldownItem {
 			y ++;
 		}
 		if (!entity.worldObj.isRemote) {
-			entity.worldObj.setBlock(x, y, z, Dota2Items.cycloneContainer.blockID);
+			entity.worldObj.setBlock(x, y, z, Dota2Items.cycloneContainer.blockID, 0, 3);
 		}
 		
 		if (!entity.worldObj.isRemote) {
-			/*int x32 = entity.myEntitySize.multiplyBy32AndRound(entity.posX);
-			int y32 = MathHelper.floor_double(entity.posY * 32);
-			int z32 = entity.myEntitySize.multiplyBy32AndRound(entity.posZ);
-			byte yawByte = (byte) MathHelper.floor_float(entity.rotationYaw * 256.0F / 360.0F);
-            byte pitchByte = (byte) MathHelper.floor_float(entity.rotationPitch * 256.0F / 360.0F);
-			Packet34EntityTeleport tpPacket = new Packet34EntityTeleport(entity.entityId, x32, y32, z32, yawByte, pitchByte);
-			PacketDispatcher.sendPacketToAllPlayers(tpPacket);*/
-			
 			entity.motionX = 0;
 			entity.motionY = 0;
 			entity.motionZ = 0;
 			entity.posX = ((double) x) + 0.5;
 			entity.posY = ((double) y) + 3;
 			entity.posZ = ((double) z) + 0.5;
-			sendMovePacket(entity);
+			EntityMovePacket.sendMovePacket(entity);
 			
-			int timeout = (int) (TileEntityCyclone.duration * 20f);
-			BuffCyclone buff = new BuffCyclone(stats, timeout);
-			Dota2Items.mechanics.addBuff(buff);
+			long cycloneEndTime = entity.worldObj.getTotalWorldTime() + (long) (TileEntityCyclone.duration * 20f);
+			BuffInstance buff = new BuffInstance(Buff.inCyclone, entity.entityId, cycloneEndTime, false);
+			entityStats.addBuff(buff);
 			PacketDispatcher.sendPacketToAllPlayers(buff.toPacket());
 		}
 		
 		startCooldown(stack, player);
 		player.worldObj.playSoundAtEntity(entity, Dota2ItemSounds.CYCLONE_START, 0.7f, 1);
 		return true;
-	}
-	
-	@Override
-	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world,
-			int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-		AxisAlignedBB box = AxisAlignedBB.getBoundingBox((double)x, (double)y-0.5, (double)z, (double)x+1, (double)y+1.5, (double)z+1);
-		List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, box);
-		if (list != null && !list.isEmpty()) {
-			return onLeftClickEntity(itemStack, player, list.get(0));
-		} else {
-			playDenyGeneralSound(world);
-			return false;
-		}
-	}
-	
-	private void sendMovePacket(Entity entity) {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream(16);
-		DataOutputStream outputStream = new DataOutputStream(bos);
-		try {
-			outputStream.writeInt(Dota2PacketID.MOVE);
-			outputStream.writeInt(entity.entityId);
-			outputStream.writeInt(MathHelper.floor_double(entity.posX));
-			outputStream.writeInt(MathHelper.floor_double(entity.posY));
-			outputStream.writeInt(MathHelper.floor_double(entity.posZ));
-			outputStream.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
-		}
-		Packet250CustomPayload packet = new Packet250CustomPayload();
-		packet.channel = Dota2Items.CHANNEL;
-		packet.data = bos.toByteArray();
-		packet.length = bos.size();
-		PacketDispatcher.sendPacketToAllPlayers(packet);
 	}
 }

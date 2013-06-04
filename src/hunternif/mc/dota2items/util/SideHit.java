@@ -1,4 +1,4 @@
-package hunternif.mc.util;
+package hunternif.mc.dota2items.util;
 
 /**
  * X coordinate goes from North to South.<br>

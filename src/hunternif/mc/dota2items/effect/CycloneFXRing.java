@@ -1,10 +1,7 @@
 package hunternif.mc.dota2items.effect;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import hunternif.mc.dota2items.Dota2Items;
-import hunternif.mc.util.MathUtil;
-import hunternif.mc.util.SideHit;
+import hunternif.mc.dota2items.util.MathUtil;
+import hunternif.mc.dota2items.util.SideHit;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
@@ -14,6 +11,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class CycloneFXRing extends EntityFX {
@@ -52,6 +51,8 @@ public class CycloneFXRing extends EntityFX {
 				int blockId = world.getBlockId(xInt, yInt, zInt);
 				if (blockId > 0) {
 					int metadata = world.getBlockMetadata(xInt, yInt, zInt);
+					// The "y + 0.1" below is a workaround for the bug that digging
+					// particles stayed on the ground and didn't fly up for some reason.
 					puffs[i] = new EntityDiggingFX(world, x + 0.5, y+0.1, z + 0.5, 0, 0, 0, Block.blocksList[blockId], SideHit.TOP, metadata, Minecraft.getMinecraft().renderEngine).func_70596_a(xInt, yInt, zInt).multipleParticleScaleBy(0.5f);
 					renderer.addEffect(puffs[i]/*, Block.blocksList[blockId]*/);
 					//renderer.addBlockHitEffects(xInt, yInt, zInt, SideHit.TOP);
@@ -84,11 +85,6 @@ public class CycloneFXRing extends EntityFX {
         this.prevPosZ = this.posZ;
 		float ringWidth = getWidthVSHeight(ringHeight);
 		for (int i = 0; i < puffs.length; i++) {
-			if (puffs[i] instanceof EntityDiggingFX) {
-				System.out.println("D:"+puffs[i].motionY);
-			} else {
-				System.out.println(puffs[i].motionY);
-			}
 			Vec3 vec = worldObj.getWorldVec3Pool().getVecFromPool(ringWidth, 0, 0);
 			vec.rotateAroundY(baseAngle + ((float)i)*dAngle);
 			vec.rotateAroundX(pitch);

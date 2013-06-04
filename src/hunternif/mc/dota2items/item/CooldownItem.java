@@ -73,10 +73,11 @@ public abstract class CooldownItem extends Dota2Item {
 	}
 	
 	/**
-	 * Reports cooldown off for the client 0.05 seconds earlier than for the server.
+	 * Reports the cooldown for the client 0.05 seconds earlier than for the server.
 	 * This should eliminate the problem when the server starts cooldown before the
 	 * client, and as a result the client doesn't perform the item's action.
 	 */
+	//TODO Fix this cooldown KLUDGE! All the checks must only be performed on the server.
 	public boolean isOnSideSpecificCooldown(World world, ItemStack itemStack) {
 		NBTTagCompound tag = itemStack.getTagCompound();
 		float minimum = world.isRemote ? 0.05f : 0;

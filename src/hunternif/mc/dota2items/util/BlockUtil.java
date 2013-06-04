@@ -1,4 +1,4 @@
-package hunternif.mc.util;
+package hunternif.mc.dota2items.util;
 
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;

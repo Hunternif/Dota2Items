@@ -2,8 +2,8 @@ package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.Dota2ItemSounds;
 import hunternif.mc.dota2items.effect.Dota2Effect;
-import hunternif.mc.util.BlockUtil;
-import hunternif.mc.util.SideHit;
+import hunternif.mc.dota2items.util.BlockUtil;
+import hunternif.mc.dota2items.util.SideHit;
 
 import java.util.Random;
 
@@ -129,7 +129,7 @@ public class BlinkDagger extends CooldownItem {
 			while (!blink(itemStack, world, player, destX, destY, destZ) &&
 					(double) timesSubtracted < maxDistance) {
 				// Something is obstructing the ray, trace a step back
-				hit.hitVec = look.subtract(hit.hitVec);
+				hit.hitVec = hit.hitVec.addVector(-look.xCoord, -look.yCoord, -look.zCoord);
 				timesSubtracted ++;
 				destX = Math.round((float) hit.hitVec.xCoord);
 				destY = Math.round((float) hit.hitVec.yCoord);
@@ -221,8 +221,8 @@ public class BlinkDagger extends CooldownItem {
 		} else {
 			// Client side. Render blink effect.
 			Minecraft.getMinecraft().sndManager.playSoundFX(Dota2ItemSounds.BLINK_OUT, 1.0F, 1.0F);
-			srcEffect.render();
-			destEffect.render();
+			srcEffect.start();
+			destEffect.start();
 		}
 		
 		return true;

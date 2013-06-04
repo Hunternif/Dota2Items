@@ -1,9 +1,9 @@
 package hunternif.mc.dota2items.render;
 
-import hunternif.mc.dota2items.Dota2ItemsClientProxy;
+import hunternif.mc.dota2items.core.ClientTickHandler;
 import hunternif.mc.dota2items.event.CooldownEndDisplayEvent;
 import hunternif.mc.dota2items.item.CooldownItem;
-import hunternif.mc.util.MathUtil;
+import hunternif.mc.dota2items.util.MathUtil;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -68,7 +68,7 @@ public class CooldownItemRenderer implements IItemRenderer {
 		if (!item.isOnCooldown(itemStack)) {
 			Integer animationsToGo = animationsToGoOffCooldown.get(itemStack);
 			if (animationsToGo != null) {
-				int elapsedTicks = Dota2ItemsClientProxy.renderTimer.elapsedTicks;
+				int elapsedTicks = ClientTickHandler.timer.elapsedTicks;
 				// Cooldown stop effect
 				
 				// Effect from the firework particle

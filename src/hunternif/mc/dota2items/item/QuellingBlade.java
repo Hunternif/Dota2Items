@@ -1,9 +1,10 @@
 package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.Dota2ItemSounds;
-import hunternif.mc.util.IntVec3;
-import hunternif.mc.util.SideHit;
-import hunternif.mc.util.TreeUtil;
+import hunternif.mc.dota2items.mechanics.buff.Buff;
+import hunternif.mc.dota2items.util.IntVec3;
+import hunternif.mc.dota2items.util.SideHit;
+import hunternif.mc.dota2items.util.TreeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -33,8 +34,7 @@ public class QuellingBlade extends CooldownItem {
 		super(id);
 		setUnlocalizedName(NAME);
 		setCooldown(5);
-		percentAttackBonusMelee = 32f;
-		percentAttackBonusRanged = 12f;
+		passiveBuff = Buff.quell;
 	}
 	
 	@Override

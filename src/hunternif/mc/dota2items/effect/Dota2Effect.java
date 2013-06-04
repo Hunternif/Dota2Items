@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-
+//TODO refactor Dota2Effect
 public final class Dota2Effect {
 	public static final int NONE = -1;
 	
@@ -76,7 +76,7 @@ public final class Dota2Effect {
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void render() {
+	public void start() {
 		World world = Minecraft.getMinecraft().theWorld;
 		EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
 		EntityFX effect = null;
@@ -99,7 +99,7 @@ public final class Dota2Effect {
 	}
 	
 	public Packet250CustomPayload toPacket() {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream(16);
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream outputStream = new DataOutputStream(bos);
 		try {
 			outputStream.writeInt(Dota2PacketID.EFFECT);

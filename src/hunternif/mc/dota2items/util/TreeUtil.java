@@ -1,4 +1,4 @@
-package hunternif.mc.util;
+package hunternif.mc.dota2items.util;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
@@ -198,7 +198,7 @@ public final class TreeUtil {
 	 * Recursively removes tree with its trunk base specified.
 	 * This method will not look below the specified point!
 	 */
-	//TODO potential issue: suppose there's a little bush with leaves within
+	//NOTE potential issue: suppose there's a little bush with leaves within
 	// 5-block proximity of a regular tree. If I try to eat this little bush,
 	// the tree will disappear instead.
 	public static void removeTree(World world, IntVec3 trunkBase, boolean placeSapling) {

@@ -1,7 +1,7 @@
 package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.Dota2ItemSounds;
-import hunternif.mc.dota2items.mechanics.buff.Buff;
+import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.util.IntVec3;
 import hunternif.mc.dota2items.util.SideHit;
 import hunternif.mc.dota2items.util.TreeUtil;

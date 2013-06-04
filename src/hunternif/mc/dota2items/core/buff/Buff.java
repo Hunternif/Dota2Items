@@ -1,4 +1,4 @@
-package hunternif.mc.dota2items.mechanics.buff;
+package hunternif.mc.dota2items.core.buff;
 
 
 public class Buff {

@@ -1,4 +1,4 @@
-package hunternif.mc.dota2items.mechanics.buff;
+package hunternif.mc.dota2items.core.buff;
 
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.network.Dota2PacketID;

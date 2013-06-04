@@ -2,13 +2,13 @@ package hunternif.mc.dota2items;
 
 import hunternif.mc.dota2items.block.BlockCycloneContainer;
 import hunternif.mc.dota2items.core.Mechanics;
+import hunternif.mc.dota2items.core.inventory.Dota2ItemCreativeTab;
 import hunternif.mc.dota2items.item.BlinkDagger;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.item.Dota2Logo;
 import hunternif.mc.dota2items.item.EulsScepter;
 import hunternif.mc.dota2items.item.QuellingBlade;
 import hunternif.mc.dota2items.item.Tango;
-import hunternif.mc.dota2items.mechanics.inventory.Dota2ItemCreativeTab;
 import hunternif.mc.dota2items.network.Dota2ItemsClientPacketHandler;
 import hunternif.mc.dota2items.tileentity.TileEntityCyclone;
 

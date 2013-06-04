@@ -1,8 +1,8 @@
 package hunternif.mc.dota2items.core;
 
+import hunternif.mc.dota2items.core.buff.BuffInstance;
+import hunternif.mc.dota2items.core.inventory.Dota2PlayerTracker;
 import hunternif.mc.dota2items.item.Dota2Item;
-import hunternif.mc.dota2items.mechanics.buff.BuffInstance;
-import hunternif.mc.dota2items.mechanics.inventory.Dota2PlayerTracker;
 
 import java.util.ArrayList;
 import java.util.Arrays;

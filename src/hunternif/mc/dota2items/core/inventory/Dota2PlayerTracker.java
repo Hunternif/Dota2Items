@@ -1,4 +1,4 @@
-package hunternif.mc.dota2items.mechanics.inventory;
+package hunternif.mc.dota2items.core.inventory;
 
 import java.util.List;
 import java.util.Map;

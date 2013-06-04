@@ -1,7 +1,7 @@
 package hunternif.mc.dota2items.core;
 
-import hunternif.mc.dota2items.mechanics.buff.Buff;
-import hunternif.mc.dota2items.mechanics.buff.BuffInstance;
+import hunternif.mc.dota2items.core.buff.Buff;
+import hunternif.mc.dota2items.core.buff.BuffInstance;
 
 import java.util.ArrayList;
 import java.util.List;

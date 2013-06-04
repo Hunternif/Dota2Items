@@ -2,8 +2,8 @@ package hunternif.mc.dota2items.network;
 
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.EntityStats;
+import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.effect.Dota2Effect;
-import hunternif.mc.dota2items.mechanics.buff.BuffInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.INetworkManager;

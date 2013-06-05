@@ -11,7 +11,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 
-public class Dota2ItemsClientPacketHandler implements IPacketHandler {
+public class ClientPacketHandler implements IPacketHandler {
 	@Override
 	public void onPacketData(INetworkManager manager,
 			Packet250CustomPayload packet, Player player) {
@@ -29,14 +29,8 @@ public class Dota2ItemsClientPacketHandler implements IPacketHandler {
 			if (buffInst != null) {
 				Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(buffInst.entityID);
 				if (entity != null) {
-					EntityStats stats = Dota2Items.mechanics.entityStats.get(entity);
-					if (stats != null) {
-						stats.addBuff(buffInst);
-					} else {
-						stats = new EntityStats();
-						stats.addBuff(buffInst);
-						Dota2Items.mechanics.entityStats.put(entity, stats);
-					}
+					EntityStats stats = Dota2Items.mechanics.getEntityStats(entity);
+					stats.addBuff(buffInst);
 				}
 				return;
 			}

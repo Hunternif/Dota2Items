@@ -10,7 +10,7 @@ import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-public class Dota2ItemsClientProxy extends Dota2ItemsCommonProxy {
+public class ClientProxy extends CommonProxy {
 	public static CooldownItemRenderer cooldownItemRenderer = new CooldownItemRenderer();
 	
     @Override

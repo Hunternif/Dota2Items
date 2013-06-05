@@ -9,7 +9,7 @@ import hunternif.mc.dota2items.item.Dota2Logo;
 import hunternif.mc.dota2items.item.EulsScepter;
 import hunternif.mc.dota2items.item.QuellingBlade;
 import hunternif.mc.dota2items.item.Tango;
-import hunternif.mc.dota2items.network.Dota2ItemsClientPacketHandler;
+import hunternif.mc.dota2items.network.ClientPacketHandler;
 import hunternif.mc.dota2items.tileentity.TileEntityCyclone;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 
 @Mod(modid=Dota2Items.ID, name=Dota2Items.NAME, version=Dota2Items.VERSION)
 @NetworkMod(clientSideRequired=true, serverSideRequired=true, channels={Dota2Items.CHANNEL},
-	clientPacketHandlerSpec=@NetworkMod.SidedPacketHandler(channels={Dota2Items.CHANNEL}, packetHandler=Dota2ItemsClientPacketHandler.class))
+	clientPacketHandlerSpec=@NetworkMod.SidedPacketHandler(channels={Dota2Items.CHANNEL}, packetHandler=ClientPacketHandler.class))
 public class Dota2Items {
 	public static final String ID = "Dota2Items";
 	public static final String NAME = "Dota 2 Items";
@@ -62,8 +62,8 @@ public class Dota2Items {
 	@Instance(ID)
 	public static Dota2Items instance;
 	
-	@SidedProxy(clientSide="hunternif.mc.dota2items.Dota2ItemsClientProxy", serverSide="hunternif.mc.dota2items.Dota2ItemsCommonProxy")
-	public static Dota2ItemsCommonProxy proxy;
+	@SidedProxy(clientSide="hunternif.mc.dota2items.ClientProxy", serverSide="hunternif.mc.dota2items.CommonProxy")
+	public static CommonProxy proxy;
 	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event) {

@@ -26,14 +26,38 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.relauncher.Side;
 
 public class Mechanics {
 	private static String[] walkSpeedObfFields = {"g", "field_75097_g", "walkSpeed"};
 	
 	public Dota2PlayerTracker playerTracker = new Dota2PlayerTracker();
 	
-	public Map<Entity, EntityStats> entityStats = new ConcurrentHashMap<Entity, EntityStats>();
-	public Map<EntityPlayer, ItemStack[]> inventories = new ConcurrentHashMap<EntityPlayer, ItemStack[]>();
+	private Map<Entity, EntityStats> clientEntityStats = new ConcurrentHashMap<Entity, EntityStats>();
+	private Map<Entity, EntityStats> serverEntityStats = new ConcurrentHashMap<Entity, EntityStats>();
+	
+	private Map<EntityPlayer, ItemStack[]> clientInventories = new ConcurrentHashMap<EntityPlayer, ItemStack[]>();
+	private Map<EntityPlayer, ItemStack[]> serverInventories = new ConcurrentHashMap<EntityPlayer, ItemStack[]>();
+	
+	private Map<Entity, EntityStats> getEntityStatsMap(Side side) {
+		return side.isClient() ? clientEntityStats : serverEntityStats;
+	}
+	
+	private Map<EntityPlayer, ItemStack[]> getInventoryMap(Side side) {
+		return side.isClient() ? clientInventories : serverInventories;
+	}
+	
+	/** Guaranteed to be non-null. */
+	public EntityStats getEntityStats(Entity entity) {
+		Map<Entity, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
+		EntityStats stats = entityStats.get(entity);
+		if (stats == null) {
+			stats = new EntityStats();
+			entityStats.put(entity, stats);
+		}
+		return stats;
+	}
+	
 	
 	@ForgeSubscribe
 	public void onPlayerDrops(PlayerDropsEvent event) {
@@ -65,6 +89,7 @@ public class Mechanics {
 		//TODO this doesn't work for creepers because they don't actually attack
 		Entity entity = event.source.getEntity();
 		if (entity != null) {
+			Map<Entity, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
 			EntityStats stats = entityStats.get(entity);
 			if (stats != null && !stats.canAttack()) {
 				event.setCanceled(true);
@@ -75,6 +100,7 @@ public class Mechanics {
 	@ForgeSubscribe
 	public void onLivingHurt(LivingHurtEvent event) {
 		int damage = event.ammount;
+		Map<Entity, EntityStats> entityStats = getEntityStatsMap(getSide(event.entity));
 		
 		// Check if the target entity is invulnerable
 		EntityStats targetStats = entityStats.get(event.entityLiving);
@@ -112,7 +138,8 @@ public class Mechanics {
 		event.ammount = MathHelper.floor_float(damage_float);
 	}
 	
-	public void updateAllEntityStats() {
+	public void updateAllEntityStats(Side side) {
+		Map<Entity, EntityStats> entityStats = getEntityStatsMap(side);
 		for (Entry<Entity, EntityStats> entry : entityStats.entrySet()) {
 			Entity entity = entry.getKey();
 			EntityStats stats = entry.getValue();
@@ -124,9 +151,9 @@ public class Mechanics {
 		}
 	}
 	
-	public void updatePlayerInventories(boolean isRemote) {
+	public void updatePlayerInventories(Side side) {
 		List<EntityPlayer> players;
-		if (isRemote) {
+		if (side.isClient()) {
 			players = new ArrayList<EntityPlayer>();
 			if (Minecraft.getMinecraft().thePlayer != null) {
 				players.add(Minecraft.getMinecraft().thePlayer);
@@ -134,27 +161,29 @@ public class Mechanics {
 		} else {
 			players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
 		}
+		Map<EntityPlayer, ItemStack[]> inventoryMap = getInventoryMap(side);
 		//TODO check multiplayer to work properly here
 		for (EntityPlayer player : players) {
 			if (player.inventory == null) {
 				continue;
 			}
 			ItemStack[] currentInventory = Arrays.copyOfRange(player.inventory.mainInventory, 0, 10);
-			ItemStack[] oldInventory = inventories.get(player);
+			ItemStack[] oldInventory = inventoryMap.get(player);
 			if (oldInventory == null) {
-				inventories.put(player, currentInventory);
-				updatePlayerBuffs(player, currentInventory);
+				inventoryMap.put(player, currentInventory);
+				updatePlayerBuffs(player, currentInventory, side);
 			} else {
 				if (!sameItemsStacks(currentInventory, oldInventory)) {
-					inventories.put(player, currentInventory);
-					updatePlayerBuffs(player, currentInventory);
+					inventoryMap.put(player, currentInventory);
+					updatePlayerBuffs(player, currentInventory, side);
 				}
 			}
 		}
 	}
 	
-	private void updatePlayerBuffs(EntityPlayer player, ItemStack[] inventory) {
+	private void updatePlayerBuffs(EntityPlayer player, ItemStack[] inventory, Side side) {
 		System.out.println("updating buffs on player");
+		Map<Entity, EntityStats> entityStats = getEntityStatsMap(side);
 		EntityStats stats = entityStats.get(player);
 		if (stats == null) {
 			stats = new EntityStats();
@@ -199,6 +228,8 @@ public class Mechanics {
 	
 	@ForgeSubscribe
 	public void onLivingUpdate(LivingUpdateEvent event) {
+		// All forced movement is to be processed here. (Cyclone, Force Staff etc.)
+		Map<Entity, EntityStats> entityStats = getEntityStatsMap(getSide(event.entity));
 		EntityStats stats = entityStats.get(event.entity);
 		if (stats != null && !stats.canMove()) {
 			event.setCanceled(true);
@@ -206,5 +237,9 @@ public class Mechanics {
 				((EntityPlayer)event.entity).inventory.decrementAnimations();
 			}
 		}
+	}
+	
+	private static Side getSide(Entity entity) {
+		return entity.worldObj.isRemote ? Side.CLIENT : Side.SERVER;
 	}
 }

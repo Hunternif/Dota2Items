@@ -63,6 +63,7 @@ public class EntityMovePacket {
 		if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
 			Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(entityID);
 			if (entity != null) {
+				//TODO fix the squids teleporting back underwater when the cyclone ends.
 				entity.setPosition(x, y, z);
 				return true;
 			}

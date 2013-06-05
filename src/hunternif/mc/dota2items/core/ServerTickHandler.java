@@ -6,14 +6,14 @@ import java.util.EnumSet;
 
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.relauncher.Side;
 
 public class ServerTickHandler implements ITickHandler {
 
 	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData) {
-		//FIXME Make separate Mechanics instances for client and server even in singleplayer. 
-		Dota2Items.mechanics.updateAllEntityStats();
-		Dota2Items.mechanics.updatePlayerInventories(false);
+	public void tickStart(EnumSet<TickType> type, Object... tickData) { 
+		Dota2Items.mechanics.updateAllEntityStats(Side.SERVER);
+		Dota2Items.mechanics.updatePlayerInventories(Side.SERVER);
 	}
 
 	@Override

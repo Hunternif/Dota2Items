@@ -5,19 +5,15 @@ import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
-import hunternif.mc.dota2items.network.Dota2ItemsClientPacketHandler;
 import hunternif.mc.dota2items.network.EntityMovePacket;
 import hunternif.mc.dota2items.tileentity.TileEntityCyclone;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -70,11 +66,7 @@ public class EulsScepter extends CooldownItem {
 			playDenyCooldownSound(player.worldObj);
 			return false;
 		}
-		EntityStats entityStats = Dota2Items.mechanics.entityStats.get(entity);
-		if (entityStats == null) {
-			entityStats = new EntityStats();
-			Dota2Items.mechanics.entityStats.put(entity, entityStats);
-		}
+		EntityStats entityStats = Dota2Items.mechanics.getEntityStats(entity);
 		if (entityStats.isMagicImmune()) {
 			playMagicImmuneSound(player.worldObj);
 			return false;

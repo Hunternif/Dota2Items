@@ -41,7 +41,7 @@ public abstract class Dota2Item extends Item {
 	}
 	
 	public boolean canUseItem(Entity player) {
-		EntityStats stats = Dota2Items.mechanics.entityStats.get(player);
+		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
 		if (stats == null) {
 			return true;
 		} else {

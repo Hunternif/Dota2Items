@@ -48,6 +48,15 @@ public class IntVec3 {
 		return vec.x == x && vec.y == y && vec.z == z;
 	}
 	
+	@Override
+	public int hashCode() {
+		return x*100000 + z*100 + y;
+	}
+	
+	public boolean equalsIntVec3(IntVec3 vec) {
+		return vec.x == x && vec.y == y && vec.z == z;
+	}
+	
 	public Vec3 toVec3(Vec3Pool pool) {
 		return pool.getVecFromPool(x, y, z);
 	}

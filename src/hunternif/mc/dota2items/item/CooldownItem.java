@@ -28,7 +28,6 @@ public abstract class CooldownItem extends Dota2Item {
 	
 	public CooldownItem(int id) {
 		super(id);
-		setMaxStackSize(1);
 	}
 	
 	/** Set "usual" cooldown duration in seconds. */

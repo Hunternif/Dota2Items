@@ -20,6 +20,7 @@ public abstract class Dota2Item extends Item {
 	public Dota2Item(int id) {
 		super(id);
 		setCreativeTab(Dota2Items.dota2CreativeTab);
+		setMaxStackSize(1);
 	}
 	
 	@Override

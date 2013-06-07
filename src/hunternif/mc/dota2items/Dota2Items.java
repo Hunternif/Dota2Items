@@ -4,10 +4,12 @@ import hunternif.mc.dota2items.block.BlockCycloneContainer;
 import hunternif.mc.dota2items.core.Mechanics;
 import hunternif.mc.dota2items.core.inventory.Dota2ItemCreativeTab;
 import hunternif.mc.dota2items.item.BlinkDagger;
+import hunternif.mc.dota2items.item.BootsOfSpeed;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.item.Dota2Logo;
 import hunternif.mc.dota2items.item.EulsScepter;
 import hunternif.mc.dota2items.item.QuellingBlade;
+import hunternif.mc.dota2items.item.RingOfProtection;
 import hunternif.mc.dota2items.item.Tango;
 import hunternif.mc.dota2items.network.ClientPacketHandler;
 import hunternif.mc.dota2items.tileentity.TileEntityCyclone;
@@ -53,6 +55,10 @@ public class Dota2Items {
 	public static Dota2Item quellingBlade;
 	private static int eulId;
 	public static Dota2Item eulsScepter;
+	private static int ringOfProtectionId;
+	public static Dota2Item ringOfProtection;
+	private static int bootsOfSpeedId;
+	public static Dota2Item bootsOfSpeed;
 	
 	private static int cycloneContainerId;
 	public static BlockCycloneContainer cycloneContainer;
@@ -70,11 +76,15 @@ public class Dota2Items {
 		proxy.registerSounds();
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
+		// Items
 		dota2LogoId = config.getItem(Dota2Logo.NAME, 27000).getInt();
 		blinkDaggerId = config.getItem(BlinkDagger.NAME, 27001).getInt();
 		tangoId = config.getItem(Tango.NAME, 27002).getInt();
 		quellingBladeId = config.getItem(QuellingBlade.NAME, 27003).getInt();
 		eulId = config.getItem(EulsScepter.NAME, 27004).getInt();
+		ringOfProtectionId = config.getItem(RingOfProtection.NAME, 27005).getInt();
+		bootsOfSpeedId = config.getItem(BootsOfSpeed.NAME, 27006).getInt();
+		// Blocks
 		cycloneContainerId = config.getBlock(BlockCycloneContainer.NAME, 2700).getInt();
 		config.save();
 	}
@@ -103,6 +113,14 @@ public class Dota2Items {
 		eulsScepter = new EulsScepter(eulId);
 		LanguageRegistry.addName(eulsScepter, "Eul's Scepter of Divinity");
 		itemList.add(eulsScepter);
+		
+		ringOfProtection = new RingOfProtection(ringOfProtectionId);
+		LanguageRegistry.addName(ringOfProtection, "Ring of Protection");
+		itemList.add(ringOfProtection);
+		
+		bootsOfSpeed = new BootsOfSpeed(bootsOfSpeedId);
+		LanguageRegistry.addName(bootsOfSpeed, "Boots of Speed");
+		itemList.add(bootsOfSpeed);
 		
 		cycloneContainer = new BlockCycloneContainer(cycloneContainerId);
 		GameRegistry.registerBlock(cycloneContainer, BlockCycloneContainer.NAME);

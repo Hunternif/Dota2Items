@@ -12,7 +12,7 @@ public class EntityStats {
 	private static final float minecraftMovementSpeed = 0.1f;
 	public static float maxMovementSpeed = 522f;
 	
-	public int baseHealth = 500;
+	public int baseHealth = 150;
 	public float baseHealthRegen = 0.25f;
 	public int baseMana = 0;
 	public float baseManaRegen = 0.01f;
@@ -24,7 +24,10 @@ public class EntityStats {
 	public int baseIntelligence = 20;
 	public int baseStrength = 20;
 	public int baseAgility = 20;
-	// Perhaps someday I'll make the attributes work.
+	
+	// Transient stats:
+	private int curMana;
+	private int curGold;
 	
 	private List<BuffInstance> appliedBuffs = new ArrayList<BuffInstance>();
 	
@@ -38,23 +41,65 @@ public class EntityStats {
 		appliedBuffs.remove(buffInst);
 	}
 	
-	public int getHealth() {
+	public int getMaxHealth() {
 		int health = baseHealth;
 		for (BuffInstance buffInst : getAppliedBuffs()) {
 			health += buffInst.buff.health;
 		}
-		return health;
+		return health + 19*getStrength();
 	}
 	
-	public int getMana() {
+	public int getMaxMana() {
 		int mana = baseMana;
 		for (BuffInstance buffInst : getAppliedBuffs()) {
 			mana += buffInst.buff.mana;
 		}
-		return mana;
+		return mana + 13*getIntelligence();
 	}
 	
-	//TODO code all this same stuff
+	public int getMana() {
+		return curMana;
+	}
+	public void addOrDrainMana(int value) {
+		int newMana = curMana + value;
+		int maxMana = getMaxMana();
+		if (newMana < 0) newMana = 0;
+		if (newMana > maxMana) newMana = maxMana;
+		curMana = newMana;
+	}
+	
+	public float getHealthRegen() {
+		float regen = baseHealthRegen;
+		for (BuffInstance buffInst : getAppliedBuffs()) {
+			regen += buffInst.buff.healthRegen;
+		}
+		return regen + 0.03f*(float)getStrength();
+	}
+	
+	public float getManaRegen() {
+		float regen = baseManaRegen;
+		for (BuffInstance buffInst : getAppliedBuffs()) {
+			regen += buffInst.buff.manaRegen;
+		}
+		return regen + 0.04f*(float)getIntelligence();
+	}
+	
+	/** A percentage. */
+	public int getIncreasedAttackSpeed() {
+		int aspd = 0;
+		for (BuffInstance buffInst : getAppliedBuffs()) {
+			aspd += buffInst.buff.attackSpeed;
+		}
+		aspd += getAgility();
+		if (aspd < -80) aspd = -80;
+		if (aspd > 400) aspd = 400;
+		return aspd;
+	}
+	
+	public float getAttackTime() {
+		float aspd = ((float)getIncreasedAttackSpeed())/100f;
+		return baseAttackTime / (1f + aspd);
+	}
 	
 	public int getDamage(int weaponDamage, boolean melee) {
 		int damage = weaponDamage + this.baseDamage;
@@ -73,6 +118,7 @@ public class EntityStats {
 		for (BuffInstance buffInst : getAppliedBuffs()) {
 			armor += buffInst.buff.armor;
 		}
+		armor += ((float)getAgility()/7f);
 		System.out.println("Buffed armor from " + basicArmor + " to " + armor);
 		return armor;
 	}
@@ -137,5 +183,36 @@ public class EntityStats {
 			}
 		}
 		return false;
+	}
+	
+	public int getGold() {
+		return curGold;
+	}
+	public void addOrRemoveGold(int value) {
+		int newGold = curGold + value;
+		if (newGold < 0) newGold = 0;
+		curGold = newGold;
+	}
+	
+	public int getStrength() {
+		int str = baseStrength;
+		for (BuffInstance buffInst : getAppliedBuffs()) {
+			str += buffInst.buff.strength;
+		}
+		return str;
+	}
+	public int getAgility() {
+		int agi = baseAgility;
+		for (BuffInstance buffInst : getAppliedBuffs()) {
+			agi += buffInst.buff.agility;
+		}
+		return agi;
+	}
+	public int getIntelligence() {
+		int intel = baseIntelligence;
+		for (BuffInstance buffInst : getAppliedBuffs()) {
+			intel += buffInst.buff.intelligence;
+		}
+		return intel;
 	}
 }

@@ -1,5 +1,6 @@
 package hunternif.mc.dota2items.core;
 
+import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.core.inventory.Dota2PlayerTracker;
 import hunternif.mc.dota2items.item.Dota2Item;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -25,6 +27,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 
@@ -35,14 +38,12 @@ public class Mechanics {
 	
 	private Map<Entity, EntityStats> clientEntityStats = new ConcurrentHashMap<Entity, EntityStats>();
 	private Map<Entity, EntityStats> serverEntityStats = new ConcurrentHashMap<Entity, EntityStats>();
-	
-	private Map<EntityPlayer, ItemStack[]> clientInventories = new ConcurrentHashMap<EntityPlayer, ItemStack[]>();
-	private Map<EntityPlayer, ItemStack[]> serverInventories = new ConcurrentHashMap<EntityPlayer, ItemStack[]>();
-	
 	private Map<Entity, EntityStats> getEntityStatsMap(Side side) {
 		return side.isClient() ? clientEntityStats : serverEntityStats;
 	}
 	
+	private Map<EntityPlayer, ItemStack[]> clientInventories = new ConcurrentHashMap<EntityPlayer, ItemStack[]>();
+	private Map<EntityPlayer, ItemStack[]> serverInventories = new ConcurrentHashMap<EntityPlayer, ItemStack[]>();
 	private Map<EntityPlayer, ItemStack[]> getInventoryMap(Side side) {
 		return side.isClient() ? clientInventories : serverInventories;
 	}
@@ -91,8 +92,14 @@ public class Mechanics {
 		if (entity != null) {
 			Map<Entity, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
 			EntityStats stats = entityStats.get(entity);
-			if (stats != null && !stats.canAttack()) {
-				event.setCanceled(true);
+			if (stats != null) {
+				long worldTime = entity.worldObj.getTotalWorldTime();
+				boolean attackTimeoutPassed = stats.lastAttackTime + (long)(stats.getAttackTime()*20f) <= worldTime;
+				if (stats.canAttack() && attackTimeoutPassed) {
+					stats.lastAttackTime = worldTime;
+				} else {
+					event.setCanceled(true);
+				}
 			}
 		}
 	}
@@ -105,7 +112,7 @@ public class Mechanics {
 		// Check if the target entity is invulnerable
 		EntityStats targetStats = entityStats.get(event.entityLiving);
 		if (targetStats != null && targetStats.isInvulnerable()) {
-			System.out.println("invulnerable");
+			FMLLog.log(Dota2Items.ID, Level.FINE, "invulnerable");
 			event.setCanceled(true);
 			return;
 		}
@@ -182,7 +189,7 @@ public class Mechanics {
 	}
 	
 	private void updatePlayerBuffs(EntityPlayer player, ItemStack[] inventory, Side side) {
-		System.out.println("updating buffs on player");
+		FMLLog.log(Dota2Items.ID, Level.FINER, "Updating buffs on player");
 		Map<Entity, EntityStats> entityStats = getEntityStatsMap(side);
 		EntityStats stats = entityStats.get(player);
 		if (stats == null) {

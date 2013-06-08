@@ -1,10 +1,14 @@
 package hunternif.mc.dota2items.core;
 
+import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+
+import cpw.mods.fml.common.FMLLog;
 
 import net.minecraft.util.MathHelper;
 
@@ -28,6 +32,8 @@ public class EntityStats {
 	// Transient stats:
 	private int curMana;
 	private int curGold;
+	/** Used to restrict attack interval by AttackTime. */
+	public long lastAttackTime;
 	
 	private List<BuffInstance> appliedBuffs = new ArrayList<BuffInstance>();
 	
@@ -98,7 +104,9 @@ public class EntityStats {
 	
 	public float getAttackTime() {
 		float aspd = ((float)getIncreasedAttackSpeed())/100f;
-		return baseAttackTime / (1f + aspd);
+		float attackTime = baseAttackTime / (1f + aspd);
+		FMLLog.log(Dota2Items.ID, Level.FINE, "Attack time = %f", attackTime);
+		return attackTime;
 	}
 	
 	public int getDamage(int weaponDamage, boolean melee) {
@@ -109,7 +117,7 @@ public class EntityStats {
 		for (BuffInstance buffInst : getAppliedBuffs()) {
 			damage += MathHelper.floor_float((float)damage * ((float)(melee ? buffInst.buff.damagePercentMelee : buffInst.buff.damagePercentRanged)) / 100f);
 		}
-		System.out.println("Buffed damage from " + weaponDamage + " to " + damage);
+		FMLLog.log(Dota2Items.ID, Level.FINE, "Buffed damage from %d to %d", weaponDamage, damage);
 		return damage;
 	}
 	
@@ -119,7 +127,7 @@ public class EntityStats {
 			armor += buffInst.buff.armor;
 		}
 		armor += ((float)getAgility()/7f);
-		System.out.println("Buffed armor from " + basicArmor + " to " + armor);
+		FMLLog.log(Dota2Items.ID, Level.FINE, "Buffed armor from %d to %d", basicArmor, armor);
 		return armor;
 	}
 	

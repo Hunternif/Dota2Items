@@ -16,6 +16,7 @@ import java.util.logging.Level;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerCapabilities;
@@ -33,6 +34,13 @@ import cpw.mods.fml.relauncher.Side;
 
 public class Mechanics {
 	private static String[] walkSpeedObfFields = {"g", "field_75097_g", "walkSpeed"};
+	
+	/** Equals to Base Hero health (with base strength bonuses) over Steve's base health.
+	 * This gives a zombie attack damage of 22.5~52.5. Seems fair to me. */
+	public static final float DOTA_VS_MINECRAFT_DAMAGE = (float)EntityStats.BASE_TOTAL_HP/20f;
+	
+	public static final int FOOD_THRESHOLD_FOR_HEAL = 18;
+	public static final float GOLD_PER_SECOND = 0.5f;
 	
 	public Dota2PlayerTracker playerTracker = new Dota2PlayerTracker();
 	
@@ -77,8 +85,8 @@ public class Mechanics {
 					list.add(stack.copy());
 					playerTracker.retainedItems.put(Integer.valueOf(event.entityPlayer.entityId), list);
 					event.entityPlayer.inventory.addItemStackToInventory(stack);
-					//TODO write dota 2 inventory in some NBT file, because
-					// it is lost if the player logs out while dead.
+					//TODO write dota 2 inventory and gold in some NBT file,
+					// because they are lost if the player logs out while dead.
 				}
 			}
 		}
@@ -106,8 +114,9 @@ public class Mechanics {
 	
 	@ForgeSubscribe
 	public void onLivingHurt(LivingHurtEvent event) {
-		int damage = event.ammount;
 		Map<Entity, EntityStats> entityStats = getEntityStatsMap(getSide(event.entity));
+		int damage = event.ammount;
+		float dotaDamage = (float)damage * DOTA_VS_MINECRAFT_DAMAGE;
 		
 		// Check if the target entity is invulnerable
 		EntityStats targetStats = entityStats.get(event.entityLiving);
@@ -123,7 +132,7 @@ public class Mechanics {
 			EntityStats sourceStats = entityStats.get(player);
 			if (sourceStats != null) {
 				//TODO Quelling blade doesn't stack. Also you can't have more than 1 in inventory
-				damage = sourceStats.getDamage(damage, !event.source.isProjectile());
+				dotaDamage = sourceStats.getDamage(dotaDamage, !event.source.isProjectile());
 			}
 		}
 		
@@ -134,15 +143,25 @@ public class Mechanics {
 		}
 		
 		// The formula was taken from Dota 2 Wiki
-		float damageMultiplier = 1f;
+		float armorMultiplier = 1f;
 		if (armor > 0) {
-			damageMultiplier = 1f - ((0.06f * armor) / (1 + 0.06f * armor));
+			armorMultiplier = 1f - ((0.06f * (float)armor) / (1 + 0.06f * (float)armor));
 		} else if (armor < 0) {
 			armor = Math.max(-20, armor);
-			damageMultiplier = 2f - (float) Math.pow(0.94, (double) -armor);
+			armorMultiplier = 2f - (float) Math.pow(0.94, (double) -armor);
 		}
-		float damage_float = (float)damage * damageMultiplier;
-		event.ammount = MathHelper.floor_float(damage_float);
+		dotaDamage *= armorMultiplier;
+		
+		// Account for the fact that Stats may give bonus health.
+		float bonusHealthMultiplier = 1f;
+		if (targetStats != null) {
+			bonusHealthMultiplier = (float)EntityStats.BASE_TOTAL_HP / (float)targetStats.getMaxHealth();
+		}
+		dotaDamage *= bonusHealthMultiplier;
+		
+		int newDamage = MathHelper.floor_float(dotaDamage / DOTA_VS_MINECRAFT_DAMAGE);
+		FMLLog.log(Dota2Items.ID, Level.INFO, "Changed damage from %d to %d", damage, newDamage);
+		event.ammount = newDamage;
 	}
 	
 	public void updateAllEntityStats(Side side) {
@@ -169,7 +188,6 @@ public class Mechanics {
 			players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
 		}
 		Map<EntityPlayer, ItemStack[]> inventoryMap = getInventoryMap(side);
-		//TODO check multiplayer to work properly here
 		for (EntityPlayer player : players) {
 			if (player.inventory == null) {
 				continue;
@@ -236,17 +254,45 @@ public class Mechanics {
 	@ForgeSubscribe
 	public void onLivingUpdate(LivingUpdateEvent event) {
 		// All forced movement is to be processed here. (Cyclone, Force Staff etc.)
-		Map<Entity, EntityStats> entityStats = getEntityStatsMap(getSide(event.entity));
-		EntityStats stats = entityStats.get(event.entity);
-		if (stats != null && !stats.canMove()) {
-			event.setCanceled(true);
-			if (event.entity instanceof EntityPlayer) {
-				((EntityPlayer)event.entity).inventory.decrementAnimations();
+		Map<Entity, EntityStats> entityStats = getEntityStatsMap(getSide(event.entityLiving));
+		EntityStats stats = entityStats.get(event.entityLiving);
+		if (stats != null) {
+			// Regenerate health and mana every second
+			if (event.entityLiving instanceof EntityPlayer && event.entityLiving.ticksExisted % 20 == 0) {
+				regenHealthManaAndGold((EntityPlayer)event.entityLiving, stats);
+			}
+			if (!stats.canMove()) {
+				event.setCanceled(true);
+				// Update items in inventory so that cooldown keeps on ticking:
+				if (event.entityLiving instanceof EntityPlayer) {
+					((EntityPlayer)event.entityLiving).inventory.decrementAnimations();
+				}
 			}
 		}
 	}
 	
 	private static Side getSide(Entity entity) {
 		return entity.worldObj.isRemote ? Side.CLIENT : Side.SERVER;
+	}
+	
+	private static void regenHealthManaAndGold(EntityLiving entity, EntityStats stats) {
+		boolean shouldHeal = entity.getHealth() > 0 && entity.getHealth() < entity.getMaxHealth();
+		if (entity instanceof EntityPlayer) {
+			shouldHeal &= ((EntityPlayer)entity).getFoodStats().getFoodLevel() >= FOOD_THRESHOLD_FOR_HEAL;
+		}
+		if (shouldHeal) {
+			stats.healthRestored += stats.getHealthRegen();
+			float halfHeartEquivalent = (float)stats.getMaxHealth() / 20f;
+			if (stats.healthRestored >= halfHeartEquivalent) {
+				stats.healthRestored -= halfHeartEquivalent;
+				entity.heal(1);
+			}
+		} else {
+			stats.healthRestored = 0;
+		}
+		if (entity.getHealth() > 0 && stats.getMana() < stats.getMaxMana()) {
+			stats.addOrDrainMana(stats.getManaRegen());
+		}
+		stats.addOrRemoveGold(GOLD_PER_SECOND);
 	}
 }

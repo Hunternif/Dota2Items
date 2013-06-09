@@ -49,7 +49,10 @@ public class EntityStats {
 	/** When health is restored by Dota 2 regen, it can only apply to Steve's
 	 * actual 20 HP. Therefore, until health is restored enough to fill 1/2 heart
 	 * it is stored in this variable. */
-	public float healthRestored = 0;
+	public float carryOverDotaHealthRestored = 0;
+	/** Until damage is dealt enough to deplete 1/2 heart it is stored in this
+	 * variable. This is Minecraft damage, not Dota!*/
+	public float carryOverMinecraftDamage = 0;
 	
 	private List<BuffInstance> appliedBuffs = new ArrayList<BuffInstance>();
 	
@@ -72,7 +75,7 @@ public class EntityStats {
 	}
 	public int getHealth(EntityLiving entity) {
 		float rate = (float)entity.getHealth() / (float)entity.getMaxHealth();
-		return MathHelper.floor_float((float)getMaxHealth()*rate + healthRestored);
+		return MathHelper.floor_float((float)getMaxHealth()*rate + carryOverDotaHealthRestored);
 	}
 	public float getHealthRegen() {
 		float regen = baseHealthRegen;

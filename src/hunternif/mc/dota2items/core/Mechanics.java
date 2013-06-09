@@ -159,9 +159,23 @@ public class Mechanics {
 		}
 		dotaDamage *= bonusHealthMultiplier;
 		
-		int newDamage = MathHelper.floor_float(dotaDamage / DOTA_VS_MINECRAFT_DAMAGE);
-		FMLLog.log(Dota2Items.ID, Level.INFO, "Changed damage from %d to %d", damage, newDamage);
-		event.ammount = newDamage;
+		float floatMCDamage = dotaDamage / DOTA_VS_MINECRAFT_DAMAGE;
+		int intMCDamage = MathHelper.floor_float(floatMCDamage);
+		// Store or apply the partial damage, that doesn't constitute enough to deplete 1 half-heart.
+		if (targetStats != null) {
+			float partialDamage = floatMCDamage - (float)intMCDamage + targetStats.carryOverMinecraftDamage;
+			int partialDamageFloor = MathHelper.floor_float(partialDamage);
+			intMCDamage += partialDamageFloor;
+			partialDamage -= (float)partialDamageFloor;
+			targetStats.carryOverMinecraftDamage = partialDamage;
+			if (partialDamageFloor > 0) {
+				FMLLog.log(Dota2Items.ID, Level.INFO, "Applied carry-over damage: %d", partialDamageFloor);
+			}
+		}
+		if (event.entityLiving instanceof EntityPlayer || event.source.getEntity() instanceof EntityPlayer) {
+			FMLLog.log(Dota2Items.ID, Level.INFO, "Changed damage from %d to %.2f", damage, floatMCDamage);
+		}
+		event.ammount = intMCDamage;
 	}
 	
 	public void updateAllEntityStats(Side side) {
@@ -281,14 +295,14 @@ public class Mechanics {
 			shouldHeal &= ((EntityPlayer)entity).getFoodStats().getFoodLevel() >= FOOD_THRESHOLD_FOR_HEAL;
 		}
 		if (shouldHeal) {
-			stats.healthRestored += stats.getHealthRegen();
+			stats.carryOverDotaHealthRestored += stats.getHealthRegen();
 			float halfHeartEquivalent = (float)stats.getMaxHealth() / 20f;
-			if (stats.healthRestored >= halfHeartEquivalent) {
-				stats.healthRestored -= halfHeartEquivalent;
+			if (stats.carryOverDotaHealthRestored >= halfHeartEquivalent) {
+				stats.carryOverDotaHealthRestored -= halfHeartEquivalent;
 				entity.heal(1);
 			}
 		} else {
-			stats.healthRestored = 0;
+			stats.carryOverDotaHealthRestored = 0;
 		}
 		if (entity.getHealth() > 0 && stats.getMana() < stats.getMaxMana()) {
 			stats.addOrDrainMana(stats.getManaRegen());

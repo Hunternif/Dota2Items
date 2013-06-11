@@ -163,11 +163,11 @@ public class Mechanics {
 		int intMCDamage = MathHelper.floor_float(floatMCDamage);
 		// Store or apply the partial damage, that doesn't constitute enough to deplete 1 half-heart.
 		if (targetStats != null) {
-			float partialDamage = floatMCDamage - (float)intMCDamage + targetStats.carryOverMinecraftDamage;
+			float partialDamage = floatMCDamage - (float)intMCDamage - targetStats.partialHalfHeart;
 			int partialDamageFloor = MathHelper.floor_float(partialDamage);
 			intMCDamage += partialDamageFloor;
 			partialDamage -= (float)partialDamageFloor;
-			targetStats.carryOverMinecraftDamage = partialDamage;
+			targetStats.partialHalfHeart = -partialDamage;
 			if (partialDamageFloor > 0) {
 				FMLLog.log(Dota2Items.ID, Level.INFO, "Applied carry-over damage: %d", partialDamageFloor);
 			}
@@ -228,7 +228,7 @@ public class Mechanics {
 			stats = new EntityStats();
 			entityStats.put(player, stats);
 		} else {
-			// Remove all passive item Buffs to add them again later
+			// Remove all passive item Buffs to add them again later:
 			for (BuffInstance buffInst : stats.getAppliedBuffs()) {
 				if (buffInst.isItemPassiveBuff) {
 					stats.removeBuff(buffInst);
@@ -245,7 +245,7 @@ public class Mechanics {
 				}
 			}
 		}
-		//NOTE for now movement speed bonus will only be applied to players, not to mobs
+		//NOTE for now movement speed bonus will only be applied to players, not to mobs:
 		ReflectionHelper.setPrivateValue(PlayerCapabilities.class, player.capabilities, stats.getMovementSpeed(), walkSpeedObfFields);
 	}
 	
@@ -271,7 +271,7 @@ public class Mechanics {
 		Map<Entity, EntityStats> entityStats = getEntityStatsMap(getSide(event.entityLiving));
 		EntityStats stats = entityStats.get(event.entityLiving);
 		if (stats != null) {
-			// Regenerate health and mana every second
+			// Regenerate health and mana every second:
 			if (event.entityLiving instanceof EntityPlayer && event.entityLiving.ticksExisted % 20 == 0) {
 				regenHealthManaAndGold((EntityPlayer)event.entityLiving, stats);
 			}
@@ -295,14 +295,16 @@ public class Mechanics {
 			shouldHeal &= ((EntityPlayer)entity).getFoodStats().getFoodLevel() >= FOOD_THRESHOLD_FOR_HEAL;
 		}
 		if (shouldHeal) {
-			stats.carryOverDotaHealthRestored += stats.getHealthRegen();
-			float halfHeartEquivalent = (float)stats.getMaxHealth() / 20f;
-			if (stats.carryOverDotaHealthRestored >= halfHeartEquivalent) {
-				stats.carryOverDotaHealthRestored -= halfHeartEquivalent;
-				entity.heal(1);
+			float halfHeartEquivalent = (float)stats.getMaxHealth() / (float)entity.getMaxHealth();
+			float partialHealth = stats.partialHalfHeart + stats.getHealthRegen() / halfHeartEquivalent;
+			if (partialHealth >= 1) {
+				int floor = MathHelper.floor_float(partialHealth);
+				entity.heal(floor);
+				partialHealth -= (float) floor;
 			}
-		} else {
-			stats.carryOverDotaHealthRestored = 0;
+			stats.partialHalfHeart = partialHealth;
+		} else if (stats.partialHalfHeart > 0) {
+			stats.partialHalfHeart = 0;
 		}
 		if (entity.getHealth() > 0 && stats.getMana() < stats.getMaxMana()) {
 			stats.addOrDrainMana(stats.getManaRegen());

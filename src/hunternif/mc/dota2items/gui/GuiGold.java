@@ -18,7 +18,7 @@ public class GuiGold extends Gui {
 	public static final int GUI_GOLD_HEIGHT = 23;
 	public static final int GUI_INVENTORY_WIDTH = 176;
 	public static final int GUI_INVENTORY_HEIGHT = 166;
-	public static final int GOLD_COLOUR = 0xca8c00;
+	public static final int GOLD_COLOUR = 0xF5C433;
 	public static final int TEXT_POSITION_X = 54;
 	public static final int TEXT_POSITION_Y = 8;
 	

@@ -46,13 +46,14 @@ public class EntityStats {
 	private float curGold = 0;
 	/** Used to restrict attack interval by AttackTime. */
 	public long lastAttackTime = 0;
-	/** When health is restored by Dota 2 regen, it can only apply to Steve's
-	 * actual 20 HP. Therefore, until health is restored enough to fill 1/2 heart
-	 * it is stored in this variable. */
-	public float carryOverDotaHealthRestored = 0;
-	/** Until damage is dealt enough to deplete 1/2 heart it is stored in this
-	 * variable. This is Minecraft damage, not Dota!*/
-	public float carryOverMinecraftDamage = 0;
+	
+	/** When applying damage or heal directly to the entity, the amount of health
+	 * will be truncated due to entity's health being a fixed small integer
+	 * (20 half-hearts for the player). In order to apply the damage and heal
+	 * amount properly according to Dota mechanics, this partial health will be
+	 * "carried over" and applied, when sufficient, at the next heal/damage
+	 * instance. */
+	public float partialHalfHeart = 0;
 	
 	private List<BuffInstance> appliedBuffs = new ArrayList<BuffInstance>();
 	
@@ -74,8 +75,9 @@ public class EntityStats {
 		return health + MAX_HP_PER_STR*getStrength();
 	}
 	public int getHealth(EntityLiving entity) {
-		float rate = (float)entity.getHealth() / (float)entity.getMaxHealth();
-		return MathHelper.floor_float((float)getMaxHealth()*rate + carryOverDotaHealthRestored);
+		float mcHPProportion = (float)entity.getHealth() / (float)entity.getMaxHealth();
+		float halfHeartEquivalent = (float)getMaxHealth() / (float)entity.getMaxHealth();
+		return MathHelper.floor_float((float)getMaxHealth()*mcHPProportion + halfHeartEquivalent*partialHalfHeart);
 	}
 	public float getHealthRegen() {
 		float regen = baseHealthRegen;

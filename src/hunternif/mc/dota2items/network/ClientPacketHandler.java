@@ -6,6 +6,7 @@ import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.effect.Dota2Effect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import cpw.mods.fml.common.network.IPacketHandler;
@@ -28,8 +29,8 @@ public class ClientPacketHandler implements IPacketHandler {
 			BuffInstance buffInst = BuffInstance.fromPacket(packet);
 			if (buffInst != null) {
 				Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(buffInst.entityID);
-				if (entity != null) {
-					EntityStats stats = Dota2Items.mechanics.getEntityStats(entity);
+				if (entity != null && entity instanceof EntityLiving) {
+					EntityStats stats = Dota2Items.mechanics.getEntityStats((EntityLiving)entity);
 					stats.addBuff(buffInst);
 				}
 				return;

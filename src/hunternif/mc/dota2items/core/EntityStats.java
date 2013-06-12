@@ -7,10 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 
 public class EntityStats {
-	private static final float MINECRAFT_MOVE_SPEED = 0.1f;
+	private static final float MINECRAFT_PLAYER_MOVE_SPEED = 0.1f;
 	public static final int MAX_MOVE_SPEED = 522;
 	public static final int MAX_HP_PER_STR = 19;
 	public static final float HP_REGEN_PER_STR = 0.03f;
@@ -20,14 +21,14 @@ public class EntityStats {
 	public static final int MIN_ASPD = -80;
 	public static final int MAX_ASPD = 400;
 	
-	public static final int BASE_HP = 150;
-	public static final int BASE_STR = 0;
-	public static final int BASE_AGI = 0;
-	public static final int BASE_INT = 0;
-	public static final int BASE_TOTAL_HP = BASE_HP + BASE_STR*MAX_HP_PER_STR;
+	public static final int BASE_PLAYER_HP = 150;
+	public static final int BASE_PLAYER_STR = 0;
+	public static final int BASE_PLAYER_AGI = 0;
+	public static final int BASE_PLAYER_INT = 0;
+	public static final int BASE_PLAYER_TOTAL_HP = BASE_PLAYER_HP + BASE_PLAYER_STR*MAX_HP_PER_STR;
 	
 	
-	public int baseHealth = BASE_HP;
+	public int baseHealth = BASE_PLAYER_HP;
 	public float baseHealthRegen = 0.25f;
 	public int baseMana = 0;
 	public float baseManaRegen = 0.01f;
@@ -36,12 +37,12 @@ public class EntityStats {
 	public int baseArmor = 0;
 	public int baseDamage = 0;
 	
-	public int baseStrength = BASE_STR;
-	public int baseAgility = BASE_AGI;
-	public int baseIntelligence = BASE_INT;
+	public int baseStrength = BASE_PLAYER_STR;
+	public int baseAgility = BASE_PLAYER_AGI;
+	public int baseIntelligence = BASE_PLAYER_INT;
 	
 	// Transient stats:
-	//private int curHealth; // Health is deferred to Minecraft.
+	// Health is deferred to Minecraft.
 	private float curMana = 0;
 	private float curGold = 0;
 	/** Used to restrict attack interval by AttackTime. */
@@ -57,10 +58,31 @@ public class EntityStats {
 	
 	private List<BuffInstance> appliedBuffs = new ArrayList<BuffInstance>();
 	
+	
+	public EntityStats(EntityLiving entity) {
+		baseHealth = MathHelper.floor_float((float)entity.getMaxHealth() * (float)BASE_PLAYER_HP / 20f);
+		if (entity instanceof EntityPlayer) {
+			baseHealthRegen = 0.25f;
+			baseAttackTime = 1.7f;
+			baseMovementSpeed = 300;
+		} else {
+			baseHealthRegen = 0.5f;
+			baseAttackTime = 1.0f;
+			baseMovementSpeed = 325;
+		}
+	}
+	
 	public List<BuffInstance> getAppliedBuffs() {
 		return new ArrayList<BuffInstance>(appliedBuffs);
 	}
 	public void addBuff(BuffInstance buffInst) {
+		if (!buffInst.buff.stacks) {
+			for (BuffInstance curBuffInst : getAppliedBuffs()) {
+				if (curBuffInst.buff.id == buffInst.buff.id) {
+					return;
+				}
+			}
+		}
 		appliedBuffs.add(buffInst);
 	}
 	public void removeBuff(BuffInstance buffInst) {
@@ -169,7 +191,7 @@ public class EntityStats {
 		if (movementSpeed > MAX_MOVE_SPEED) {
 			movementSpeed = MAX_MOVE_SPEED;
 		}
-		return movementSpeed * MINECRAFT_MOVE_SPEED / (float) baseMovementSpeed;
+		return movementSpeed * MINECRAFT_PLAYER_MOVE_SPEED / (float) baseMovementSpeed;
 	}
 	
 	public boolean canAttack() {

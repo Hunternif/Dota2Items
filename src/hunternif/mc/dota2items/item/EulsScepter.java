@@ -57,7 +57,7 @@ public class EulsScepter extends CooldownItem {
 		if (!canUseItem(player)) {
 			return false;
 		}
-		if (entity.isDead) {
+		if (entity.isDead || !(entity instanceof EntityLiving)) {
 			// Why would this ever happen?
 			playDenyGeneralSound(player.worldObj);
 			return false;
@@ -66,7 +66,7 @@ public class EulsScepter extends CooldownItem {
 			playDenyCooldownSound(player.worldObj);
 			return false;
 		}
-		EntityStats entityStats = Dota2Items.mechanics.getEntityStats(entity);
+		EntityStats entityStats = Dota2Items.mechanics.getEntityStats((EntityLiving)entity);
 		if (entityStats.isMagicImmune()) {
 			playMagicImmuneSound(player.worldObj);
 			return false;

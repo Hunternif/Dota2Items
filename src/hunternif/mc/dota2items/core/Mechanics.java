@@ -25,6 +25,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
@@ -37,16 +38,16 @@ public class Mechanics {
 	
 	/** Equals to Base Hero health (with base strength bonuses) over Steve's base health.
 	 * This gives a zombie attack damage of 22.5~52.5. Seems fair to me. */
-	public static final float DOTA_VS_MINECRAFT_DAMAGE = (float)EntityStats.BASE_TOTAL_HP/20f;
+	public static final float DOTA_VS_MINECRAFT_DAMAGE = (float)EntityStats.BASE_PLAYER_HP/20f;
 	
-	public static final int FOOD_THRESHOLD_FOR_HEAL = 18;
-	public static final float GOLD_PER_SECOND = 0.5f;
+	public static final int FOOD_THRESHOLD_FOR_HEAL = 10;
+	public static final float GOLD_PER_SECOND = 0.25f;
 	
 	public Dota2PlayerTracker playerTracker = new Dota2PlayerTracker();
 	
-	private Map<Entity, EntityStats> clientEntityStats = new ConcurrentHashMap<Entity, EntityStats>();
-	private Map<Entity, EntityStats> serverEntityStats = new ConcurrentHashMap<Entity, EntityStats>();
-	private Map<Entity, EntityStats> getEntityStatsMap(Side side) {
+	private Map<EntityLiving, EntityStats> clientEntityStats = new ConcurrentHashMap<EntityLiving, EntityStats>();
+	private Map<EntityLiving, EntityStats> serverEntityStats = new ConcurrentHashMap<EntityLiving, EntityStats>();
+	private Map<EntityLiving, EntityStats> getEntityStatsMap(Side side) {
 		return side.isClient() ? clientEntityStats : serverEntityStats;
 	}
 	
@@ -57,11 +58,11 @@ public class Mechanics {
 	}
 	
 	/** Guaranteed to be non-null. */
-	public EntityStats getEntityStats(Entity entity) {
-		Map<Entity, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
+	public EntityStats getEntityStats(EntityLiving entity) {
+		Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
 		EntityStats stats = entityStats.get(entity);
 		if (stats == null) {
-			stats = new EntityStats();
+			stats = new EntityStats(entity);
 			entityStats.put(entity, stats);
 		}
 		return stats;
@@ -97,8 +98,8 @@ public class Mechanics {
 		// Check if the entity can attack
 		//TODO this doesn't work for creepers because they don't actually attack
 		Entity entity = event.source.getEntity();
-		if (entity != null) {
-			Map<Entity, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
+		if (entity != null && entity instanceof EntityLiving) {
+			Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
 			EntityStats stats = entityStats.get(entity);
 			if (stats != null) {
 				long worldTime = entity.worldObj.getTotalWorldTime();
@@ -114,7 +115,7 @@ public class Mechanics {
 	
 	@ForgeSubscribe
 	public void onLivingHurt(LivingHurtEvent event) {
-		Map<Entity, EntityStats> entityStats = getEntityStatsMap(getSide(event.entity));
+		Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(getSide(event.entity));
 		int damage = event.ammount;
 		float dotaDamage = (float)damage * DOTA_VS_MINECRAFT_DAMAGE;
 		
@@ -131,8 +132,12 @@ public class Mechanics {
 			EntityPlayer player = (EntityPlayer) event.source.getEntity();
 			EntityStats sourceStats = entityStats.get(player);
 			if (sourceStats != null) {
-				//TODO Quelling blade doesn't stack. Also you can't have more than 1 in inventory
 				dotaDamage = sourceStats.getDamage(dotaDamage, !event.source.isProjectile());
+			}
+			// If the player is the attacker, his target must have the EntityStats:
+			if (targetStats == null) {
+				targetStats = new EntityStats(event.entityLiving);
+				entityStats.put(event.entityLiving, targetStats);
 			}
 		}
 		
@@ -155,7 +160,7 @@ public class Mechanics {
 		// Account for the fact that Stats may give bonus health.
 		float bonusHealthMultiplier = 1f;
 		if (targetStats != null) {
-			bonusHealthMultiplier = (float)EntityStats.BASE_TOTAL_HP / (float)targetStats.getMaxHealth();
+			bonusHealthMultiplier = (float)targetStats.baseHealth / (float)targetStats.getMaxHealth();
 		}
 		dotaDamage *= bonusHealthMultiplier;
 		
@@ -179,9 +184,9 @@ public class Mechanics {
 	}
 	
 	public void updateAllEntityStats(Side side) {
-		Map<Entity, EntityStats> entityStats = getEntityStatsMap(side);
-		for (Entry<Entity, EntityStats> entry : entityStats.entrySet()) {
-			Entity entity = entry.getKey();
+		Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(side);
+		for (Entry<EntityLiving, EntityStats> entry : entityStats.entrySet()) {
+			EntityLiving entity = entry.getKey();
 			EntityStats stats = entry.getValue();
 			for (BuffInstance buffInst : stats.getAppliedBuffs()) {
 				if (!buffInst.isItemPassiveBuff && entity.worldObj.getTotalWorldTime() > buffInst.endTime) {
@@ -222,17 +227,11 @@ public class Mechanics {
 	
 	private void updatePlayerBuffs(EntityPlayer player, ItemStack[] inventory, Side side) {
 		FMLLog.log(Dota2Items.ID, Level.FINER, "Updating buffs on player");
-		Map<Entity, EntityStats> entityStats = getEntityStatsMap(side);
-		EntityStats stats = entityStats.get(player);
-		if (stats == null) {
-			stats = new EntityStats();
-			entityStats.put(player, stats);
-		} else {
-			// Remove all passive item Buffs to add them again later:
-			for (BuffInstance buffInst : stats.getAppliedBuffs()) {
-				if (buffInst.isItemPassiveBuff) {
-					stats.removeBuff(buffInst);
-				}
+		EntityStats stats = getEntityStats(player);
+		// Remove all passive item Buffs to add them again later:
+		for (BuffInstance buffInst : stats.getAppliedBuffs()) {
+			if (buffInst.isItemPassiveBuff) {
+				stats.removeBuff(buffInst);
 			}
 		}
 		for (int i = 0; i < 10; i++) {
@@ -268,7 +267,7 @@ public class Mechanics {
 	@ForgeSubscribe
 	public void onLivingUpdate(LivingUpdateEvent event) {
 		// All forced movement is to be processed here. (Cyclone, Force Staff etc.)
-		Map<Entity, EntityStats> entityStats = getEntityStatsMap(getSide(event.entityLiving));
+		Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(getSide(event.entityLiving));
 		EntityStats stats = entityStats.get(event.entityLiving);
 		if (stats != null) {
 			// Regenerate health and mana every second:
@@ -283,6 +282,12 @@ public class Mechanics {
 				}
 			}
 		}
+	}
+	
+	@ForgeSubscribe
+	public void onLivingDeath(LivingDeathEvent event) {
+		Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(getSide(event.entityLiving));
+		entityStats.remove(event.entityLiving);
 	}
 	
 	private static Side getSide(Entity entity) {

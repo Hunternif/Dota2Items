@@ -92,4 +92,9 @@ public class BuffInstance {
 		
 		return new BuffInstance(Buff.buffList[buffID], entityID, endTime, isItemPassiveBuff);
 	}
+	
+	@Override
+	public String toString() {
+		return "{"+buff.toString()+"}";
+	}
 }

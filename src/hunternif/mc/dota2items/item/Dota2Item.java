@@ -6,7 +6,7 @@ import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
@@ -41,7 +41,7 @@ public abstract class Dota2Item extends Item {
 		}
 	}
 	
-	public boolean canUseItem(Entity player) {
+	public boolean canUseItem(EntityLiving player) {
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
 		if (stats == null) {
 			return true;

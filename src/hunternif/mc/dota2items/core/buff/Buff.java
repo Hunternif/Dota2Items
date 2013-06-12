@@ -28,12 +28,14 @@ public class Buff {
 	public int strength = 0;
 	public int agility = 0;
 	
+	public boolean stacks = true;
+	
 	
 	public static final Buff[] buffList = new Buff[1024];
 	
-	public static final Buff tangoActive = new Buff(1, "Tango active").setHealthRegen(115f/16f);
-	public static final Buff quell = new Buff(2, "Quell").setDamagePercentMelee(32).setDamagePercentRanged(16);
-	public static final Buff eulsScepter = new Buff(3, "Cyclone").setMovementSpeed(30).setIntelligence(10).setManaRegenPercent(150);
+	public static final Buff tangoActive = new Buff(1, "Tango active").setHealthRegen(115f/16f).setDoesNotStack();
+	public static final Buff quell = new Buff(2, "Quell").setDamagePercentMelee(32).setDamagePercentRanged(16).setDoesNotStack();
+	public static final Buff eulsScepter = new Buff(3, "Eul's Scepter").setMovementSpeed(30).setIntelligence(10).setManaRegenPercent(150);
 	public static final Buff inCyclone = new Buff(4, "Swept up in Cyclone").setDisableAttack().setDisableItems().setDisableMove().setInvulnerable();
 	public static final Buff ringOfProtection = new Buff(5, "Ring of Protection").setArmor(2);
 	public static final Buff bootsOfSpeed = new Buff(6, "Boots of Speed").setMovementSpeed(50);
@@ -138,5 +140,15 @@ public class Buff {
 	public Buff setAgility(int value) {
 		agility = value;
 		return this;
+	}
+	
+	public Buff setDoesNotStack() {
+		stacks = false;
+		return this;
+	}
+	
+	@Override
+	public String toString() {
+		return name;
 	}
 }

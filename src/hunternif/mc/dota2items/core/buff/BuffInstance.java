@@ -9,10 +9,14 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet250CustomPayload;
 
 
 public class BuffInstance {
+	private static final String TAG_BUFF_ID = "buffId";
+	private static final String TAG_END_TIME = "endTime";
+	
 	public int entityID;
 	public Buff buff;
 	public long endTime;
@@ -96,5 +100,18 @@ public class BuffInstance {
 	@Override
 	public String toString() {
 		return "{"+buff.toString()+"}";
+	}
+	
+	public static BuffInstance fromNBT(NBTTagCompound tag, int entityId) {
+		int buffId = tag.getInteger(TAG_BUFF_ID);
+		long endTime = tag.getLong(TAG_END_TIME);
+		return new BuffInstance(Buff.buffList[buffId], entityId, endTime);
+	}
+	
+	public NBTTagCompound toNBT() {
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setInteger(TAG_BUFF_ID, buff.id);
+		tag.setLong(TAG_END_TIME, endTime);
+		return tag;
 	}
 }

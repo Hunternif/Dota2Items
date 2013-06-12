@@ -50,8 +50,8 @@ public class BlinkDagger extends CooldownItem {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean isFull3D() {
-        return true;
-    }
+		return true;
+	}
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
@@ -214,10 +214,10 @@ public class BlinkDagger extends CooldownItem {
 			}
 			// Send effect packets to other players
 			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-	        if (server != null) {
-	            server.getConfigurationManager().sendToAllNearExcept(player, srcX, srcY, srcZ, 30D, player.dimension, srcEffect.toPacket());
-	            server.getConfigurationManager().sendToAllNearExcept(player, destX, destY, destZ, 30D, player.dimension, destEffect.toPacket());
-	        }
+			if (server != null) {
+				server.getConfigurationManager().sendToAllNearExcept(player, srcX, srcY, srcZ, 30D, player.dimension, srcEffect.toPacket());
+				server.getConfigurationManager().sendToAllNearExcept(player, destX, destY, destZ, 30D, player.dimension, destEffect.toPacket());
+			}
 		} else {
 			// Client side. Render blink effect.
 			Minecraft.getMinecraft().sndManager.playSoundFX(Dota2ItemSounds.BLINK_OUT, 1.0F, 1.0F);

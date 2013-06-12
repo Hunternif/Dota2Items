@@ -1,6 +1,7 @@
 package hunternif.mc.dota2items.network;
 
 import hunternif.mc.dota2items.Dota2Items;
+import hunternif.mc.dota2items.core.EntityStats;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -10,22 +11,23 @@ import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.util.MathHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
 
-public class EntityMovePacket {
-	public static void sendMovePacket(Entity entity) {
+public class EntityStatsPacket {
+	public static void sendEntityStatsPacket(EntityStats stats) {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream outputStream = new DataOutputStream(bos);
 		try {
-			outputStream.writeInt(Dota2PacketID.MOVE);
-			outputStream.writeInt(entity.entityId);
-			outputStream.writeInt(MathHelper.floor_double(entity.posX));
-			outputStream.writeInt(MathHelper.floor_double(entity.posY));
-			outputStream.writeInt(MathHelper.floor_double(entity.posZ));
+			outputStream.writeInt(Dota2PacketID.STATS);
+			outputStream.writeInt(stats.entityId);
+			outputStream.writeFloat(stats.partialHalfHeart);
+			outputStream.writeInt(MathHelper.floor_float(stats.getFloatMana()*100f));
+			outputStream.writeInt(MathHelper.floor_float(stats.getFloatGold()*100f));
 			outputStream.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -38,22 +40,21 @@ public class EntityMovePacket {
 		PacketDispatcher.sendPacketToAllPlayers(packet);
 	}
 	
-	//NOTE I hope I can get rid of this
-	public static boolean parseAndApplyEntityMove(Packet250CustomPayload packet) {
+	public static boolean parseAndApplyEntityStats(Packet250CustomPayload packet) {
 		DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
 		int entityID;
-		double x;
-		double y;
-		double z;
+		float partialHalfHeart;
+		float mana;
+		float gold;
 		
 		try {
-			if (inputStream.readInt() != Dota2PacketID.MOVE) {
+			if (inputStream.readInt() != Dota2PacketID.STATS) {
 				return false;
 			}
 			entityID = inputStream.readInt();
-			x = ((double) inputStream.readInt()) + 0.5;
-			y = ((double) inputStream.readInt());
-			z = ((double) inputStream.readInt()) + 0.5;
+			partialHalfHeart = inputStream.readFloat();
+			mana = (float)inputStream.readInt() / 100f;
+			gold = (float)inputStream.readInt() / 100f;
 			inputStream.close();
 			
 		} catch (IOException e) {
@@ -63,9 +64,11 @@ public class EntityMovePacket {
 		
 		if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
 			Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(entityID);
-			if (entity != null) {
-				//TODO fix the squids teleporting back underwater when the cyclone ends.
-				entity.setPosition(x, y, z);
+			if (entity != null && entity instanceof EntityLiving) {
+				EntityStats stats = Dota2Items.mechanics.getEntityStats((EntityLiving)entity);
+				stats.partialHalfHeart = partialHalfHeart;
+				stats.setGold(gold);
+				stats.setMana(mana);
 				return true;
 			}
 		}

@@ -6,11 +6,20 @@ import hunternif.mc.dota2items.core.buff.BuffInstance;
 import java.util.ArrayList;
 import java.util.List;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
+
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+import net.minecraftforge.common.IExtendedEntityProperties;
 
-public class EntityStats {
+public class EntityStats implements IExtendedEntityProperties {
 	private static final float MINECRAFT_PLAYER_MOVE_SPEED = 0.1f;
 	public static final int MAX_MOVE_SPEED = 522;
 	public static final int MAX_HP_PER_STR = 19;
@@ -27,6 +36,13 @@ public class EntityStats {
 	public static final int BASE_PLAYER_INT = 0;
 	public static final int BASE_PLAYER_TOTAL_HP = BASE_PLAYER_HP + BASE_PLAYER_STR*MAX_HP_PER_STR;
 	
+	private static final String TAG_MANA = "D2IMana";
+	private static final String TAG_PARTIAL_HP = "D2IPartialHp";
+	private static final String TAG_GOLD = "D2IGgold";
+	private static final String TAG_BUFFS = "D2IBuffs";
+	
+	
+	public int entityId;
 	
 	public int baseHealth = BASE_PLAYER_HP;
 	public float baseHealthRegen = 0.25f;
@@ -60,6 +76,7 @@ public class EntityStats {
 	
 	
 	public EntityStats(EntityLiving entity) {
+		entityId = entity.entityId;
 		baseHealth = MathHelper.floor_float((float)entity.getMaxHealth() * (float)BASE_PLAYER_HP / 20f);
 		if (entity instanceof EntityPlayer) {
 			baseHealthRegen = 0.25f;
@@ -117,11 +134,21 @@ public class EntityStats {
 		return mana + MAX_MANA_PER_INT*getIntelligence();
 	}
 	public int getMana() {
+		int maxMana = getMaxMana();
+		if (curMana > maxMana) {
+			curMana = maxMana;
+		}
 		return MathHelper.floor_float(curMana);
 	}
-	/** You can add fractional amount of mana, but you can retrieve only integer. */
-	public void addOrDrainMana(float value) {
-		float newMana = curMana + value;
+	public float getFloatMana() {
+		int maxMana = getMaxMana();
+		if (curMana > maxMana) {
+			curMana = maxMana;
+		}
+		return curMana;
+	}
+	public void setMana(float value) {
+		float newMana = value;
 		float maxMana = getMaxMana();
 		if (newMana < 0) newMana = 0;
 		if (newMana > maxMana) newMana = maxMana;
@@ -242,9 +269,11 @@ public class EntityStats {
 	public int getGold() {
 		return MathHelper.floor_float(curGold);
 	}
-	/** You can add fractional amount of gold, but you can retrieve only integer. */
-	public void addOrRemoveGold(float amount) {
-		float newGold = curGold + amount;
+	public float getFloatGold() {
+		return curGold;
+	}
+	public void setGold(float amount) {
+		float newGold = amount;
 		if (newGold < 0) newGold = 0;
 		curGold = newGold;
 	}
@@ -269,5 +298,34 @@ public class EntityStats {
 			intel += buffInst.buff.intelligence;
 		}
 		return intel;
+	}
+
+	@Override
+	public void saveNBTData(NBTTagCompound compound) {
+		compound.setInteger(TAG_MANA, getMana());
+		compound.setFloat(TAG_PARTIAL_HP, partialHalfHeart);
+		compound.setInteger(TAG_GOLD, getGold());
+		NBTTagList buffsList = new NBTTagList();
+		for (BuffInstance buffInst : getAppliedBuffs()) {
+			buffsList.appendTag(buffInst.toNBT());
+		}
+		compound.setTag(TAG_BUFFS, buffsList);
+	}
+
+	@Override
+	public void loadNBTData(NBTTagCompound compound) {
+		this.curMana = compound.getInteger(TAG_MANA);
+		this.partialHalfHeart = compound.getFloat(TAG_PARTIAL_HP);
+		this.curGold = compound.getInteger(TAG_GOLD);
+		NBTTagList buffsList = compound.getTagList(TAG_BUFFS);
+		for (int i = 0; i < buffsList.tagCount(); i++) {
+			NBTTagCompound buffTag = (NBTTagCompound) buffsList.tagAt(i);
+			BuffInstance buffInst = BuffInstance.fromNBT(buffTag, entityId);
+			addBuff(buffInst);
+		}
+	}
+
+	@Override
+	public void init(Entity entity, World world) {
 	}
 }

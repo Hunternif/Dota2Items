@@ -13,6 +13,7 @@ import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 
 public class ClientPacketHandler implements IPacketHandler {
+	//NOTE consider implementing a ITinyPacketHandler instead.
 	@Override
 	public void onPacketData(INetworkManager manager,
 			Packet250CustomPayload packet, Player player) {
@@ -36,8 +37,15 @@ public class ClientPacketHandler implements IPacketHandler {
 				return;
 			}
 			
-			//try parsing entity move
-			EntityMovePacket.parseAndApplyEntityMove(packet);
+			// Try parsing entity move
+			if (EntityMovePacket.parseAndApplyEntityMove(packet)) {
+				return;
+			}
+			
+			// Try parsing entity stats
+			if (EntityStatsPacket.parseAndApplyEntityStats(packet)) {
+				return;
+			}
 		}
 	}
 }

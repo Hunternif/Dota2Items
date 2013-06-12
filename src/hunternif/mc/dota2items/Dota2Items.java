@@ -1,6 +1,7 @@
 package hunternif.mc.dota2items;
 
 import hunternif.mc.dota2items.block.BlockCycloneContainer;
+import hunternif.mc.dota2items.core.Dota2PlayerTracker;
 import hunternif.mc.dota2items.core.Mechanics;
 import hunternif.mc.dota2items.core.inventory.Dota2ItemCreativeTab;
 import hunternif.mc.dota2items.item.BlinkDagger;
@@ -63,6 +64,7 @@ public class Dota2Items {
 	private static int cycloneContainerId;
 	public static BlockCycloneContainer cycloneContainer;
 	
+	public static Dota2PlayerTracker playerTracker = new Dota2PlayerTracker();
 	public static Mechanics mechanics = new Mechanics();
 	
 	@Instance(ID)
@@ -129,7 +131,7 @@ public class Dota2Items {
 		proxy.registerRenderers();
 		proxy.registerTickHandlers();
 		MinecraftForge.EVENT_BUS.register(mechanics);
-		GameRegistry.registerPlayerTracker(mechanics.playerTracker);
+		GameRegistry.registerPlayerTracker(playerTracker);
 	}
 	
 	@PostInit

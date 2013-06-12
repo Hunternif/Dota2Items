@@ -2,8 +2,8 @@ package hunternif.mc.dota2items.core;
 
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
-import hunternif.mc.dota2items.core.inventory.Dota2PlayerTracker;
 import hunternif.mc.dota2items.item.Dota2Item;
+import hunternif.mc.dota2items.network.EntityStatsPacket;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -42,8 +43,6 @@ public class Mechanics {
 	
 	public static final int FOOD_THRESHOLD_FOR_HEAL = 10;
 	public static final float GOLD_PER_SECOND = 0.25f;
-	
-	public Dota2PlayerTracker playerTracker = new Dota2PlayerTracker();
 	
 	private Map<EntityLiving, EntityStats> clientEntityStats = new ConcurrentHashMap<EntityLiving, EntityStats>();
 	private Map<EntityLiving, EntityStats> serverEntityStats = new ConcurrentHashMap<EntityLiving, EntityStats>();
@@ -79,15 +78,15 @@ public class Mechanics {
 				Dota2Item dota2Item = (Dota2Item) stack.getItem();
 				if (!dota2Item.dropsOnDeath) {
 					iter.remove();
-					List<ItemStack> list = playerTracker.retainedItems.get(Integer.valueOf(event.entityPlayer.entityId));
+					/*Dota2ItemsInInventory itemsInInv = playerItemsTracker.getItemsInInv(event.entityPlayer);
+					itemsInInv.items.add(stack.copy());*/
+					List<ItemStack> list = Dota2Items.playerTracker.retainedItems.get(event.entityPlayer);
 					if (list == null) {
 						list = new ArrayList<ItemStack>();
+						Dota2Items.playerTracker.retainedItems.put(event.entityPlayer, list);
 					}
 					list.add(stack.copy());
-					playerTracker.retainedItems.put(Integer.valueOf(event.entityPlayer.entityId), list);
 					event.entityPlayer.inventory.addItemStackToInventory(stack);
-					//TODO write dota 2 inventory and gold in some NBT file,
-					// because they are lost if the player logs out while dead.
 				}
 			}
 		}
@@ -273,6 +272,10 @@ public class Mechanics {
 			// Regenerate health and mana every second:
 			if (event.entityLiving instanceof EntityPlayer && event.entityLiving.ticksExisted % 20 == 0) {
 				regenHealthManaAndGold((EntityPlayer)event.entityLiving, stats);
+				// Synchronize stats with all clients every 5 seconds:
+				if (event.entityLiving.ticksExisted % 100 == 0) {
+					EntityStatsPacket.sendEntityStatsPacket(stats);
+				}
 			}
 			if (!stats.canMove()) {
 				event.setCanceled(true);
@@ -311,9 +314,17 @@ public class Mechanics {
 		} else if (stats.partialHalfHeart > 0) {
 			stats.partialHalfHeart = 0;
 		}
-		if (entity.getHealth() > 0 && stats.getMana() < stats.getMaxMana()) {
-			stats.addOrDrainMana(stats.getManaRegen());
+		float mana = stats.getFloatMana();
+		if (entity.getHealth() > 0 && mana < stats.getMaxMana()) {
+			stats.setMana(mana + stats.getManaRegen());
 		}
-		stats.addOrRemoveGold(GOLD_PER_SECOND);
+		stats.setGold(stats.getFloatGold() + GOLD_PER_SECOND);
+	}
+	
+	@ForgeSubscribe
+	public void onEntityConstructing(EntityConstructing event) {
+		if (event.entity instanceof EntityPlayer) {
+			event.entity.registerExtendedProperties("Dota2ItemsEntityStats", getEntityStats((EntityLiving)event.entity));
+		}
 	}
 }

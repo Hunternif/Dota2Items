@@ -11,8 +11,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 public abstract class CooldownItem extends Dota2Item {
-	protected static final String TAG_DURATION = "cooldownDuration";
-	protected static final String TAG_COOLDOWN = "cooldownLeft";
+	protected static final String TAG_DURATION = "D2IcdDuration";
+	protected static final String TAG_COOLDOWN = "D2IcdLeft";
 	
 	/**
 	 * Here I place item stacks from previous update iterations. During cooldown

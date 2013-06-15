@@ -2,16 +2,20 @@ package hunternif.mc.dota2items;
 
 import hunternif.mc.dota2items.core.ClientTickHandler;
 import hunternif.mc.dota2items.core.ServerTickHandler;
+import hunternif.mc.dota2items.entity.item.EntityGoldCoin;
 import hunternif.mc.dota2items.item.CooldownItem;
 import hunternif.mc.dota2items.render.CooldownItemRenderer;
+import hunternif.mc.dota2items.render.RenderGoldCoin;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 public class ClientProxy extends CommonProxy {
 	public static CooldownItemRenderer cooldownItemRenderer = new CooldownItemRenderer();
+	public static RenderGoldCoin goldCoinRenderer = new RenderGoldCoin();
 	
     @Override
     public void registerRenderers() {
@@ -22,6 +26,8 @@ public class ClientProxy extends CommonProxy {
     			MinecraftForgeClient.registerItemRenderer(item.itemID, cooldownItemRenderer);
     		}
     	}
+    	
+    	RenderingRegistry.registerEntityRenderingHandler(EntityGoldCoin.class, goldCoinRenderer);
     }
     
     @Override

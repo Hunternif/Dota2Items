@@ -2,6 +2,7 @@ package hunternif.mc.dota2items.core;
 
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
+import hunternif.mc.dota2items.entity.item.EntityGoldCoin;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.network.EntityStatsPacket;
 
@@ -18,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.item.ItemStack;
@@ -40,6 +42,8 @@ public class Mechanics {
 	/** Equals to Base Hero health (with base strength bonuses) over Steve's base health.
 	 * This gives a zombie attack damage of 22.5~52.5. Seems fair to me. */
 	public static final float DOTA_VS_MINECRAFT_DAMAGE = (float)EntityStats.BASE_PLAYER_HP/20f;
+	public static final float GOLD_PER_MOB_HP = 2.5f;
+	public static final float GOLD_LOST_PER_LEVEL = 30f;
 	
 	public static final int FOOD_THRESHOLD_FOR_HEAL = 10;
 	public static final float GOLD_PER_SECOND = 0.25f;
@@ -238,7 +242,6 @@ public class Mechanics {
 			if (stack != null && stack.getItem() instanceof Dota2Item) {
 				Dota2Item item = (Dota2Item) stack.getItem();
 				if (item.passiveBuff != null) {
-					//stats.appliedBuffs.add(new BuffInstance(item.passiveBuff, player.entityId, true));
 					stats.addBuff(new BuffInstance(item.passiveBuff, player.entityId, true));
 				}
 			}
@@ -290,7 +293,23 @@ public class Mechanics {
 	@ForgeSubscribe
 	public void onLivingDeath(LivingDeathEvent event) {
 		Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(getSide(event.entityLiving));
-		entityStats.remove(event.entityLiving);
+		EntityStats stats = entityStats.get(event.entityLiving);
+		if (stats != null) {
+			// Drop gold coins
+			if (event.entityLiving instanceof EntityPlayer) {
+				int level = ((EntityPlayer)event.entityLiving).experienceLevel + 1;
+				if (!event.entity.worldObj.isRemote) {
+					EntityGoldCoin.spawnAtEntity(event.entity, 200 + level*9);
+				}
+				stats.removeGold(level * GOLD_LOST_PER_LEVEL);
+			} else {
+				if (event.entity instanceof IMob && !event.entity.worldObj.isRemote) {
+					int goldAmount = MathHelper.floor_float(GOLD_PER_MOB_HP * (float)event.entityLiving.getMaxHealth());
+					EntityGoldCoin.spawnAtEntity(event.entity, goldAmount);
+				}
+				entityStats.remove(event.entityLiving);
+			}
+		}
 	}
 	
 	private static Side getSide(Entity entity) {
@@ -314,11 +333,10 @@ public class Mechanics {
 		} else if (stats.partialHalfHeart > 0) {
 			stats.partialHalfHeart = 0;
 		}
-		float mana = stats.getFloatMana();
-		if (entity.getHealth() > 0 && mana < stats.getMaxMana()) {
-			stats.setMana(mana + stats.getManaRegen());
+		if (entity.getHealth() > 0 && stats.getMana() < stats.getMaxMana()) {
+			stats.addMana(stats.getManaRegen());
 		}
-		stats.setGold(stats.getFloatGold() + GOLD_PER_SECOND);
+		stats.addGold(GOLD_PER_SECOND);
 	}
 	
 	@ForgeSubscribe

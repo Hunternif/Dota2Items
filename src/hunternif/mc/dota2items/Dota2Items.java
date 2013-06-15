@@ -4,6 +4,7 @@ import hunternif.mc.dota2items.block.BlockCycloneContainer;
 import hunternif.mc.dota2items.core.Dota2PlayerTracker;
 import hunternif.mc.dota2items.core.Mechanics;
 import hunternif.mc.dota2items.core.inventory.Dota2ItemCreativeTab;
+import hunternif.mc.dota2items.entity.item.EntityGoldCoin;
 import hunternif.mc.dota2items.item.BlinkDagger;
 import hunternif.mc.dota2items.item.BootsOfSpeed;
 import hunternif.mc.dota2items.item.Dota2Item;
@@ -32,6 +33,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
@@ -127,6 +129,8 @@ public class Dota2Items {
 		cycloneContainer = new BlockCycloneContainer(cycloneContainerId);
 		GameRegistry.registerBlock(cycloneContainer, BlockCycloneContainer.NAME);
 		GameRegistry.registerTileEntity(TileEntityCyclone.class, TileEntityCyclone.NAME);
+		
+		EntityRegistry.registerModEntity(EntityGoldCoin.class, "GoldCoin", EntityRegistry.findGlobalUniqueEntityId(), instance, 160, 20, true);
 		
 		proxy.registerRenderers();
 		proxy.registerTickHandlers();

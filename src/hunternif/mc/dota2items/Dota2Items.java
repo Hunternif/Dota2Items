@@ -9,6 +9,7 @@ import hunternif.mc.dota2items.item.BootsOfSpeed;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.item.Dota2Logo;
 import hunternif.mc.dota2items.item.EulsScepter;
+import hunternif.mc.dota2items.item.GoldCoin;
 import hunternif.mc.dota2items.item.QuellingBlade;
 import hunternif.mc.dota2items.item.RingOfProtection;
 import hunternif.mc.dota2items.item.Tango;
@@ -60,6 +61,8 @@ public class Dota2Items {
 	public static Dota2Item ringOfProtection;
 	private static int bootsOfSpeedId;
 	public static Dota2Item bootsOfSpeed;
+	private static int goldCoinId;
+	public static Item goldCoin;
 	
 	private static int cycloneContainerId;
 	public static BlockCycloneContainer cycloneContainer;
@@ -86,6 +89,7 @@ public class Dota2Items {
 		eulId = config.getItem(EulsScepter.NAME, 27004).getInt();
 		ringOfProtectionId = config.getItem(RingOfProtection.NAME, 27005).getInt();
 		bootsOfSpeedId = config.getItem(BootsOfSpeed.NAME, 27006).getInt();
+		goldCoinId = config.getItem(GoldCoin.NAME, 27007).getInt();
 		// Blocks
 		cycloneContainerId = config.getBlock(BlockCycloneContainer.NAME, 2700).getInt();
 		config.save();
@@ -123,6 +127,10 @@ public class Dota2Items {
 		bootsOfSpeed = new BootsOfSpeed(bootsOfSpeedId);
 		LanguageRegistry.addName(bootsOfSpeed, "Boots of Speed");
 		itemList.add(bootsOfSpeed);
+		
+		goldCoin = new GoldCoin(goldCoinId);
+		LanguageRegistry.addName(goldCoin, "Gold Coin");
+		itemList.add(goldCoin);
 		
 		cycloneContainer = new BlockCycloneContainer(cycloneContainerId);
 		GameRegistry.registerBlock(cycloneContainer, BlockCycloneContainer.NAME);

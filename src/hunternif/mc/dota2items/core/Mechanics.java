@@ -1,5 +1,6 @@
 package hunternif.mc.dota2items.core;
 
+import hunternif.mc.dota2items.Dota2ItemSounds;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.item.Dota2Item;
@@ -18,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.item.ItemStack;
@@ -29,6 +31,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -45,6 +48,8 @@ public class Mechanics {
 	
 	public static final int FOOD_THRESHOLD_FOR_HEAL = 10;
 	public static final float GOLD_PER_SECOND = 0.25f;
+	
+	private static final int SYNC_STATS_INTERVAL = 10;
 	
 	private Map<EntityLiving, EntityStats> clientEntityStats = new ConcurrentHashMap<EntityLiving, EntityStats>();
 	private Map<EntityLiving, EntityStats> serverEntityStats = new ConcurrentHashMap<EntityLiving, EntityStats>();
@@ -80,8 +85,6 @@ public class Mechanics {
 				Dota2Item dota2Item = (Dota2Item) stack.getItem();
 				if (!dota2Item.dropsOnDeath) {
 					iter.remove();
-					/*Dota2ItemsInInventory itemsInInv = playerItemsTracker.getItemsInInv(event.entityPlayer);
-					itemsInInv.items.add(stack.copy());*/
 					List<ItemStack> list = Dota2Items.playerTracker.retainedItems.get(event.entityPlayer);
 					if (list == null) {
 						list = new ArrayList<ItemStack>();
@@ -274,7 +277,7 @@ public class Mechanics {
 			if (event.entityLiving instanceof EntityPlayer && event.entityLiving.ticksExisted % 20 == 0) {
 				regenHealthManaAndGold((EntityPlayer)event.entityLiving, stats);
 				// Synchronize stats with all clients every 5 seconds:
-				if (event.entityLiving.ticksExisted % 100 == 0) {
+				if (event.entityLiving.ticksExisted % (20 * SYNC_STATS_INTERVAL) == 0) {
 					EntityStatsPacket.sendEntityStatsPacket(stats);
 				}
 			}
@@ -291,7 +294,24 @@ public class Mechanics {
 	@ForgeSubscribe
 	public void onLivingDeath(LivingDeathEvent event) {
 		Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(getSide(event.entityLiving));
-		entityStats.remove(event.entityLiving);
+		EntityStats stats = entityStats.get(event.entityLiving);
+		if (stats != null) {
+			// Drop gold coins
+			if (event.entityLiving instanceof EntityPlayer) {
+				int level = ((EntityPlayer)event.entityLiving).experienceLevel + 1;
+				if (!event.entity.worldObj.isRemote) {
+					int goldAmount = 200 + level*9;
+					scatterGoldAt(event.entity, goldAmount);
+				}
+				stats.removeGold(level * GOLD_LOST_PER_LEVEL);
+			} else {
+				if (event.entity instanceof IMob && !event.entity.worldObj.isRemote) {
+					int goldAmount = MathHelper.floor_float(GOLD_PER_MOB_HP * (float)event.entityLiving.getMaxHealth());
+					scatterGoldAt(event.entity, goldAmount);
+				}
+				entityStats.remove(event.entityLiving);
+			}
+		}
 	}
 	
 	private static Side getSide(Entity entity) {
@@ -325,6 +345,30 @@ public class Mechanics {
 	public void onEntityConstructing(EntityConstructing event) {
 		if (event.entity instanceof EntityPlayer) {
 			event.entity.registerExtendedProperties("Dota2ItemsEntityStats", getEntityStats((EntityLiving)event.entity));
+		}
+	}
+	
+	@ForgeSubscribe
+	public void onPickupGold(EntityItemPickupEvent event) {
+		ItemStack stack = event.item.getEntityItem();
+		if (stack.itemID == Dota2Items.goldCoin.itemID) {
+			event.entity.worldObj.playSoundAtEntity(event.entity, Dota2ItemSounds.COINS, 0.8f, 1f);
+			EntityStats stats = getEntityStats(event.entityLiving);
+			stats.addGold(stack.stackSize);
+			EntityStatsPacket.sendEntityStatsPacket(stats);
+			event.item.setDead();
+			event.setCanceled(true);
+		}
+	}
+	
+	/** Drops gold coins at given entity in 5 approx. equal portions. */
+	private static void scatterGoldAt(Entity entity, int goldAmount) {
+		int portion = MathHelper.ceiling_float_int((float)goldAmount / 5f);
+		while (goldAmount > 0) {
+			int curPortion = goldAmount > portion ? portion : goldAmount;
+			goldAmount -= curPortion;
+			System.out.println("dropped " + curPortion + " coins, " + goldAmount + " left");
+			entity.dropItem(Dota2Items.goldCoin.itemID, curPortion);
 		}
 	}
 }

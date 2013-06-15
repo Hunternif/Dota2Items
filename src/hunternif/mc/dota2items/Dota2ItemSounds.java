@@ -11,9 +11,10 @@ public class Dota2ItemSounds {
 	public static final String MAGIC_IMMUNE = "magic_immune";
 	public static final String TREE_FALL = "tree_fall";
 	public static final String CYCLONE_START = "cyclone_start";
+	public static final String COINS = "coins";
 	//public static final String CYCLONE_LOOP = "cyclone_loop";
 	
-	public static final String[] sounds = {BLINK_IN, BLINK_OUT, DENY_COOLDOWN, DENY_GENERAL, MAGIC_IMMUNE, TREE_FALL, CYCLONE_START};
+	public static final String[] sounds = {BLINK_IN, BLINK_OUT, DENY_COOLDOWN, DENY_GENERAL, MAGIC_IMMUNE, TREE_FALL, CYCLONE_START, COINS};
 	
 	@ForgeSubscribe
 	public void onSound(SoundLoadEvent event) {

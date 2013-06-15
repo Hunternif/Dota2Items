@@ -40,6 +40,8 @@ public class Mechanics {
 	/** Equals to Base Hero health (with base strength bonuses) over Steve's base health.
 	 * This gives a zombie attack damage of 22.5~52.5. Seems fair to me. */
 	public static final float DOTA_VS_MINECRAFT_DAMAGE = (float)EntityStats.BASE_PLAYER_HP/20f;
+	public static final float GOLD_PER_MOB_HP = 2.5f;
+	public static final float GOLD_LOST_PER_LEVEL = 30f;
 	
 	public static final int FOOD_THRESHOLD_FOR_HEAL = 10;
 	public static final float GOLD_PER_SECOND = 0.25f;
@@ -238,7 +240,6 @@ public class Mechanics {
 			if (stack != null && stack.getItem() instanceof Dota2Item) {
 				Dota2Item item = (Dota2Item) stack.getItem();
 				if (item.passiveBuff != null) {
-					//stats.appliedBuffs.add(new BuffInstance(item.passiveBuff, player.entityId, true));
 					stats.addBuff(new BuffInstance(item.passiveBuff, player.entityId, true));
 				}
 			}
@@ -314,11 +315,10 @@ public class Mechanics {
 		} else if (stats.partialHalfHeart > 0) {
 			stats.partialHalfHeart = 0;
 		}
-		float mana = stats.getFloatMana();
-		if (entity.getHealth() > 0 && mana < stats.getMaxMana()) {
-			stats.setMana(mana + stats.getManaRegen());
+		if (entity.getHealth() > 0 && stats.getMana() < stats.getMaxMana()) {
+			stats.addMana(stats.getManaRegen());
 		}
-		stats.setGold(stats.getFloatGold() + GOLD_PER_SECOND);
+		stats.addGold(GOLD_PER_SECOND);
 	}
 	
 	@ForgeSubscribe

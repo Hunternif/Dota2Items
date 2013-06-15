@@ -147,12 +147,18 @@ public class EntityStats implements IExtendedEntityProperties {
 		}
 		return curMana;
 	}
-	public void setMana(float value) {
-		float newMana = value;
+	public void setMana(float amount) {
+		float newMana = amount;
 		float maxMana = getMaxMana();
 		if (newMana < 0) newMana = 0;
 		if (newMana > maxMana) newMana = maxMana;
 		curMana = newMana;
+	}
+	public void addMana(float amount) {
+		setMana(curMana + amount);
+	}
+	public void removeMana(float amount) {
+		setMana(curMana - amount);
 	}
 	
 	public float getManaRegen() {
@@ -266,6 +272,7 @@ public class EntityStats implements IExtendedEntityProperties {
 		return false;
 	}
 	
+	//NOTE I may need to implement the Reliable and Unreliable gold someday.
 	public int getGold() {
 		return MathHelper.floor_float(curGold);
 	}
@@ -276,6 +283,12 @@ public class EntityStats implements IExtendedEntityProperties {
 		float newGold = amount;
 		if (newGold < 0) newGold = 0;
 		curGold = newGold;
+	}
+	public void addGold(float amount) {
+		setGold(curGold + amount);
+	}
+	public void removeGold(float amount) {
+		setGold(curGold - amount);
 	}
 	
 	public int getStrength() {

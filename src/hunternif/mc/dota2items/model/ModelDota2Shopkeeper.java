@@ -7,8 +7,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 
 public class ModelDota2Shopkeeper extends ModelBase {
-	private static final float RIGHT_ARM_BASE_ROTATION = -1.1f;
-	private static final float PI_2 = (float)Math.PI / 2f;
+	private static final float RIGHT_ARM_BASE_ANGLE = -70f / 180f * (float)Math.PI;
+	private static final float STAFF_ANGLE = 74f / 180f * (float)Math.PI;
 	
 	public ModelRenderer head;
 	public ModelRenderer body;
@@ -45,7 +45,7 @@ public class ModelDota2Shopkeeper extends ModelBase {
 		rightarm.addBox(-4F, -2F, -2F, 4, 14, 4);
 		rightarm.setRotationPoint(-6F, 3F, 0F);
 		rightarm.setTextureSize(64, 64);
-		rightarm.rotateAngleX = RIGHT_ARM_BASE_ROTATION;
+		rightarm.rotateAngleX = RIGHT_ARM_BASE_ANGLE;
 		
 		leftarm = new ModelRenderer(this, 40, 36);
 		leftarm.addBox(0F, -2F, -2F, 4, 14, 4);
@@ -70,10 +70,10 @@ public class ModelDota2Shopkeeper extends ModelBase {
 		clothes.setTextureSize(64, 64);
 		
 		staff = new ModelRenderer(this, 56, 18);
-		staff.setRotationPoint(-2, 10, 2);
-		staff.addBox(-1F, -17F, -1F, 2, 34, 2);
+		staff.setRotationPoint(-2, 11, 2);
+		staff.addBox(-1F, -18F, -1F, 2, 34, 2);
 		staff.setTextureSize(64, 64);
-		staff.rotateAngleX = PI_2;
+		staff.rotateAngleX = STAFF_ANGLE;
 		rightarm.addChild(staff);
 		
 		cage = new ModelRenderer(this, 40, 0);
@@ -101,7 +101,7 @@ public class ModelDota2Shopkeeper extends ModelBase {
 		head.rotateAngleY = f3 / (180F / (float)Math.PI);
 		head.rotateAngleX = f4 / (180F / (float)Math.PI);
 		
-		rightarm.rotateAngleX = -PI_2 + MathHelper.cos(f * 0.6662F + (float)Math.PI) * 2.0F * f1 * 0.25F;
+		rightarm.rotateAngleX = RIGHT_ARM_BASE_ANGLE + MathHelper.cos(f * 0.6662F + (float)Math.PI) * 2.0F * f1 * 0.25F;
 		rightarm.rotateAngleZ = 0;
 		leftarm.rotateAngleX = MathHelper.cos(f * 0.6662F) * 2.0F * f1 * 0.5F;
 		leftarm.rotateAngleZ = 0;

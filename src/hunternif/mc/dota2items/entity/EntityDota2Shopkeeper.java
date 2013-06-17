@@ -24,10 +24,10 @@ public class EntityDota2Shopkeeper extends EntityCreature implements INpc {
 		this.moveSpeed = 0.1F;
 		this.setSize(0.6F, 1.8F);
 		this.getNavigator().setAvoidsWater(true);
-		this.tasks.addTask(5, new EntityAIMoveTwardsRestriction(this, 0.25F));
-		this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));
-		this.tasks.addTask(9, new EntityAIWander(this, 0.25F));
-		this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, 8.0F));
+		this.tasks.addTask(1, new EntityAIMoveTwardsRestriction(this, 0.25F));
+		this.tasks.addTask(2, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));
+		this.tasks.addTask(3, new EntityAIWander(this, 0.25F));
+		this.tasks.addTask(4, new EntityAIWatchClosest(this, EntityLiving.class, 8.0F));
 	}
 
 	@Override

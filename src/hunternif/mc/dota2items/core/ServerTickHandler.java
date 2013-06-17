@@ -4,6 +4,8 @@ import hunternif.mc.dota2items.Dota2Items;
 
 import java.util.EnumSet;
 
+import net.minecraft.world.World;
+
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.relauncher.Side;
@@ -11,9 +13,10 @@ import cpw.mods.fml.relauncher.Side;
 public class ServerTickHandler implements ITickHandler {
 
 	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData) { 
+	public void tickStart(EnumSet<TickType> type, Object... tickData) {
 		Dota2Items.mechanics.updateAllEntityStats(Side.SERVER);
 		Dota2Items.mechanics.updatePlayerInventories(Side.SERVER);
+		Dota2Items.shopkeeperSpawner.updateVillages((World)tickData[0]);
 	}
 
 	@Override

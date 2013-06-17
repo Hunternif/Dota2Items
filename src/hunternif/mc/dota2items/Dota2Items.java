@@ -4,6 +4,8 @@ import hunternif.mc.dota2items.block.BlockCycloneContainer;
 import hunternif.mc.dota2items.core.Dota2PlayerTracker;
 import hunternif.mc.dota2items.core.Mechanics;
 import hunternif.mc.dota2items.core.inventory.Dota2ItemCreativeTab;
+import hunternif.mc.dota2items.entity.Dota2ShopkeeperSpawner;
+import hunternif.mc.dota2items.entity.EntityDota2Shopkeeper;
 import hunternif.mc.dota2items.item.BlinkDagger;
 import hunternif.mc.dota2items.item.BootsOfSpeed;
 import hunternif.mc.dota2items.item.Dota2Item;
@@ -33,6 +35,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
@@ -69,6 +72,7 @@ public class Dota2Items {
 	
 	public static Dota2PlayerTracker playerTracker = new Dota2PlayerTracker();
 	public static Mechanics mechanics = new Mechanics();
+	public static Dota2ShopkeeperSpawner shopkeeperSpawner = new Dota2ShopkeeperSpawner();
 	
 	@Instance(ID)
 	public static Dota2Items instance;
@@ -135,6 +139,8 @@ public class Dota2Items {
 		cycloneContainer = new BlockCycloneContainer(cycloneContainerId);
 		GameRegistry.registerBlock(cycloneContainer, BlockCycloneContainer.NAME);
 		GameRegistry.registerTileEntity(TileEntityCyclone.class, TileEntityCyclone.NAME);
+		
+		EntityRegistry.registerModEntity(EntityDota2Shopkeeper.class, "Dota2Shopkeeper", EntityRegistry.findGlobalUniqueEntityId(), instance, 80, 3, true);
 		
 		proxy.registerRenderers();
 		proxy.registerTickHandlers();

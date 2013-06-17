@@ -57,6 +57,16 @@ public final class BlockUtil {
 		return true;
 	}
 	
+	public static IntVec3 findSurface(World world, int x, int y, int z) {
+		while (!world.isAirBlock(x, y, z) && y < world.getHeight()) {
+			y++;
+		}
+		if (y >= world.getHeight()) {
+			return null;
+		}
+		return new IntVec3(x, y, z);
+	}
+	
 	public static boolean isSolid(World world, Vec3 vec) {
 		int x = MathHelper.floor_double(vec.xCoord);
 		int y = MathHelper.floor_double(vec.yCoord);

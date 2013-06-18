@@ -14,12 +14,12 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.village.Village;
 import net.minecraft.world.World;
 
-public class EntityDota2Shopkeeper extends EntityCreature implements INpc, IInvulnerableEntity {
+public class EntityShopkeeper extends EntityCreature implements INpc, IInvulnerableEntity {
 	private int randomTickDivider;
 	public Village villageObj;
 	
 	
-	public EntityDota2Shopkeeper(World world) {
+	public EntityShopkeeper(World world) {
 		super(world);
 		this.moveSpeed = 0.1F;
 		this.setSize(0.6F, 1.8F);

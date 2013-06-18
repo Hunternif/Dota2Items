@@ -6,7 +6,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 
-public class ModelDota2Shopkeeper extends ModelBase {
+public class ModelShopkeeper extends ModelBase {
 	private static final float RIGHT_ARM_BASE_ANGLE = -70f / 180f * (float)Math.PI;
 	private static final float STAFF_ANGLE = 74f / 180f * (float)Math.PI;
 	
@@ -22,7 +22,7 @@ public class ModelDota2Shopkeeper extends ModelBase {
 	public ModelRenderer staff;
 	public ModelRenderer cage;
 	
-	public ModelDota2Shopkeeper() {
+	public ModelShopkeeper() {
 		textureWidth = 64;
 		textureHeight = 64;
 		

@@ -16,7 +16,7 @@ import net.minecraft.village.Village;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.FMLLog;
 
-public class Dota2ShopkeeperSpawner {
+public class ShopkeeperSpawner {
 	private static final int UPDATE_INTERVAL = 5;
 	private Set<ChunkCoordinates> shopkeepersSpawned = new HashSet<ChunkCoordinates>();
 	
@@ -33,7 +33,7 @@ public class Dota2ShopkeeperSpawner {
 					if (spawn != null) {
 						List <Entity> shopkeepersFound = shopkeepersAround(world, spawn);
 						if (shopkeepersFound.isEmpty()) {
-							EntityDota2Shopkeeper shopkeeper = new EntityDota2Shopkeeper(world);
+							EntityShopkeeper shopkeeper = new EntityShopkeeper(world);
 							shopkeeper.setLocationAndAngles(spawn.x, spawn.y, spawn.z, 0, 0);
 							world.spawnEntityInWorld(shopkeeper);
 							FMLLog.log(Dota2Items.ID, Level.INFO, "Spawned a Shopkeeper at (%d, %d, %d)", spawn.x, spawn.y, spawn.z);
@@ -55,6 +55,6 @@ public class Dota2ShopkeeperSpawner {
 	public static List<Entity> shopkeepersAround(World world, IntVec3 vec) {
 		AxisAlignedBB box = AxisAlignedBB.getBoundingBox(vec.x, vec.y, vec.z, vec.x+1, vec.y+1, vec.z+1);
 		box = box.expand(80, 80, 80);
-		return world.getEntitiesWithinAABB(EntityDota2Shopkeeper.class, box);
+		return world.getEntitiesWithinAABB(EntityShopkeeper.class, box);
 	}
 }

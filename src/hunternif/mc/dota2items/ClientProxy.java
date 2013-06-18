@@ -2,10 +2,10 @@ package hunternif.mc.dota2items;
 
 import hunternif.mc.dota2items.core.ClientTickHandler;
 import hunternif.mc.dota2items.core.ServerTickHandler;
-import hunternif.mc.dota2items.entity.EntityDota2Shopkeeper;
+import hunternif.mc.dota2items.entity.EntityShopkeeper;
 import hunternif.mc.dota2items.item.CooldownItem;
 import hunternif.mc.dota2items.render.CooldownItemRenderer;
-import hunternif.mc.dota2items.render.RenderDota2Shopkeeper;
+import hunternif.mc.dota2items.render.RenderShopkeeper;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
@@ -27,7 +27,7 @@ public class ClientProxy extends CommonProxy {
     		}
     	}
     	
-    	RenderingRegistry.registerEntityRenderingHandler(EntityDota2Shopkeeper.class, new RenderDota2Shopkeeper());
+    	RenderingRegistry.registerEntityRenderingHandler(EntityShopkeeper.class, new RenderShopkeeper());
     }
     
     @Override

@@ -3,9 +3,9 @@ package hunternif.mc.dota2items;
 import hunternif.mc.dota2items.block.BlockCycloneContainer;
 import hunternif.mc.dota2items.core.Dota2PlayerTracker;
 import hunternif.mc.dota2items.core.Mechanics;
-import hunternif.mc.dota2items.core.inventory.Dota2ItemCreativeTab;
 import hunternif.mc.dota2items.entity.ShopkeeperSpawner;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
+import hunternif.mc.dota2items.inventory.Dota2CreativeTab;
 import hunternif.mc.dota2items.item.BlinkDagger;
 import hunternif.mc.dota2items.item.BootsOfSpeed;
 import hunternif.mc.dota2items.item.Dota2Item;
@@ -101,7 +101,7 @@ public class Dota2Items {
 	
 	@Init
 	public void load(FMLInitializationEvent event) {
-		dota2CreativeTab = new Dota2ItemCreativeTab("dota2ItemTab");
+		dota2CreativeTab = new Dota2CreativeTab("dota2ItemTab");
 		LanguageRegistry.instance().addStringLocalization("itemGroup.dota2ItemTab", "en_US", "Dota 2 Items");
 		
 		dota2Logo = new Dota2Logo(dota2LogoId);

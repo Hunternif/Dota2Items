@@ -1,12 +1,12 @@
-package hunternif.mc.dota2items.core.inventory;
+package hunternif.mc.dota2items.inventory;
 
 import hunternif.mc.dota2items.Dota2Items;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 
-public class Dota2ItemCreativeTab extends CreativeTabs {
+public class Dota2CreativeTab extends CreativeTabs {
 	
-	public Dota2ItemCreativeTab(String label) {
+	public Dota2CreativeTab(String label) {
 		super(label);
 	}
 

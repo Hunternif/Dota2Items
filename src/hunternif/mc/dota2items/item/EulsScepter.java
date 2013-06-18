@@ -45,7 +45,6 @@ public class EulsScepter extends CooldownItem {
 		AxisAlignedBB box = AxisAlignedBB.getBoundingBox((double)x, (double)y-0.5, (double)z, (double)x+1, (double)y+1.5, (double)z+1);
 		List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, box);
 		if (list != null && !list.isEmpty()) {
-			//TODO Make sure that other entities within the area don't get stuck in the cyclone.
 			return onUseEulsScepter(itemStack, player, list.get(0));
 		} else {
 			playDenyGeneralSound(world);

@@ -14,7 +14,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.village.Village;
 import net.minecraft.world.World;
 
-public class EntityDota2Shopkeeper extends EntityCreature implements INpc {
+public class EntityDota2Shopkeeper extends EntityCreature implements INpc, IInvulnerableEntity {
 	private int randomTickDivider;
 	public Village villageObj;
 	

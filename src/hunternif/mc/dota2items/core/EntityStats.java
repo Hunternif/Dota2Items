@@ -2,19 +2,17 @@ package hunternif.mc.dota2items.core;
 
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
+import hunternif.mc.dota2items.entity.IInvulnerableEntity;
+import hunternif.mc.dota2items.entity.IMagicImmuneEntity;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
@@ -53,6 +51,9 @@ public class EntityStats implements IExtendedEntityProperties {
 	public int baseArmor = 0;
 	public int baseDamage = 0;
 	
+	public boolean baseInvulnerable = false;
+	public boolean baseMagicImmune = false;
+	
 	public int baseStrength = BASE_PLAYER_STR;
 	public int baseAgility = BASE_PLAYER_AGI;
 	public int baseIntelligence = BASE_PLAYER_INT;
@@ -86,6 +87,12 @@ public class EntityStats implements IExtendedEntityProperties {
 			baseHealthRegen = 0.5f;
 			baseAttackTime = 1.0f;
 			baseMovementSpeed = 325;
+		}
+		if (entity instanceof IMagicImmuneEntity) {
+			baseMagicImmune = true;
+		}
+		if (entity instanceof IInvulnerableEntity) {
+			baseInvulnerable = true;
 		}
 	}
 	
@@ -255,6 +262,9 @@ public class EntityStats implements IExtendedEntityProperties {
 	}
 	
 	public boolean isMagicImmune() {
+		if (baseMagicImmune) {
+			return true;
+		}
 		for (BuffInstance buffInst : getAppliedBuffs()) {
 			if (buffInst.buff.magicImmune) {
 				return true;
@@ -264,6 +274,9 @@ public class EntityStats implements IExtendedEntityProperties {
 	}
 	
 	public boolean isInvulnerable() {
+		if (baseInvulnerable) {
+			return true;
+		}
 		for (BuffInstance buffInst : getAppliedBuffs()) {
 			if (buffInst.buff.invulnerable) {
 				return true;

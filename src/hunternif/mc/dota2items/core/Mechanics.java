@@ -123,12 +123,18 @@ public class Mechanics {
 		int damage = event.ammount;
 		float dotaDamage = (float)damage * DOTA_VS_MINECRAFT_DAMAGE;
 		
-		// Check if the target entity is invulnerable
+		// Check if the target entity is invulnerable or if damage is magical and target is magic immune
 		EntityStats targetStats = entityStats.get(event.entityLiving);
-		if (targetStats != null && targetStats.isInvulnerable()) {
-			FMLLog.log(Dota2Items.ID, Level.FINE, "invulnerable");
-			event.setCanceled(true);
-			return;
+		if (targetStats != null) {
+			if (targetStats.isInvulnerable()) {
+				FMLLog.log(Dota2Items.ID, Level.FINE, "invulnerable");
+				event.setCanceled(true);
+				return;
+			} else if (event.source.isMagicDamage() && targetStats.isMagicImmune()) {
+				FMLLog.log(Dota2Items.ID, Level.FINE, "magic immune");
+				event.setCanceled(true);
+				return;
+			}
 		}
 		
 		// Apply attack bonuses to the source player

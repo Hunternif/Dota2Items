@@ -19,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerCapabilities;
@@ -38,7 +39,8 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 
 public class Mechanics {
-	private static String[] walkSpeedObfFields = {"g", "field_75097_g", "walkSpeed"};
+	private static final String[] walkSpeedObfFields = {"g", "field_75097_g", "walkSpeed"};
+	private static final String[] timeSinceIgnitedObfFields = {"d", "field_70833_d", "timeSinceIgnited"};
 	
 	/** Equals to Base Hero health (with base strength bonuses) over Steve's base health.
 	 * This gives a zombie attack damage of 22.5~52.5. Seems fair to me. */
@@ -100,7 +102,6 @@ public class Mechanics {
 	@ForgeSubscribe
 	public void onLivingAttack(LivingAttackEvent event) {
 		// Check if the entity can attack
-		//TODO this doesn't work for creepers because they don't actually attack
 		Entity entity = event.source.getEntity();
 		if (entity != null && entity instanceof EntityLiving) {
 			Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
@@ -292,6 +293,14 @@ public class Mechanics {
 				// Update items in inventory so that cooldown keeps on ticking:
 				if (event.entityLiving instanceof EntityPlayer) {
 					((EntityPlayer)event.entityLiving).inventory.decrementAnimations();
+				}
+			}
+			// Workaround for creepers still exploding while having their attack disabled:
+			if (!stats.canAttack()) {
+				if (event.entityLiving instanceof EntityCreeper) {
+					EntityCreeper creeper = (EntityCreeper) event.entityLiving;
+					int timeSinceIgnited = ReflectionHelper.getPrivateValue(EntityCreeper.class, creeper, timeSinceIgnitedObfFields);
+					ReflectionHelper.setPrivateValue(EntityCreeper.class, creeper, timeSinceIgnited-1, timeSinceIgnitedObfFields);
 				}
 			}
 		}

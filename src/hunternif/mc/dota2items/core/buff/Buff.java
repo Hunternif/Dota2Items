@@ -36,7 +36,7 @@ public class Buff {
 	public static final Buff tangoActive = new Buff(1, "Tango active").setHealthRegen(115f/16f).setDoesNotStack();
 	public static final Buff quell = new Buff(2, "Quell").setDamagePercentMelee(32).setDamagePercentRanged(16).setDoesNotStack();
 	public static final Buff eulsScepter = new Buff(3, "Eul's Scepter").setMovementSpeed(30).setIntelligence(10).setManaRegenPercent(150);
-	public static final Buff inCyclone = new Buff(4, "Swept up in Cyclone").setDisableAttack().setDisableItems().setDisableMove().setInvulnerable();
+	public static final Buff inCyclone = new Buff(4, "Swept up in Cyclone").setDisableAttack().setDisableItems().setDisableMove().setInvulnerable().setMagicImmune();
 	public static final Buff ringOfProtection = new Buff(5, "Ring of Protection").setArmor(2);
 	public static final Buff bootsOfSpeed = new Buff(6, "Boots of Speed").setMovementSpeed(50);
 	

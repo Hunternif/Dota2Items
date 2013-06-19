@@ -39,10 +39,10 @@ public class GuiGold extends Gui {
 			}
 			y = (mc.currentScreen.height - GUI_INVENTORY_HEIGHT)/2 - GUI_GOLD_HEIGHT;
 		// Or in game:
-		} else if (mc.currentScreen instanceof GuiShop) {
+		}/* else if (mc.currentScreen instanceof GuiShop) {
 			x = (mc.currentScreen.width - GuiShop.WIDTH)/2 + GuiShop.WIDTH;
 			y = (mc.currentScreen.height - GuiShop.HEIGHT)/2 + 130;
-		} else if (mc.theWorld != null) {
+		}*/ else if (mc.theWorld != null) {
 			//TODO make this GUI placement configurable in the menu in order to not overlay other mods' GUIs.
 			ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
 			x = scaledresolution.getScaledWidth() - GUI_GOLD_WIDTH;

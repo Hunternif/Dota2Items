@@ -33,7 +33,7 @@ public class GuiShop extends GuiContainer {
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
 		RenderHelper.disableStandardItemLighting();
 		this.fontRenderer.drawString("Basics", 8, 6, TITLE_COLOR);
-		this.fontRenderer.drawString("Updates", 80, 6, TITLE_COLOR);
+		this.fontRenderer.drawString("Upgrades", 80, 6, TITLE_COLOR);
 		Iterator iterator = this.buttonList.iterator();
 		while (iterator.hasNext()) {
 			GuiButton guibutton = (GuiButton)iterator.next();

@@ -12,7 +12,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class InventoryShop implements IInventory {
+	public static enum Mode {
+		SELLING, BUYING;
+	}
+	
 	public static final String TAG_IS_SAMPLE = "D2IisSample";
+	
+	public static final int TRANSACTION_SLOT = 1000;
 	
 	private static final int COLUMNS = 11;
 	private static final int ROWS = 12;
@@ -227,6 +233,9 @@ public class InventoryShop implements IInventory {
 	private int height;
 	private int scrollPos;
 	private String filterStr;
+	private ItemStack selectedItemStack;
+	private ItemStack sellingItemStack;
+	private Mode mode = Mode.BUYING;
 	public InventoryShop(int[] columns, int height) {
 		this.columns = columns;
 		this.height = height;
@@ -245,6 +254,21 @@ public class InventoryShop implements IInventory {
 			onInventoryChanged();
 		}
 	}
+	public void selectItem(ItemStack itemStack) {
+		this.selectedItemStack = itemStack;
+	}
+	public void selectItemInSlot(int slotId) {
+		if (slotId != TRANSACTION_SLOT && mode == Mode.BUYING) {
+			ItemStack stack = getStackInSlot(slotId);
+			if (stack != null) {
+				selectedItemStack = stack;
+			}
+			onInventoryChanged();
+		}
+	}
+	public Mode getMode() {
+		return mode;
+	}
 
 	@Override
 	public int getSizeInventory() {
@@ -253,6 +277,9 @@ public class InventoryShop implements IInventory {
 
 	@Override
 	public ItemStack getStackInSlot(int i) {
+		if (i == TRANSACTION_SLOT) {
+			return mode == Mode.BUYING ? selectedItemStack : sellingItemStack;
+		}
 		int xPos = i % columns.length;
 		int yPos = (i - xPos)/columns.length;
 		int columnIndex = columns[xPos];
@@ -276,17 +303,50 @@ public class InventoryShop implements IInventory {
 	}
 
 	@Override
-	public ItemStack decrStackSize(int i, int j) {
+	public ItemStack decrStackSize(int i, int amount) {
+		if (i == TRANSACTION_SLOT && mode == Mode.SELLING && sellingItemStack != null) {
+			ItemStack itemstack;
+			if (sellingItemStack.stackSize <= amount) {
+				itemstack = sellingItemStack;
+				sellingItemStack = null;
+				mode = Mode.BUYING;
+			} else {
+				itemstack = sellingItemStack.splitStack(amount);
+				if (sellingItemStack.stackSize == 0) {
+					sellingItemStack = null;
+					mode = Mode.BUYING;
+				}
+			}
+			this.onInventoryChanged();
+			return itemstack;
+		}
 		return null;
 	}
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int i) {
-		return null;
+		if (i == TRANSACTION_SLOT && mode == Mode.SELLING) {
+			return sellingItemStack;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack) {}
+	public void setInventorySlotContents(int i, ItemStack itemStack) {
+		if (i == TRANSACTION_SLOT) {
+			sellingItemStack = itemStack;
+			selectedItemStack = null;
+			mode = itemStack == null ? Mode.BUYING : Mode.SELLING;
+		}
+	}
+	
+	public void setForSale(ItemStack itemStack) {
+		setInventorySlotContents(InventoryShop.TRANSACTION_SLOT, itemStack.copy());
+	}
+	public void clearSelectedItem() {
+		setInventorySlotContents(InventoryShop.TRANSACTION_SLOT, null);
+	}
 
 	@Override
 	public String getInvName() {
@@ -300,7 +360,7 @@ public class InventoryShop implements IInventory {
 
 	@Override
 	public int getInventoryStackLimit() {
-		return 1;
+		return 64;
 	}
 
 	@Override

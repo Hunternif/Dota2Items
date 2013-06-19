@@ -1,5 +1,6 @@
 package hunternif.mc.dota2items.item;
 
+import hunternif.mc.dota2items.ClientProxy;
 import hunternif.mc.dota2items.Dota2ItemSounds;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.EntityStats;
@@ -10,6 +11,7 @@ import hunternif.mc.dota2items.inventory.InventoryShop;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -121,7 +123,7 @@ public abstract class Dota2Item extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean showAdvanced) {
-		list.add(EnumChatFormatting.GOLD.toString() + "$" + this.getTotalPrice());
+		list.add(ClientProxy.ICON_GOLD.key + EnumChatFormatting.GOLD + this.getTotalPrice());
 		if (this instanceof CooldownItem) {
 			float cooldown = ((CooldownItem)this).getCooldown();
 			String cooldownStr;
@@ -130,7 +132,7 @@ public abstract class Dota2Item extends Item {
 			} else {
 				cooldownStr = String.format("%.0f", cooldown);
 			}
-			list.add("CD: " + EnumChatFormatting.GRAY + cooldownStr);
+			list.add(ClientProxy.ICON_COOLDOWN.key + EnumChatFormatting.GRAY + cooldownStr);
 		}
 		// If the item is displayed in shop
 		if (isSampleItemStack(stack)) {
@@ -141,6 +143,12 @@ public abstract class Dota2Item extends Item {
 				list.add(EnumChatFormatting.DARK_RED + "Requires secret shop");
 			}
 		}
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public FontRenderer getFontRenderer(ItemStack stack) {
+		return ClientProxy.fontRenderer;
 	}
 	
 	public static boolean isSampleItemStack(ItemStack itemStack) {

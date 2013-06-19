@@ -3,8 +3,6 @@ package hunternif.mc.dota2items.core;
 import hunternif.mc.dota2items.Dota2ItemSounds;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
-import hunternif.mc.dota2items.entity.EntityShopkeeper;
-import hunternif.mc.dota2items.inventory.ContainerShop;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.network.EntityStatsPacket;
 
@@ -24,10 +22,8 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet100OpenWindow;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -36,7 +32,6 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import cpw.mods.fml.common.FMLLog;
@@ -389,25 +384,6 @@ public class Mechanics {
 			goldAmount -= curPortion;
 			System.out.println("dropped " + curPortion + " coins, " + goldAmount + " left");
 			entity.dropItem(Dota2Items.goldCoin.itemID, curPortion);
-		}
-	}
-	
-	@ForgeSubscribe
-	public void onInteractWithShopkeeper(EntityInteractEvent event) {
-		if (event.target instanceof EntityShopkeeper) {
-			event.setCanceled(true);
-			if (!event.entityPlayer.worldObj.isRemote &&
-					event.entityPlayer instanceof EntityPlayerMP) {
-				EntityPlayerMP playerMP = (EntityPlayerMP) event.entityPlayer;
-				playerMP.incrementWindowID();
-				/*int windowId = 666;
-				int slotsUsed = 9;
-				playerMP.playerNetServerHandler.sendPacketToPlayer(new Packet100OpenWindow(playerMP.currentWindowId, windowId, "Dota 2 Shop", slotsUsed, true));*/
-				//TODO send custom packet
-				playerMP.openContainer = new ContainerShop(playerMP.inventory, (EntityShopkeeper)event.target);
-				playerMP.openContainer.windowId = playerMP.currentWindowId;
-				playerMP.openContainer.addCraftingToCrafters(playerMP);
-			}
 		}
 	}
 }

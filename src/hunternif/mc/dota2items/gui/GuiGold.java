@@ -31,7 +31,7 @@ public class GuiGold extends Gui {
 		int y;
 		// Show gold when the inventory is open:
 		if (mc.currentScreen instanceof GuiContainer &&
-				!(mc.currentScreen instanceof GuiContainerCreative || mc.currentScreen instanceof GuiBeacon)) {
+				!(mc.currentScreen instanceof GuiShop || mc.currentScreen instanceof GuiContainerCreative || mc.currentScreen instanceof GuiBeacon)) {
 			x = (mc.currentScreen.width - GUI_INVENTORY_WIDTH)/2 + GUI_INVENTORY_WIDTH - GUI_GOLD_WIDTH;
 			// If there are active potion effects, the inventory is shifted to the right.
 			if (!mc.thePlayer.getActivePotionEffects().isEmpty()) {
@@ -39,6 +39,9 @@ public class GuiGold extends Gui {
 			}
 			y = (mc.currentScreen.height - GUI_INVENTORY_HEIGHT)/2 - GUI_GOLD_HEIGHT;
 		// Or in game:
+		} else if (mc.currentScreen instanceof GuiShop) {
+			x = (mc.currentScreen.width - GuiShop.WIDTH)/2 + GuiShop.WIDTH;
+			y = (mc.currentScreen.height - GuiShop.HEIGHT)/2 + 130;
 		} else if (mc.theWorld != null) {
 			//TODO make this GUI placement configurable in the menu in order to not overlay other mods' GUIs.
 			ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);

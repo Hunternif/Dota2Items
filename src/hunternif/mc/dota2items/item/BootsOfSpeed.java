@@ -9,6 +9,7 @@ public class BootsOfSpeed extends Dota2Item {
 		super(id);
 		setUnlocalizedName(NAME);
 		passiveBuff = Buff.bootsOfSpeed;
+		setPrice(450);
 	}
 
 }

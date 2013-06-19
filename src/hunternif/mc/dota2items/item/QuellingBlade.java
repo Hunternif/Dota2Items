@@ -35,6 +35,7 @@ public class QuellingBlade extends CooldownItem {
 		setUnlocalizedName(NAME);
 		setCooldown(5);
 		passiveBuff = Buff.quell;
+		setPrice(225);
 	}
 	
 	@Override

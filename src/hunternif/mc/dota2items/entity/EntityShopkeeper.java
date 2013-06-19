@@ -1,6 +1,7 @@
 package hunternif.mc.dota2items.entity;
 
 import hunternif.mc.dota2items.Dota2Items;
+import hunternif.mc.dota2items.gui.GuiHandler;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.INpc;
@@ -78,5 +79,14 @@ public class EntityShopkeeper extends EntityCreature implements INpc, IInvulnera
 	@Override
 	protected boolean canDespawn() {
 		return false;
+	}
+	
+	@Override
+	public boolean interact(EntityPlayer player) {
+		int x = MathHelper.floor_double(this.posX);
+		int y = MathHelper.floor_double(this.posY);
+		int z = MathHelper.floor_double(this.posZ);
+		player.openGui(Dota2Items.instance, GuiHandler.GUI_ID_SHOP, this.worldObj, x, y, z);
+		return true;
 	}
 }

@@ -40,6 +40,7 @@ public class BlinkDagger extends CooldownItem {
 		rand = new Random();
 		setUnlocalizedName(NAME);
 		setCooldown(usualCooldown);
+		setPrice(2150);
 	}
 	
 	@Override

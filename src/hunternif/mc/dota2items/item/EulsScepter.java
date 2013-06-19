@@ -27,6 +27,8 @@ public class EulsScepter extends CooldownItem {
 		setUnlocalizedName(NAME);
 		setCooldown(30);
 		passiveBuff = Buff.eulsScepter;
+		//TODO add the ingredient items and set appropriate price
+		setPrice(2800);
 	}
 	
 	@Override

@@ -9,6 +9,7 @@ public class RingOfProtection extends Dota2Item {
 		super(id);
 		setUnlocalizedName(NAME);
 		passiveBuff = Buff.ringOfProtection;
+		setPrice(175);
 	}
 
 }

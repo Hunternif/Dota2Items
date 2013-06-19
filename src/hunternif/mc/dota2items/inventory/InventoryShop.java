@@ -234,8 +234,8 @@ public class InventoryShop implements IInventory {
 		this.filterStr = "";
 	}
 	public void setFilterStr(String value) {
-		if (!this.filterStr.equals(value)) {
-			this.filterStr = value;
+		if (!this.filterStr.equals(value.toLowerCase())) {
+			this.filterStr = value.toLowerCase();
 			onInventoryChanged();
 		}
 	}
@@ -264,7 +264,7 @@ public class InventoryShop implements IInventory {
 				continue;
 			}
 			String name = stack.getDisplayName();
-			if (name.contains(filterStr)) {
+			if (name.toLowerCase().contains(filterStr)) {
 				filteredColumn.add(stack);
 			}
 		}

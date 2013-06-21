@@ -29,9 +29,9 @@ public class GuiShopBuy extends GuiShopBase {
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
 		super.drawGuiContainerForegroundLayer(par1, par2);
 		//RenderHelper.disableStandardItemLighting();
-		this.fontRenderer.drawString("Shopkeeper", 8, 29, TAB_TITLE_COLOR_ACTIVE);
-		this.fontRenderer.drawString("Price", 114, 154, TAB_TITLE_COLOR_ACTIVE);
-		this.fontRenderer.drawString("Purchase", 114, 181, TAB_TITLE_COLOR_ACTIVE);
+		this.fontRenderer.drawString("Shopkeeper", 8, 29, TITLE_COLOR);
+		this.fontRenderer.drawString("Price", 114, 153, TITLE_COLOR);
+		this.fontRenderer.drawString("Purchase", 114, 186, TITLE_COLOR);
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
 		ClientProxy.guiGold.renderGoldText(stats.getGold(), WIDTH - GuiGold.GUI_GOLD_WIDTH, 0);
 		ItemStack resultStack = ((ContainerShopBuy)this.inventorySlots).getSlotResult().getStack();
@@ -39,7 +39,7 @@ public class GuiShopBuy extends GuiShopBase {
 		if (resultStack != null && resultStack.getItem() instanceof Dota2Item) {
 			price = ((Dota2Item)resultStack.getItem()).getTotalPrice() * resultStack.stackSize;
 		}
-		renderBuyPrice(price, 170, 167, stats.getGold() >= price);
+		renderBuyPrice(price, 170, 166, stats.getGold() >= price);
 		RenderHelper.enableGUIStandardItemLighting();
 	}
 	

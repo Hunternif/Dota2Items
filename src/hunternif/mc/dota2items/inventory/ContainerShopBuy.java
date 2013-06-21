@@ -29,7 +29,7 @@ public class ContainerShopBuy extends Container {
 		slotIngr3Number = addSlotToContainer(new SlotShop(invShop, InventoryShop.SLOT_INGR_3, 19+(18+3)*2, 208)).slotNumber;
 		slotIngr4Number = addSlotToContainer(new SlotShop(invShop, InventoryShop.SLOT_INGR_4, 19+(18+3)*3, 208)).slotNumber;
 		// The result slot:
-		slotResultNumber = addSlotToContainer(new SlotShopBuyResult(invShop, InventoryShop.SLOT_RESULT, 151, 197)).slotNumber;
+		slotResultNumber = addSlotToContainer(new SlotShopBuyResult(invShop, InventoryShop.SLOT_RESULT, 151, 203)).slotNumber;
 		//TODO implement search
 	}
 

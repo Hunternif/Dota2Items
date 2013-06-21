@@ -28,8 +28,8 @@ public class GuiShopSell extends GuiShopBase {
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
 		super.drawGuiContainerForegroundLayer(par1, par2);
 		//RenderHelper.disableStandardItemLighting();
-		this.fontRenderer.drawString("Sell price", 78, 32, TAB_TITLE_COLOR_ACTIVE);
-		this.fontRenderer.drawString("Inventory", 8, 73, TAB_TITLE_COLOR_ACTIVE);
+		this.fontRenderer.drawString("Sell price", 78, 32, TITLE_COLOR);
+		this.fontRenderer.drawString("Inventory", 8, 73, TITLE_COLOR);
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
 		ClientProxy.guiGold.renderGoldText(stats.getGold(), WIDTH - GuiGold.GUI_GOLD_WIDTH, 0);
 		ItemStack stackOnSale = ((ContainerShopSell)this.inventorySlots).getTransactionSlot().getStack();

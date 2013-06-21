@@ -10,6 +10,7 @@ import net.minecraft.util.MathHelper;
 
 public abstract class GuiShopBase extends GuiContainer {
 
+	public static final int TITLE_COLOR = 0x404040;
 	public static final int TAB_TITLE_COLOR_ACTIVE = 0x404040;
 	public static final int TAB_TITLE_COLOR_INACTIVE = 0x000000;
 	public static final int PRICE_COLOR = 0x000000;

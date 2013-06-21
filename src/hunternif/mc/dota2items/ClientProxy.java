@@ -4,6 +4,7 @@ import hunternif.mc.dota2items.core.ClientTickHandler;
 import hunternif.mc.dota2items.core.ServerTickHandler;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
 import hunternif.mc.dota2items.gui.FontRendererWithIcons;
+import hunternif.mc.dota2items.gui.GuiGold;
 import hunternif.mc.dota2items.gui.IconInText;
 import hunternif.mc.dota2items.item.CooldownItem;
 import hunternif.mc.dota2items.render.CooldownItemRenderer;
@@ -26,6 +27,7 @@ public class ClientProxy extends CommonProxy {
 		fontRenderer.registerIcon(ICON_GOLD);
 		fontRenderer.registerIcon(ICON_COOLDOWN);
 	}
+	public static GuiGold guiGold = new GuiGold();
 	
 	@Override
 	public void registerRenderers() {

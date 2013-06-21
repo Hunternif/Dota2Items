@@ -14,6 +14,13 @@ import net.minecraft.nbt.NBTTagCompound;
 public class InventoryShop implements IInventory {
 	public static final String TAG_IS_SAMPLE = "D2IisSample";
 	
+	public static final int SLOT_RESULT = 999;
+	public static final int SLOT_RECIPE_RESULT = 1000;
+	public static final int SLOT_INGR_1 = 1001;
+	public static final int SLOT_INGR_2 = 1002;
+	public static final int SLOT_INGR_3 = 1003;
+	public static final int SLOT_INGR_4 = 1004;
+	
 	private static final int COLUMNS = 11;
 	private static final int ROWS = 12;
 	
@@ -208,7 +215,7 @@ public class InventoryShop implements IInventory {
 		}
 	}
 	
-	public static InventoryShop regularShop() {
+	public static InventoryShop newRegularShop() {
 		return new InventoryShop(new int[]{
 			COLUMN_CONSUMABLES,
 			COLUMN_ATTRIBUTES,

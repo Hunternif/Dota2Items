@@ -33,7 +33,6 @@ public abstract class Dota2Item extends Item {
 	private int price;
 	private List<Dota2Item> recipe;
 	
-	
 	public Dota2Item(int id) {
 		super(id);
 		setCreativeTab(Dota2Items.dota2CreativeTab);
@@ -114,6 +113,9 @@ public abstract class Dota2Item extends Item {
 		}
 		return false;
 	}
+	public int getSellPrice() {
+		return getTotalPrice()/2;
+	}
 	
 	@Override
 	public String getItemDisplayName(ItemStack stack) {
@@ -123,7 +125,7 @@ public abstract class Dota2Item extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean showAdvanced) {
-		list.add(ClientProxy.ICON_GOLD.key + EnumChatFormatting.GOLD + this.getTotalPrice());
+		list.add(ClientProxy.ICON_GOLD.key + EnumChatFormatting.GOLD + this.getTotalPrice()*stack.stackSize);
 		if (this instanceof CooldownItem) {
 			float cooldown = ((CooldownItem)this).getCooldown();
 			String cooldownStr;
@@ -136,7 +138,7 @@ public abstract class Dota2Item extends Item {
 		}
 		// If the item is displayed in shop
 		if (isSampleItemStack(stack)) {
-			if (Dota2Items.mechanics.getEntityStats(player).getGold() < this.getTotalPrice()) {
+			if (Dota2Items.mechanics.getEntityStats(player).getGold() < this.getTotalPrice()*stack.stackSize) {
 				list.add(EnumChatFormatting.DARK_RED + "Not enough gold");
 			}
 			if (isSecretShopRequired()) {

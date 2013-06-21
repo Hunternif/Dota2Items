@@ -1,5 +1,6 @@
 package hunternif.mc.dota2items.core;
 
+import hunternif.mc.dota2items.ClientProxy;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.gui.GuiGold;
 
@@ -12,7 +13,6 @@ import cpw.mods.fml.relauncher.Side;
 
 public class ClientTickHandler implements ITickHandler {
 	public static Timer timer = new Timer(20);
-	public GuiGold guiGold = new GuiGold();
 
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {
@@ -28,7 +28,7 @@ public class ClientTickHandler implements ITickHandler {
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData) {
 		if (type.contains(TickType.RENDER)) {
-			guiGold.render();
+			ClientProxy.guiGold.render();
 		}
 	}
 

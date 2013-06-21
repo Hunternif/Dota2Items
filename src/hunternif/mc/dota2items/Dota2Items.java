@@ -18,6 +18,7 @@ import hunternif.mc.dota2items.item.QuellingBlade;
 import hunternif.mc.dota2items.item.RingOfProtection;
 import hunternif.mc.dota2items.item.Tango;
 import hunternif.mc.dota2items.network.ClientPacketHandler;
+import hunternif.mc.dota2items.network.ServerPacketHandler;
 import hunternif.mc.dota2items.tileentity.TileEntityCyclone;
 
 import java.util.ArrayList;
@@ -44,7 +45,8 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 
 @Mod(modid=Dota2Items.ID, name=Dota2Items.NAME, version=Dota2Items.VERSION)
 @NetworkMod(clientSideRequired=true, serverSideRequired=true, channels={Dota2Items.CHANNEL},
-	clientPacketHandlerSpec=@NetworkMod.SidedPacketHandler(channels={Dota2Items.CHANNEL}, packetHandler=ClientPacketHandler.class))
+	clientPacketHandlerSpec=@NetworkMod.SidedPacketHandler(channels={Dota2Items.CHANNEL}, packetHandler=ClientPacketHandler.class),
+	serverPacketHandlerSpec=@NetworkMod.SidedPacketHandler(channels={Dota2Items.CHANNEL}, packetHandler=ServerPacketHandler.class))
 public class Dota2Items {
 	public static final String ID = "Dota2Items";
 	public static final String NAME = "Dota 2 Items";

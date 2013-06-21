@@ -27,11 +27,15 @@ public class GuiGold extends Gui {
 	
 	public void render() {
 		Minecraft mc = Minecraft.getMinecraft();
+		// Don't show if it's the shop buy/sell GUI, for it renders current gold by itself:
+		if (mc.currentScreen instanceof GuiShopBase) {
+			return;
+		}
 		int x;
 		int y;
 		// Show gold when the inventory is open:
 		if (mc.currentScreen instanceof GuiContainer &&
-				!(mc.currentScreen instanceof GuiShop || mc.currentScreen instanceof GuiContainerCreative || mc.currentScreen instanceof GuiBeacon)) {
+				!(mc.currentScreen instanceof GuiContainerCreative || mc.currentScreen instanceof GuiBeacon)) {
 			x = (mc.currentScreen.width - GUI_INVENTORY_WIDTH)/2 + GUI_INVENTORY_WIDTH - GUI_GOLD_WIDTH;
 			// If there are active potion effects, the inventory is shifted to the right.
 			if (!mc.thePlayer.getActivePotionEffects().isEmpty()) {
@@ -39,9 +43,6 @@ public class GuiGold extends Gui {
 			}
 			y = (mc.currentScreen.height - GUI_INVENTORY_HEIGHT)/2 - GUI_GOLD_HEIGHT;
 		// Or in game:
-		} else if (mc.currentScreen instanceof GuiShop) {
-			x = (mc.currentScreen.width - GuiShop.WIDTH)/2 + GuiShop.WIDTH;
-			y = (mc.currentScreen.height - GuiShop.HEIGHT)/2 + 130;
 		} else if (mc.theWorld != null) {
 			//TODO make this GUI placement configurable in the menu in order to not overlay other mods' GUIs.
 			ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
@@ -51,17 +52,19 @@ public class GuiGold extends Gui {
 			return;
 		}
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(mc.thePlayer);
-		if (stats != null) {
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			GL11.glDisable(GL11.GL_LIGHTING);
-			mc.renderEngine.bindTexture("/mods/"+Dota2Items.ID+"/textures/gui/gold.png");
-			drawTexturedModalRect(x, y, 0, 0, GUI_GOLD_WIDTH, GUI_GOLD_HEIGHT);
-			// Draw the number
-			FontRenderer fontRenderer = mc.fontRenderer;
-			String text = String.valueOf(stats.getGold());
-			x += TEXT_POSITION_X - fontRenderer.getStringWidth(text);
-			y += TEXT_POSITION_Y;
-			fontRenderer.drawString(text, x, y, GOLD_COLOUR);
-		}
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		mc.renderEngine.bindTexture("/mods/"+Dota2Items.ID+"/textures/gui/gold.png");
+		drawTexturedModalRect(x, y, 0, 0, GUI_GOLD_WIDTH, GUI_GOLD_HEIGHT);
+		// Draw the number
+		renderGoldText(stats.getGold(), x, y);
+	}
+	
+	public void renderGoldText(int gold, int goldGuiX, int goldGuiY) {
+		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+		String text = String.valueOf(gold);
+		int x = goldGuiX + TEXT_POSITION_X - fontRenderer.getStringWidth(text);
+		int y = goldGuiY + TEXT_POSITION_Y;
+		fontRenderer.drawString(text, x, y, GOLD_COLOUR);
 	}
 }

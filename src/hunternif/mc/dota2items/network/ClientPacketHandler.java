@@ -14,6 +14,7 @@ import cpw.mods.fml.common.network.Player;
 
 public class ClientPacketHandler implements IPacketHandler {
 	//NOTE consider implementing a ITinyPacketHandler instead.
+	//TODO refactor packets like FMLPacket
 	@Override
 	public void onPacketData(INetworkManager manager,
 			Packet250CustomPayload packet, Player player) {

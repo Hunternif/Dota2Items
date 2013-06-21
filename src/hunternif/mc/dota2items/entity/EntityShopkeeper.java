@@ -86,7 +86,7 @@ public class EntityShopkeeper extends EntityCreature implements INpc, IInvulnera
 		int x = MathHelper.floor_double(this.posX);
 		int y = MathHelper.floor_double(this.posY);
 		int z = MathHelper.floor_double(this.posZ);
-		player.openGui(Dota2Items.instance, GuiHandler.GUI_ID_SHOP, this.worldObj, x, y, z);
+		player.openGui(Dota2Items.instance, GuiHandler.GUI_ID_SHOP_BUY, this.worldObj, x, y, z);
 		return true;
 	}
 }

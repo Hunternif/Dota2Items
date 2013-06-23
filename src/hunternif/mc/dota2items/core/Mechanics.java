@@ -22,6 +22,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.item.ItemStack;
@@ -321,7 +322,8 @@ public class Mechanics {
 				}
 				stats.removeGold(level * GOLD_LOST_PER_LEVEL);
 			} else {
-				if (event.entity instanceof IMob && !event.entity.worldObj.isRemote) {
+				if (!event.entity.worldObj.isRemote && (event.entity instanceof IMob ||
+						(event.entity instanceof EntityWolf && ((EntityWolf)event.entity).isAngry()))) {
 					int goldAmount = MathHelper.floor_float(GOLD_PER_MOB_HP * (float)event.entityLiving.getMaxHealth());
 					scatterGoldAt(event.entity, goldAmount);
 				}

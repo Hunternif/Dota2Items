@@ -7,7 +7,7 @@ public class ContainerShopBuy extends Container {
 	private static final int SHOP_INV_X = 8;
 	private static final int SHOP_INV_Y = 60;
 	
-	private InventoryShop invShop = InventoryShop.newRegularShop();
+	public InventoryShop invShop = InventoryShop.newRegularShop();
 	private int slotResultNumber;
 	private int slotRecipeResultNumber;
 	private int slotIngr1Number;
@@ -30,7 +30,6 @@ public class ContainerShopBuy extends Container {
 		slotIngr4Number = addSlotToContainer(new SlotShop(invShop, InventoryShop.SLOT_INGR_4, 19+(18+3)*3, 208)).slotNumber;
 		// The result slot:
 		slotResultNumber = addSlotToContainer(new SlotShopBuyResult(invShop, InventoryShop.SLOT_RESULT, 151, 203)).slotNumber;
-		//TODO implement search
 	}
 
 	@Override

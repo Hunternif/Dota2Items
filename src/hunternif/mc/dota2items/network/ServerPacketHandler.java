@@ -14,6 +14,8 @@ public class ServerPacketHandler implements IPacketHandler {
 			
 			if (OpenGuiPacket.parseAndApplyOpenGuiPacket(packet, (EntityPlayer) player)) {
 				return;
+			} else if (ShopFilterInputPacket.parseAndApply(packet, (EntityPlayer) player)) {
+				return;
 			}
 			
 		}

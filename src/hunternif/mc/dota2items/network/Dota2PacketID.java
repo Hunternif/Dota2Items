@@ -6,4 +6,5 @@ public class Dota2PacketID {
 	public static final int MOVE = 2;
 	public static final int STATS = 3;
 	public static final short GUI = 4;
+	public static final short SHOP_FILTER_INPUT = 5;
 }

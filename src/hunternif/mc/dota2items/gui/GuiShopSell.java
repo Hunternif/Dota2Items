@@ -41,7 +41,7 @@ public class GuiShopSell extends GuiShopBase {
 		RenderHelper.enableGUIStandardItemLighting();
 	}
 	
-	public void renderSellPrice(int price, int x, int y) {
+	private void renderSellPrice(int price, int x, int y) {
 		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 		String text = String.valueOf(price);
 		fontRenderer.drawString(text, x, y, PRICE_COLOR);

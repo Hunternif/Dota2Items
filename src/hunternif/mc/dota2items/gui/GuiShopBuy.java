@@ -5,24 +5,49 @@ import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.inventory.ContainerShopBuy;
 import hunternif.mc.dota2items.item.Dota2Item;
+import hunternif.mc.dota2items.network.ShopFilterInputPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 public class GuiShopBuy extends GuiShopBase {
 	public static final int WIDTH = 212;
 	public static final int HEIGHT = 239;
+	private static final int COLOR_SEARCH = 0xffffff;
+	public static final int FILTER_STR_LENGTH = 15;
+	
+	public GuiTextField filterField;
 	
 	public GuiShopBuy(InventoryPlayer inventoryPlayer) {
 		super(inventoryPlayer.player, new ContainerShopBuy());
 		this.xSize = WIDTH;
 		this.ySize = HEIGHT;
 		this.curTab = ShopTab.BUY;
+	}
+	
+	@Override
+	public void initGui() {
+		super.initGui();
+		Keyboard.enableRepeatEvents(true);
+		filterField = new GuiTextField(this.fontRenderer, this.guiLeft + 117, this.guiTop + 29, 89, this.fontRenderer.FONT_HEIGHT);
+		filterField.setMaxStringLength(FILTER_STR_LENGTH);
+		filterField.setEnableBackgroundDrawing(false);
+		filterField.setFocused(false);
+		filterField.setCanLoseFocus(true);
+		filterField.setTextColor(COLOR_SEARCH);
+	}
+	
+	@Override
+	public void onGuiClosed() {
+		super.onGuiClosed();
+		Keyboard.enableRepeatEvents(false);
 	}
 	
 	@Override
@@ -50,11 +75,34 @@ public class GuiShopBuy extends GuiShopBase {
 		int k = (this.width - this.xSize) / 2;
 		int l = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
+		filterField.drawTextBox();
 	}
 	
-	public void renderBuyPrice(int price, int x, int y, boolean canAfford) {
+	private void renderBuyPrice(int price, int x, int y, boolean canAfford) {
 		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 		String text = (canAfford ? "" : EnumChatFormatting.DARK_RED) + String.valueOf(price);
 		fontRenderer.drawString(text, x, y, PRICE_COLOR);
+	}
+	
+	@Override
+	protected void keyTyped(char ch, int key) {
+		if (filterField.isFocused()) {
+			if (filterField.textboxKeyTyped(ch, key)) {
+				updateFilter();
+			}
+		} else {
+			super.keyTyped(ch, key);
+		}
+	}
+	
+	@Override
+	protected void mouseClicked(int x, int y, int button) {
+		super.mouseClicked(x, y, button);
+		filterField.mouseClicked(x, y, button);
+	}
+	
+	private void updateFilter() {
+		((ContainerShopBuy)this.inventorySlots).invShop.setFilterStr(filterField.getText());
+		ShopFilterInputPacket.sendToServer(filterField.getText());
 	}
 }

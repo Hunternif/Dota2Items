@@ -3,20 +3,19 @@ package hunternif.mc.dota2items.block;
 import hunternif.mc.dota2items.tileentity.TileEntityCyclone;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
 public class BlockCycloneContainer extends BlockContainer {
-	public static final String NAME = "cycloneContainer";
-	
+
 	public BlockCycloneContainer(int id) {
 		super(id, Material.air);
 		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 3.0F, 1.0F);
 		setBlockUnbreakable();
 		setResistance(6000000.0F);
-		setUnlocalizedName(NAME);
 	}
 	
 	//NOTE Some of these overrides may be unnecessary
@@ -54,4 +53,8 @@ public class BlockCycloneContainer extends BlockContainer {
 	public boolean isOpaqueCube() {
         return false;
     }
+	
+	@Override
+	public void registerIcons(IconRegister iconRegister) {
+	}
 }

@@ -1,7 +1,8 @@
 package hunternif.mc.dota2items.item;
 
-import hunternif.mc.dota2items.Dota2ItemSounds;
+import hunternif.mc.dota2items.Config;
 import hunternif.mc.dota2items.Dota2Items;
+import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
@@ -20,14 +21,11 @@ import net.minecraft.world.World;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class EulsScepter extends CooldownItem {
-	public static final String NAME = "eulsScepter";
-	
+
 	public EulsScepter(int id) {
 		super(id);
-		setUnlocalizedName(NAME);
 		setCooldown(30);
-		passiveBuff = Buff.eulsScepter;
-		//TODO add the ingredient items and set appropriate price
+		passiveBuff = new Buff(this).setMovementSpeed(30).setIntelligence(10).setManaRegenPercent(150);
 		setPrice(2800);
 	}
 	
@@ -80,7 +78,7 @@ public class EulsScepter extends CooldownItem {
 			y ++;
 		}
 		if (!entity.worldObj.isRemote) {
-			entity.worldObj.setBlock(x, y, z, Dota2Items.cycloneContainer.blockID, 0, 3);
+			entity.worldObj.setBlock(x, y, z, Config.cycloneContainer.id, 0, 3);
 		}
 		
 		if (!entity.worldObj.isRemote) {
@@ -99,7 +97,7 @@ public class EulsScepter extends CooldownItem {
 		}
 		
 		startCooldown(stack, player);
-		player.worldObj.playSoundAtEntity(entity, Dota2ItemSounds.CYCLONE_START, 0.7f, 1);
+		player.worldObj.playSoundAtEntity(entity, Sound.CYCLONE_START.name, 0.7f, 1);
 		return true;
 	}
 }

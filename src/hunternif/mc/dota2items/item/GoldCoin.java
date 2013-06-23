@@ -2,15 +2,11 @@ package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.Dota2Items;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class GoldCoin extends Item {
-	public static final String NAME = "goldCoin"; 
 
 	public GoldCoin(int id) {
 		super(id);

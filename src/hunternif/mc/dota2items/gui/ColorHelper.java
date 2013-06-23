@@ -5,6 +5,9 @@ import net.minecraft.util.EnumChatFormatting;
 
 public class ColorHelper {
 	public static int colourForColumn(ItemColumn column) {
+		if (column == null) {
+			return 0xffffff;
+		}
 		switch (column) {
 		case COLUMN_CONSUMABLES:
 			return 0x1D80E7;
@@ -29,8 +32,11 @@ public class ColorHelper {
 		}
 	}
 	
-	public static EnumChatFormatting prefixForColumn(ItemColumn columnId) {
-		switch (columnId) {
+	public static EnumChatFormatting prefixForColumn(ItemColumn column) {
+		if (column == null) {
+			return EnumChatFormatting.WHITE;
+		}
+		switch (column) {
 		case COLUMN_CONSUMABLES:
 			return EnumChatFormatting.BLUE;
 		case COLUMN_ATTRIBUTES:

@@ -1,6 +1,6 @@
 package hunternif.mc.dota2items.item;
 
-import hunternif.mc.dota2items.Dota2ItemSounds;
+import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.util.IntVec3;
 import hunternif.mc.dota2items.util.SideHit;
@@ -18,8 +18,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 
 public class QuellingBlade extends CooldownItem {
-	public static final String NAME = "quellingBlade";
-	
+
 	// Quelling Blade is an axe, so why not make it effective against wood
 	public static final Block[] blocksEffectiveAgainst = ItemAxe.blocksEffectiveAgainst;
 	// Like an iron axe it is
@@ -32,9 +31,8 @@ public class QuellingBlade extends CooldownItem {
 
 	public QuellingBlade(int id) {
 		super(id);
-		setUnlocalizedName(NAME);
 		setCooldown(5);
-		passiveBuff = Buff.quell;
+		passiveBuff = new Buff(this).setDamagePercentMelee(32).setDamagePercentRanged(16).setDoesNotStack();
 		setPrice(225);
 	}
 	
@@ -107,7 +105,7 @@ public class QuellingBlade extends CooldownItem {
 				// Yep, found a tree
 				startCooldown(itemStack, player);
 				TreeUtil.removeTree(world, new IntVec3(x, trunkBaseY, z), true);
-				world.playSoundEffect(x, trunkBaseY, z, Dota2ItemSounds.TREE_FALL, 1.0f, 1.0f);
+				world.playSoundEffect(x, trunkBaseY, z, Sound.TREE_FALL.name, 1.0f, 1.0f);
 				return true;
 			} else {
 				return false;
@@ -119,7 +117,7 @@ public class QuellingBlade extends CooldownItem {
 				// Yep, found a tree
 				startCooldown(itemStack, player);
 				TreeUtil.removeTree(world, trunkBase, true);
-				world.playSoundEffect(trunkBase.x, trunkBase.y, trunkBase.z, Dota2ItemSounds.TREE_FALL, 1.0f, 1.0f);
+				world.playSoundEffect(trunkBase.x, trunkBase.y, trunkBase.z, Sound.TREE_FALL.name, 1.0f, 1.0f);
 				return true;
 			} else {
 				return false;

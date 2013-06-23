@@ -12,7 +12,9 @@ import hunternif.mc.dota2items.render.RenderShopkeeper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -44,7 +46,7 @@ public class ClientProxy extends CommonProxy {
 	
 	@Override
 	public void registerSounds() {
-		MinecraftForge.EVENT_BUS.register(new Dota2ItemSounds());
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
 	@Override
@@ -52,4 +54,16 @@ public class ClientProxy extends CommonProxy {
 		TickRegistry.registerTickHandler(new ServerTickHandler(), Side.SERVER);
 		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
 	}
+	
+	@ForgeSubscribe
+	public void onSound(SoundLoadEvent event) {
+        try {
+        	for (Sound sound : Sound.values()) {
+        		event.manager.soundPoolSounds.addSound(sound+".wav", Dota2Items.class.getResource("/mods/"+Dota2Items.ID+"/sounds/"+sound+".wav"));
+        	}
+        }
+        catch (Exception e) {
+            System.err.println("Failed to register one or more sounds.");
+        }
+    }
 }

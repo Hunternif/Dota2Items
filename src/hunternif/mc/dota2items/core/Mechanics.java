@@ -1,7 +1,8 @@
 package hunternif.mc.dota2items.core;
 
-import hunternif.mc.dota2items.Dota2ItemSounds;
+import hunternif.mc.dota2items.Config;
 import hunternif.mc.dota2items.Dota2Items;
+import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.network.EntityStatsPacket;
@@ -39,8 +40,8 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 
 public class Mechanics {
-	private static final String[] walkSpeedObfFields = {"g", "field_75097_g", "walkSpeed"};
-	private static final String[] timeSinceIgnitedObfFields = {"d", "field_70833_d", "timeSinceIgnited"};
+	private static final String[] walkSpeedObfFields = {"walkSpeed", "g", "field_75097_g"};
+	private static final String[] timeSinceIgnitedObfFields = {"timeSinceIgnited", "d", "field_70833_d"};
 	
 	/** Equals to Base Hero health (with base strength bonuses) over Steve's base health.
 	 * This gives a zombie attack damage of 22.5~52.5. Seems fair to me. */
@@ -366,8 +367,8 @@ public class Mechanics {
 	@ForgeSubscribe
 	public void onPickupGold(EntityItemPickupEvent event) {
 		ItemStack stack = event.item.getEntityItem();
-		if (stack.itemID == Dota2Items.goldCoin.itemID) {
-			event.entity.worldObj.playSoundAtEntity(event.entity, Dota2ItemSounds.COINS, 0.8f, 1f);
+		if (stack.itemID == Config.goldCoin.id) {
+			event.entity.worldObj.playSoundAtEntity(event.entity, Sound.COINS.name, 0.8f, 1f);
 			EntityStats stats = getEntityStats(event.entityLiving);
 			stats.addGold(stack.stackSize);
 			EntityStatsPacket.sendEntityStatsPacket(stats);
@@ -382,8 +383,7 @@ public class Mechanics {
 		while (goldAmount > 0) {
 			int curPortion = goldAmount > portion ? portion : goldAmount;
 			goldAmount -= curPortion;
-			System.out.println("dropped " + curPortion + " coins, " + goldAmount + " left");
-			entity.dropItem(Dota2Items.goldCoin.itemID, curPortion);
+			entity.dropItem(Config.goldCoin.id, curPortion);
 		}
 	}
 }

@@ -1,8 +1,8 @@
 package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.ClientProxy;
-import hunternif.mc.dota2items.Dota2ItemSounds;
 import hunternif.mc.dota2items.Dota2Items;
+import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.gui.ColorHelper;
@@ -48,13 +48,13 @@ public abstract class Dota2Item extends Item {
 	
 	public static void playDenyGeneralSound(World world) {
 		if (world.isRemote) {
-			Minecraft.getMinecraft().sndManager.playSoundFX(Dota2ItemSounds.DENY_GENERAL, 1.0F, 1.0F);
+			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.DENY_GENERAL.name, 1.0F, 1.0F);
 		}
 	}
 	
 	public static void playMagicImmuneSound(World world) {
 		if (world.isRemote) {
-			Minecraft.getMinecraft().sndManager.playSoundFX(Dota2ItemSounds.MAGIC_IMMUNE, 1.0F, 1.0F);
+			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.MAGIC_IMMUNE.name, 1.0F, 1.0F);
 		}
 	}
 	

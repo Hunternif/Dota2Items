@@ -1,6 +1,6 @@
 package hunternif.mc.dota2items.item;
 
-import hunternif.mc.dota2items.Dota2ItemSounds;
+import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.effect.Dota2Effect;
 import hunternif.mc.dota2items.util.BlockUtil;
 import hunternif.mc.dota2items.util.SideHit;
@@ -26,8 +26,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlinkDagger extends CooldownItem {
-	public static final String NAME = "blinkDagger";
-	
+
 	public static final double maxDistance = 30;
 	public static final float hurtCooldown = 3;
 	public static final float usualCooldown = 14;
@@ -38,7 +37,6 @@ public class BlinkDagger extends CooldownItem {
 		super(id);
 		MinecraftForge.EVENT_BUS.register(this);
 		rand = new Random();
-		setUnlocalizedName(NAME);
 		setCooldown(usualCooldown);
 		setPrice(2150);
 	}
@@ -207,11 +205,11 @@ public class BlinkDagger extends CooldownItem {
 			// if they're far apart enough.
 			double distance = player.getDistance(srcX, srcY, srcZ);
 			if (distance < 12) {
-				world.playSoundToNearExcept(player, Dota2ItemSounds.BLINK_OUT, 1.0F, 1.0F);
+				world.playSoundToNearExcept(player, Sound.BLINK_OUT.name, 1.0F, 1.0F);
 			} else {
 				// Sounds for other players to hear:
-				world.playSoundToNearExcept(player, Dota2ItemSounds.BLINK_IN, 1.0F, 1.0F);
-				world.playSoundEffect(srcX, srcY, srcZ, Dota2ItemSounds.BLINK_OUT, 1.0F, 1.0F);
+				world.playSoundToNearExcept(player, Sound.BLINK_IN.name, 1.0F, 1.0F);
+				world.playSoundEffect(srcX, srcY, srcZ, Sound.BLINK_OUT.name, 1.0F, 1.0F);
 			}
 			// Send effect packets to other players
 			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
@@ -221,7 +219,7 @@ public class BlinkDagger extends CooldownItem {
 			}
 		} else {
 			// Client side. Render blink effect.
-			Minecraft.getMinecraft().sndManager.playSoundFX(Dota2ItemSounds.BLINK_OUT, 1.0F, 1.0F);
+			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.BLINK_OUT.name, 1.0F, 1.0F);
 			srcEffect.start();
 			destEffect.start();
 		}

@@ -1,6 +1,6 @@
 package hunternif.mc.dota2items.item;
 
-import hunternif.mc.dota2items.Dota2ItemSounds;
+import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.event.CooldownEndDisplayEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -121,7 +121,7 @@ public abstract class CooldownItem extends Dota2Item {
 	 */
 	public static void playDenyCooldownSound(World world) {
 		if (world.isRemote) {
-			Minecraft.getMinecraft().sndManager.playSoundFX(Dota2ItemSounds.DENY_COOLDOWN, 1.0F, 1.0F);
+			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.DENY_COOLDOWN.name, 1.0F, 1.0F);
 		}
 	}
 	

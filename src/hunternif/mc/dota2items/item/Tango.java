@@ -1,6 +1,6 @@
 package hunternif.mc.dota2items.item;
 
-import hunternif.mc.dota2items.Dota2ItemSounds;
+import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.util.IntVec3;
 import hunternif.mc.dota2items.util.SideHit;
 import hunternif.mc.dota2items.util.TreeUtil;
@@ -12,8 +12,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 
 public class Tango extends Dota2Item {
-	public static final String NAME = "tango";
-	
+
 	public static final int duration = 20*16; //16 seconds
 	public static final int amplifier = 0;
 	
@@ -25,7 +24,6 @@ public class Tango extends Dota2Item {
 	public Tango(int id) {
 		super(id);
 		setMaxStackSize(64);
-		setUnlocalizedName(NAME);
 		setPrice(30);
 		//TODO make Tango only available in a set of 3 in the shop.
 	}
@@ -79,7 +77,7 @@ public class Tango extends Dota2Item {
 				// Yep, found a tree
 				TreeUtil.removeTree(world, new IntVec3(x, trunkBaseY, z), true);
 				itemStack.stackSize --;
-				world.playSoundEffect(x, trunkBaseY, z, Dota2ItemSounds.TREE_FALL, 1.0f, 1.0f);
+				world.playSoundEffect(x, trunkBaseY, z, Sound.TREE_FALL.name, 1.0f, 1.0f);
 				player.addPotionEffect(new PotionEffect(Potion.regeneration.id, duration, amplifier));
 				return true;
 			} else {
@@ -92,7 +90,7 @@ public class Tango extends Dota2Item {
 				// Yep, found a tree
 				TreeUtil.removeTree(world, trunkBase, true);
 				itemStack.stackSize --;
-				world.playSoundEffect(trunkBase.x, trunkBase.y, trunkBase.z, Dota2ItemSounds.TREE_FALL, 1.0f, 1.0f);
+				world.playSoundEffect(trunkBase.x, trunkBase.y, trunkBase.z, Sound.TREE_FALL.name, 1.0f, 1.0f);
 				player.addPotionEffect(new PotionEffect(Potion.regeneration.id, duration, amplifier));
 				return true;
 			} else {

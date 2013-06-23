@@ -1,5 +1,8 @@
 package hunternif.mc.dota2items.core.buff;
 
+import hunternif.mc.dota2items.Config;
+import hunternif.mc.dota2items.item.Dota2Item;
+
 
 public class Buff {
 	public final String name;
@@ -31,20 +34,25 @@ public class Buff {
 	public boolean stacks = true;
 	
 	
+	private static int lastID = 0;
 	public static final Buff[] buffList = new Buff[1024];
 	
 	public static final Buff tangoActive = new Buff(1, "Tango active").setHealthRegen(115f/16f).setDoesNotStack();
-	public static final Buff quell = new Buff(2, "Quell").setDamagePercentMelee(32).setDamagePercentRanged(16).setDoesNotStack();
-	public static final Buff eulsScepter = new Buff(3, "Eul's Scepter").setMovementSpeed(30).setIntelligence(10).setManaRegenPercent(150);
-	public static final Buff inCyclone = new Buff(4, "Swept up in Cyclone").setDisableAttack().setDisableItems().setDisableMove().setInvulnerable().setMagicImmune();
-	public static final Buff ringOfProtection = new Buff(5, "Ring of Protection").setArmor(2);
-	public static final Buff bootsOfSpeed = new Buff(6, "Boots of Speed").setMovementSpeed(50);
+	public static final Buff inCyclone = new Buff(2, "Swept up in Cyclone").setDisableAttack().setDisableItems().setDisableMove().setInvulnerable().setMagicImmune();
 	
 	
 	public Buff(int id, String name) {
 		this.id = id;
 		this.name = name;
 		buffList[id] = this;
+		lastID = id;
+	}
+	/**
+	 * For passive item buffs. ID is not specified, because it is never sent
+	 * for passive buffs.
+	 */
+	public Buff(Dota2Item item) {
+		this(lastID + 1, Config.forClass(item.getClass()).name);
 	}
 	
 	public Buff setDisableAttack() {

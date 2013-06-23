@@ -5,7 +5,6 @@ import hunternif.mc.dota2items.util.MathUtil;
 import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityCyclone extends TileEntity {
-	public static final String NAME = "Cyclone";
 	public static float maxPitch = 0.4f;
 	public static float duration = 2.5f; // seconds
 	

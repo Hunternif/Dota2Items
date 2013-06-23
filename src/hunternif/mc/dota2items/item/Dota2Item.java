@@ -7,6 +7,7 @@ import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.gui.ColorHelper;
 import hunternif.mc.dota2items.inventory.InventoryShop;
+import hunternif.mc.dota2items.inventory.ItemColumn;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class Dota2Item extends Item {
 	public boolean dropsOnDeath = false;
 	public Buff passiveBuff;
-	public int shopColumn;
+	public ItemColumn shopColumn;
 	
 	/** If this item has a recipe, this "price" represents the price of the recipe. */
 	private int price;
@@ -101,7 +102,7 @@ public abstract class Dota2Item extends Item {
 		return totalPrice;
 	}
 	public boolean isSecretShopRequired() {
-		if (this.shopColumn == InventoryShop.COLUMN_SECRET_SHOP) {
+		if (this.shopColumn == ItemColumn.COLUMN_SECRET_SHOP) {
 			return true;
 		}
 		if (hasRecipe()) {

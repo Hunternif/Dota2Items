@@ -24,22 +24,11 @@ public class InventoryShop implements IInventory {
 	private static final int COLUMNS = 11;
 	private static final int ROWS = 12;
 	
-	public static final int COLUMN_CONSUMABLES = 0;
-	public static final int COLUMN_ATTRIBUTES = 1;
-	public static final int COLUMN_ARMAMENTS = 2;
-	public static final int COLUMN_ARCANE = 3;
-	public static final int COLUMN_COMMON = 4;
-	public static final int COLUMN_SUPPORT = 5;
-	public static final int COLUMN_CASTER = 6;
-	public static final int COLUMN_WEAPONS = 7;
-	public static final int COLUMN_ARMOR = 8;
-	public static final int COLUMN_ARTIFACTS = 9;
-	public static final int COLUMN_SECRET_SHOP = 10;
 	private static ItemStack[][] itemSamples = new ItemStack[COLUMNS][ROWS];
 	
 	public static void populate() {
 		populateColumn(
-				COLUMN_CONSUMABLES,
+				ItemColumn.COLUMN_CONSUMABLES,
 //				Dota2Items.clarity,
 				Dota2Items.tango
 //				Dota2Items.healingSalve,
@@ -53,7 +42,7 @@ public class InventoryShop implements IInventory {
 //				Dota2Items.bottle
 		);
 //		populateColumn(
-//				COLUMN_ATTRIBUTES,
+//				ItemColumn.COLUMN_ATTRIBUTES,
 //				Dota2Items.ironBranch,
 //				Dota2Items.gauntletsOfStrength,
 //				Dota2Items.slippersOfAgility,
@@ -68,7 +57,7 @@ public class InventoryShop implements IInventory {
 //				Dota2Items.ultimateOrb
 //		);
 		populateColumn(
-				COLUMN_ARMAMENTS,
+				ItemColumn.COLUMN_ARMAMENTS,
 				Dota2Items.ringOfProtection,
 				Dota2Items.quellingBlade
 //				Dota2Items.stoutShield,
@@ -84,7 +73,7 @@ public class InventoryShop implements IInventory {
 		);
 		
 		populateColumn(
-				COLUMN_ARCANE,
+				ItemColumn.COLUMN_ARCANE,
 //				Dota2Items.magicStick,
 //				Dota2Items.sagesMask,
 //				Dota2Items.ringOfRegen,
@@ -99,7 +88,7 @@ public class InventoryShop implements IInventory {
 //				Dota2Items.shadowAmulet
 		);
 //		populateColumn(
-//				COLUMN_COMMON,
+//				ItemColumn.COLUMN_COMMON,
 //				Dota2Items.wraithBand,
 //				Dota2Items.nullTalisman,
 //				Dota2Items.magicWand,
@@ -114,7 +103,7 @@ public class InventoryShop implements IInventory {
 //				Dota2Items.bootsOfTravel
 //		);
 //		populateColumn(
-//				COLUMN_SUPPORT,
+//				ItemColumn.COLUMN_SUPPORT,
 //				Dota2Items.ringOfBasilius,
 //				Dota2Items.headdress,
 //				Dota2Items.buckler,
@@ -129,7 +118,7 @@ public class InventoryShop implements IInventory {
 //				Dota2Items.pipeOfInsight
 //		);
 		populateColumn(
-				COLUMN_CASTER,
+				ItemColumn.COLUMN_CASTER,
 				//Dota2Items.forceStaff,
 //				Dota2Items.necronomicon,
 				Dota2Items.eulsScepter
@@ -142,7 +131,7 @@ public class InventoryShop implements IInventory {
 //				Dota2Items.scytheOfVyse
 		);
 //		populateColumn(
-//				COLUMN_WEAPONS,
+//				ItemColumn.COLUMN_WEAPONS,
 //				Dota2Items.crystalys,
 //				Dota2Items.armletOfMordiggian,
 //				Dota2Items.skullBasher,
@@ -157,7 +146,7 @@ public class InventoryShop implements IInventory {
 //				Dota2Items.abyssalBlade
 //		);
 //		populateColumn(
-//				COLUMN_ARMOR,
+//				ItemColumn.COLUMN_ARMOR,
 //				Dota2Items.hoodOfDefiance,
 //				Dota2Items.bladeMail,
 //				Dota2Items.vanguard,
@@ -171,7 +160,7 @@ public class InventoryShop implements IInventory {
 //				Dota2Items.heartOfTarrasque
 //		);
 //		populateColumn(
-//				COLUMN_ARTIFACTS,
+//				ItemColumn.COLUMN_ARTIFACTS,
 //				Dota2Items.helmOfTheDominator,
 //				Dota2Items.maskOfMadness,
 //				Dota2Items.sange,
@@ -186,7 +175,7 @@ public class InventoryShop implements IInventory {
 //				Dota2Items.satanic
 //		);
 //		populateColumn(
-//				COLUMN_SECRET_SHOP,
+//				ItemColumn.COLUMN_SECRET_SHOP,
 //				Dota2Items.demonEdge,
 //				Dota2Items.eaglesong,
 //				Dota2Items.reaver,
@@ -201,7 +190,7 @@ public class InventoryShop implements IInventory {
 //				Dota2Items.orbOfVenom
 //		);
 	}
-	private static void populateColumn(int column, Dota2Item... items) {
+	private static void populateColumn(ItemColumn column, Dota2Item... items) {
 		for (int i = 0; i < items.length; i++) {
 			items[i].shopColumn = column;
 			ItemStack stack = new ItemStack(items[i]);
@@ -211,22 +200,22 @@ public class InventoryShop implements IInventory {
 				stack.setTagCompound(tag);
 			}
 			tag.setBoolean(TAG_IS_SAMPLE, true);
-			itemSamples[column][i] = stack;
+			itemSamples[column.id][i] = stack;
 		}
 	}
 	
 	public static InventoryShop newRegularShop() {
 		return new InventoryShop(new int[]{
-			COLUMN_CONSUMABLES,
-			COLUMN_ATTRIBUTES,
-			COLUMN_ARMAMENTS,
-			COLUMN_ARCANE,
-			COLUMN_COMMON,
-			COLUMN_SUPPORT,
-			COLUMN_CASTER,
-			COLUMN_WEAPONS,
-			COLUMN_ARMOR,
-			COLUMN_ARTIFACTS
+			ItemColumn.COLUMN_CONSUMABLES.id,
+			ItemColumn.COLUMN_ATTRIBUTES.id,
+			ItemColumn.COLUMN_ARMAMENTS.id,
+			ItemColumn.COLUMN_ARCANE.id,
+			ItemColumn.COLUMN_COMMON.id,
+			ItemColumn.COLUMN_SUPPORT.id,
+			ItemColumn.COLUMN_CASTER.id,
+			ItemColumn.COLUMN_WEAPONS.id,
+			ItemColumn.COLUMN_ARMOR.id,
+			ItemColumn.COLUMN_ARTIFACTS.id
 		}, 5);
 	}
 	

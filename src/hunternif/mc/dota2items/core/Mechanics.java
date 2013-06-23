@@ -367,7 +367,7 @@ public class Mechanics {
 	@ForgeSubscribe
 	public void onPickupGold(EntityItemPickupEvent event) {
 		ItemStack stack = event.item.getEntityItem();
-		if (stack.itemID == Config.goldCoin.id) {
+		if (stack.itemID == Config.goldCoin.getID()) {
 			event.entity.worldObj.playSoundAtEntity(event.entity, Sound.COINS.name, 0.8f, 1f);
 			EntityStats stats = getEntityStats(event.entityLiving);
 			stats.addGold(stack.stackSize);
@@ -383,7 +383,7 @@ public class Mechanics {
 		while (goldAmount > 0) {
 			int curPortion = goldAmount > portion ? portion : goldAmount;
 			goldAmount -= curPortion;
-			entity.dropItem(Config.goldCoin.id, curPortion);
+			entity.dropItem(Config.goldCoin.getID(), curPortion);
 		}
 	}
 }

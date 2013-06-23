@@ -66,8 +66,7 @@ public class Config {
 					} else {
 						((Item)info.instance).setUnlocalizedName(field.getName());
 						LanguageRegistry.addName(info.instance, info.name);
-						// The following line breaks things for some reason.
-						//GameRegistry.registerItem((Item)info.instance, field.getName());
+						GameRegistry.registerItem((Item)info.instance, field.getName());
 						Dota2Items.itemList.add((Item)info.instance);
 					}
 				}
@@ -93,8 +92,8 @@ public class Config {
 	public static CfgInfo cycloneContainer = new CfgInfo(BlockCycloneContainer.class, 2700, "Cyclone Container", true);
 	
 	public static class CfgInfo {
-		public Class<?> clazz;
-		public int id;
+		protected Class<?> clazz;
+		protected int id;
 		public String name;
 		public boolean isBlock;
 		public Object instance;
@@ -106,6 +105,9 @@ public class Config {
 		}
 		public CfgInfo(Class<?> clazz, int defaultID, String englishName) {
 			this(clazz, defaultID, englishName, false);
+		}
+		public int getID() {
+			return isBlock ? ((Block)instance).blockID : ((Item)instance).itemID;
 		}
 	}
 

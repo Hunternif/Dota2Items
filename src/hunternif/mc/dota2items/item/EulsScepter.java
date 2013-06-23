@@ -78,7 +78,7 @@ public class EulsScepter extends CooldownItem {
 			y ++;
 		}
 		if (!entity.worldObj.isRemote) {
-			entity.worldObj.setBlock(x, y, z, Config.cycloneContainer.id, 0, 3);
+			entity.worldObj.setBlock(x, y, z, Config.cycloneContainer.getID(), 0, 3);
 		}
 		
 		if (!entity.worldObj.isRemote) {

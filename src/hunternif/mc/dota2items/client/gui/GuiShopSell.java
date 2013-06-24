@@ -32,7 +32,7 @@ public class GuiShopSell extends GuiShopBase {
 		this.fontRenderer.drawString("Inventory", 8, 73, TITLE_COLOR);
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
 		ClientProxy.guiGold.renderGoldText(stats.getGold(), WIDTH - GuiGold.GUI_GOLD_WIDTH, 0);
-		ItemStack stackOnSale = ((ContainerShopSell)this.inventorySlots).getTransactionSlot().getStack();
+		ItemStack stackOnSale = ((ContainerShopSell)this.inventorySlots).getSellingSlot().getStack();
 		int sellPrice = 0;
 		if (stackOnSale != null && stackOnSale.getItem() instanceof Dota2Item) {
 			sellPrice = ((Dota2Item)stackOnSale.getItem()).getSellPrice() * stackOnSale.stackSize;

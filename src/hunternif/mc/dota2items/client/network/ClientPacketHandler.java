@@ -1,9 +1,11 @@
-package hunternif.mc.dota2items.network;
+package hunternif.mc.dota2items.client.network;
 
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
-import hunternif.mc.dota2items.effect.Dota2Effect;
+import hunternif.mc.dota2items.effect.EffectInstance;
+import hunternif.mc.dota2items.network.EntityMovePacket;
+import hunternif.mc.dota2items.network.EntityStatsPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -21,9 +23,9 @@ public class ClientPacketHandler implements IPacketHandler {
 		if (packet.channel.equals(Dota2Items.CHANNEL)) {
 			
 			// Try parsing effect
-			Dota2Effect effect = Dota2Effect.fromPacket(packet);
+			EffectInstance effect = EffectInstance.fromPacket(packet);
 			if (effect != null) {
-				effect.start();
+				effect.perform();
 				return;
 			}
 			

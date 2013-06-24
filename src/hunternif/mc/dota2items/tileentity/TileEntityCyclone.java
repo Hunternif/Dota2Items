@@ -1,6 +1,7 @@
 package hunternif.mc.dota2items.tileentity;
 
-import hunternif.mc.dota2items.effect.Dota2Effect;
+import hunternif.mc.dota2items.effect.Effect;
+import hunternif.mc.dota2items.effect.EffectInstance;
 import hunternif.mc.dota2items.util.MathUtil;
 import net.minecraft.tileentity.TileEntity;
 
@@ -51,15 +52,11 @@ public class TileEntityCyclone extends TileEntity {
 				pitch = 0;
 			}
 			
-			//EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
-			//CycloneFXRing particle = new CycloneFXRing(worldObj, xCoord, yCoord, zCoord, yaw, pitch, effectRenderer);
 			if (duration - elapsed < 0.5f && alpha > 0) {
 				alpha -= 0.05f;
 			}
-			Dota2Effect effect = new Dota2Effect(Dota2Effect.CYCLONE_RING, xCoord, yCoord, zCoord, yaw, pitch, alpha);
-			effect.start();
-			//particle.setAlphaF(alpha);
-			//effectRenderer.addEffect(particle, this);
+			EffectInstance effect = new EffectInstance(Effect.cyclone, xCoord, yCoord, zCoord, yaw, pitch, alpha);
+			effect.perform();
         }
     }
 }

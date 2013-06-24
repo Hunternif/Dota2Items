@@ -1,12 +1,12 @@
-package hunternif.mc.dota2items.effect;
+package hunternif.mc.dota2items.client.particle;
 
 import net.minecraft.world.World;
 
-public class CycloneFXParticle extends Dota2Particle {
+public class ParticleCyclone extends Dota2Particle {
 	//public static int invisibleAge = 1;
 	public static int expandAge = 10;
 
-	protected CycloneFXParticle(World world, double x, double y, double z, double velX, double velY, double velZ) {
+	public ParticleCyclone(World world, double x, double y, double z, double velX, double velY, double velZ) {
 		super(world, x, y, z, velX, velY, velZ);
 		this.particleTextureIndexX = 5;
 		this.particleTextureIndexY = 0;

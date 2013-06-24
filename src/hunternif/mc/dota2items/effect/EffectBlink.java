@@ -1,17 +1,29 @@
 package hunternif.mc.dota2items.effect;
 
-import hunternif.mc.dota2items.Dota2Items;
+import hunternif.mc.dota2items.client.particle.ParticleBlink;
+
+import java.util.Random;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlinkFX extends EntityFX {
+public class EffectBlink extends Effect {
 	public static final int MAX_PARTICLES = 30;
-	
-	protected BlinkFX(World world, double x, double y, double z, EffectRenderer renderer) {
-		super(world, x, y, z, 0.0D, 0.0D, 0.0D);
+
+	public EffectBlink(int id) {
+		super(id);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void perform(EffectInstance inst) {
+		World world = Minecraft.getMinecraft().theWorld;
+		EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
+		Random rand = new Random();
 		for (int i = 0; i < MAX_PARTICLES; i++) {
 			float yaw = (rand.nextFloat()*2.0F - 1.0F) * (float) Math.PI;
 			float pitch = (rand.nextFloat() - 0.5F) * (float) Math.PI;
@@ -26,12 +38,9 @@ public class BlinkFX extends EntityFX {
 			double velX = -sinYaw*cosPitch / (distance) * 0.05D;
 			double velZ = cosYaw*cosPitch / (distance) * 0.05D;
 			double velY = -sinPitch / (distance) * 0.05D;
-			BlinkFXParticle particle = new BlinkFXParticle(world, posX + rX, posY + rY, posZ + rZ, velX, velY, velZ);
-			renderer.addEffect(particle/*, Dota2Items.particlesDummyItem*/);
+			ParticleBlink particle = new ParticleBlink(world, inst.x + rX, inst.y + rY, inst.z + rZ, velX, velY, velZ);
+			effectRenderer.addEffect(particle);
 		}
 	}
-	
-	// BlinkFX only spawns BlinkFXParticle's, it's not a visible effect itself.
-	@Override
-	public void renderParticle(Tessellator tessellator, float par2, float par3, float par4, float par5, float par6, float par7) {}
+
 }

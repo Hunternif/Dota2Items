@@ -1,7 +1,7 @@
 package hunternif.mc.dota2items.network;
 
 import hunternif.mc.dota2items.Dota2Items;
-import hunternif.mc.dota2items.gui.GuiShopBuy;
+import hunternif.mc.dota2items.client.gui.GuiShopBuy;
 import hunternif.mc.dota2items.inventory.ContainerShopBuy;
 
 import java.io.ByteArrayInputStream;

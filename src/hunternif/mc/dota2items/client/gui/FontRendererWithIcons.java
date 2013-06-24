@@ -1,4 +1,4 @@
-package hunternif.mc.dota2items.gui;
+package hunternif.mc.dota2items.client.gui;
 
 import java.util.ArrayList;
 import java.util.Collections;

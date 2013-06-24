@@ -1,7 +1,7 @@
 package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.Sound;
-import hunternif.mc.dota2items.event.CooldownEndDisplayEvent;
+import hunternif.mc.dota2items.client.event.CooldownEndDisplayEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

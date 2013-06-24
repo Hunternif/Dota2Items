@@ -1,4 +1,4 @@
-package hunternif.mc.dota2items.gui;
+package hunternif.mc.dota2items.client.gui;
 
 import hunternif.mc.dota2items.inventory.ItemColumn;
 import net.minecraft.util.EnumChatFormatting;

@@ -1,4 +1,4 @@
-package hunternif.mc.dota2items.event;
+package hunternif.mc.dota2items.client.event;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.Event;

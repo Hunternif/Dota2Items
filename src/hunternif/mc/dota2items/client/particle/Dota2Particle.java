@@ -1,4 +1,4 @@
-package hunternif.mc.dota2items.effect;
+package hunternif.mc.dota2items.client.particle;
 
 import hunternif.mc.dota2items.Dota2Items;
 import net.minecraft.client.Minecraft;

@@ -1,4 +1,4 @@
-package hunternif.mc.dota2items.render;
+package hunternif.mc.dota2items.client.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;

@@ -1,13 +1,13 @@
 package hunternif.mc.dota2items;
 
+import hunternif.mc.dota2items.client.gui.GuiHandler;
+import hunternif.mc.dota2items.client.network.ClientPacketHandler;
 import hunternif.mc.dota2items.core.Dota2PlayerTracker;
 import hunternif.mc.dota2items.core.Mechanics;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
 import hunternif.mc.dota2items.entity.ShopkeeperSpawner;
-import hunternif.mc.dota2items.gui.GuiHandler;
 import hunternif.mc.dota2items.inventory.Dota2CreativeTab;
 import hunternif.mc.dota2items.inventory.InventoryShop;
-import hunternif.mc.dota2items.network.ClientPacketHandler;
 import hunternif.mc.dota2items.network.ServerPacketHandler;
 import hunternif.mc.dota2items.tileentity.TileEntityCyclone;
 

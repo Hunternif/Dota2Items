@@ -1,4 +1,4 @@
-package hunternif.mc.dota2items.gui;
+package hunternif.mc.dota2items.client.gui;
 
 import hunternif.mc.dota2items.ClientProxy;
 import hunternif.mc.dota2items.Dota2Items;

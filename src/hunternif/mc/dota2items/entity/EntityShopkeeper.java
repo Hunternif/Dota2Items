@@ -1,7 +1,7 @@
 package hunternif.mc.dota2items.entity;
 
 import hunternif.mc.dota2items.Dota2Items;
-import hunternif.mc.dota2items.gui.GuiHandler;
+import hunternif.mc.dota2items.client.gui.GuiHandler;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.INpc;

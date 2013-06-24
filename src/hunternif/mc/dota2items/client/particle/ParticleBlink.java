@@ -1,15 +1,16 @@
-package hunternif.mc.dota2items.effect;
+package hunternif.mc.dota2items.client.particle;
+
 
 import java.util.Random;
 
 import net.minecraft.world.World;
 
-public class BlinkFXParticle extends Dota2Particle {
+public class ParticleBlink extends Dota2Particle {
 	public static final int STAGES = 5;
 	
 	private int stage = 0;
 	
-	protected BlinkFXParticle(World world, double x, double y, double z, double velX, double velY, double velZ) {
+	public ParticleBlink(World world, double x, double y, double z, double velX, double velY, double velZ) {
 		super(world, x, y, z, velX, velY, velZ);
 		this.rand = new Random((long)((x + y + z)*100000));
 		stage = world.rand.nextInt(STAGES);

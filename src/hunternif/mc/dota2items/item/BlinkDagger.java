@@ -1,7 +1,8 @@
 package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.Sound;
-import hunternif.mc.dota2items.effect.Dota2Effect;
+import hunternif.mc.dota2items.effect.Effect;
+import hunternif.mc.dota2items.effect.EffectInstance;
 import hunternif.mc.dota2items.util.BlockUtil;
 import hunternif.mc.dota2items.util.SideHit;
 
@@ -196,8 +197,8 @@ public class BlinkDagger extends CooldownItem {
 		player.motionZ = 0;
 		player.fallDistance = 0;
 
-		Dota2Effect srcEffect = new Dota2Effect(Dota2Effect.BLINK, srcX, srcY, srcZ);
-		Dota2Effect destEffect = new Dota2Effect(Dota2Effect.BLINK, destX, destY, destZ);
+		EffectInstance srcEffect = new EffectInstance(Effect.blink, srcX, srcY, srcZ);
+		EffectInstance destEffect = new EffectInstance(Effect.blink, destX, destY, destZ);
 		
 		if (!world.isRemote) {
 			// Server side. Play sounds and send packets about the player blinking.
@@ -220,8 +221,8 @@ public class BlinkDagger extends CooldownItem {
 		} else {
 			// Client side. Render blink effect.
 			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.BLINK_OUT.name, 1.0F, 1.0F);
-			srcEffect.start();
-			destEffect.start();
+			srcEffect.perform();
+			destEffect.perform();
 		}
 		
 		return true;

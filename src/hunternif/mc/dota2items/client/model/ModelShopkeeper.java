@@ -1,4 +1,4 @@
-package hunternif.mc.dota2items.model;
+package hunternif.mc.dota2items.client.model;
 
 import hunternif.mc.dota2items.util.MathUtil;
 import net.minecraft.client.model.ModelBase;

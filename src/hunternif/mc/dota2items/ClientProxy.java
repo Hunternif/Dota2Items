@@ -1,14 +1,14 @@
 package hunternif.mc.dota2items;
 
+import hunternif.mc.dota2items.client.gui.FontRendererWithIcons;
+import hunternif.mc.dota2items.client.gui.GuiGold;
+import hunternif.mc.dota2items.client.gui.IconInText;
+import hunternif.mc.dota2items.client.render.CooldownItemRenderer;
+import hunternif.mc.dota2items.client.render.RenderShopkeeper;
 import hunternif.mc.dota2items.core.ClientTickHandler;
 import hunternif.mc.dota2items.core.ServerTickHandler;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
-import hunternif.mc.dota2items.gui.FontRendererWithIcons;
-import hunternif.mc.dota2items.gui.GuiGold;
-import hunternif.mc.dota2items.gui.IconInText;
 import hunternif.mc.dota2items.item.CooldownItem;
-import hunternif.mc.dota2items.render.CooldownItemRenderer;
-import hunternif.mc.dota2items.render.RenderShopkeeper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;

@@ -18,8 +18,5 @@ public class GoldCoin extends Item {
 	public void registerIcons(IconRegister iconRegister) {
 		this.itemIcon = iconRegister.registerIcon(Dota2Items.ID + ":coin");
 	}
-	
-	/*@Override
-	public void onUpdate(ItemStack stack, World world, Entity player, int par4, boolean par5) {
-	}*/
+
 }

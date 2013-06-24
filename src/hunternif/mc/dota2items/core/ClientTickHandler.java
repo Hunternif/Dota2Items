@@ -2,7 +2,6 @@ package hunternif.mc.dota2items.core;
 
 import hunternif.mc.dota2items.ClientProxy;
 import hunternif.mc.dota2items.Dota2Items;
-import hunternif.mc.dota2items.gui.GuiGold;
 
 import java.util.EnumSet;
 

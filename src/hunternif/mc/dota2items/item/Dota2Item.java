@@ -3,9 +3,9 @@ package hunternif.mc.dota2items.item;
 import hunternif.mc.dota2items.ClientProxy;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
+import hunternif.mc.dota2items.client.gui.ColorHelper;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
-import hunternif.mc.dota2items.gui.ColorHelper;
 import hunternif.mc.dota2items.inventory.InventoryShop;
 import hunternif.mc.dota2items.inventory.ItemColumn;
 

@@ -1,7 +1,7 @@
-package hunternif.mc.dota2items.render;
+package hunternif.mc.dota2items.client.render;
 
+import hunternif.mc.dota2items.client.event.CooldownEndDisplayEvent;
 import hunternif.mc.dota2items.core.ClientTickHandler;
-import hunternif.mc.dota2items.event.CooldownEndDisplayEvent;
 import hunternif.mc.dota2items.item.CooldownItem;
 import hunternif.mc.dota2items.util.MathUtil;
 

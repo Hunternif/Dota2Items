@@ -1,6 +1,6 @@
-package hunternif.mc.dota2items.render;
+package hunternif.mc.dota2items.client.render;
 
-import hunternif.mc.dota2items.model.ModelShopkeeper;
+import hunternif.mc.dota2items.client.model.ModelShopkeeper;
 import net.minecraft.client.renderer.entity.RenderLiving;
 
 public class RenderShopkeeper extends RenderLiving {

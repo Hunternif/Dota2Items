@@ -26,6 +26,7 @@ import java.util.logging.Level;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -91,11 +92,23 @@ public class Config {
 			for (Field field : itemsWithRecipes) {
 				CfgInfo info = (CfgInfo) field.get(null);
 				Recipe annotation = info.clazz.getAnnotation(Recipe.class);
-				List<Dota2Item> recipe = new ArrayList<Dota2Item>();
-				for (Class<?> itemClass : annotation.ingredients()) {
-					recipe.add((Dota2Item)forClass(itemClass).instance);
+				List<Dota2Item> recipeForItem = new ArrayList<Dota2Item>();
+				
+				List<ItemStack> recipeForCraft = new ArrayList<ItemStack>();
+				
+				for (Class<?> clazz : annotation.ingredients()) {
+					Dota2Item item = (Dota2Item) forClass(clazz).instance;
+					recipeForItem.add(item);
+					recipeForCraft.add(new ItemStack(item, item.defaultQuantity));
 				}
-				((Dota2Item) info.instance).setRecipe(recipe);
+				((Dota2Item) info.instance).setRecipe(recipeForItem);
+				
+				if (((Dota2Item)info.instance).isRecipeItemRequired()) {
+					recipeForCraft.add(ItemRecipe.forItem(info.getID(), false));
+				}
+				ItemStack craftResult = new ItemStack((Dota2Item)info.instance, ((Dota2Item)info.instance).defaultQuantity);
+				GameRegistry.addShapelessRecipe(craftResult, recipeForCraft.toArray());
+				
 				FMLLog.log(Dota2Items.ID, Level.INFO, "Added recipe for Dota 2 item " + info.name);
 			}
 		} catch(Exception e) {

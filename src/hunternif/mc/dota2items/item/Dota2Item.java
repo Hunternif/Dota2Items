@@ -1,6 +1,7 @@
 package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.ClientProxy;
+import hunternif.mc.dota2items.Config;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.client.gui.ColorHelper;
@@ -29,6 +30,7 @@ public abstract class Dota2Item extends Item {
 	public boolean dropsOnDeath = false;
 	public Buff passiveBuff;
 	public ItemColumn shopColumn;
+	public int defaultQuantity = 1;
 	
 	/** If this item has a recipe, this "price" represents the price of the recipe. */
 	private int price;
@@ -126,7 +128,9 @@ public abstract class Dota2Item extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean showAdvanced) {
-		list.add(ClientProxy.ICON_GOLD.key + EnumChatFormatting.GOLD + this.getTotalPrice()*stack.stackSize);
+		boolean isRecipe = stack.itemID == Config.recipe.getID();
+		int itemPrice = isRecipe ? this.getRecipePrice() : this.getTotalPrice();
+		list.add(ClientProxy.ICON_GOLD.key + EnumChatFormatting.GOLD + itemPrice*stack.stackSize);
 		if (this instanceof CooldownItem) {
 			float cooldown = ((CooldownItem)this).getCooldown();
 			String cooldownStr;
@@ -139,10 +143,10 @@ public abstract class Dota2Item extends Item {
 		}
 		// If the item is displayed in shop
 		if (isSampleItemStack(stack)) {
-			if (Dota2Items.mechanics.getEntityStats(player).getGold() < this.getTotalPrice()*stack.stackSize) {
+			if (Dota2Items.mechanics.getEntityStats(player).getGold() < itemPrice*stack.stackSize) {
 				list.add(EnumChatFormatting.DARK_RED + "Not enough gold");
 			}
-			if (isSecretShopRequired()) {
+			if (!isRecipe && isSecretShopRequired()) {
 				list.add(EnumChatFormatting.DARK_RED + "Requires secret shop");
 			}
 		}
@@ -157,5 +161,37 @@ public abstract class Dota2Item extends Item {
 	public static boolean isSampleItemStack(ItemStack itemStack) {
 		NBTTagCompound tag = itemStack.getTagCompound();
 		return tag != null && tag.getBoolean(InventoryShop.TAG_IS_SAMPLE);
+	}
+	
+	public static boolean canBuy(ItemStack itemStack, EntityPlayer player) {
+		int curPrice = 0;
+		if (itemStack.getItem() instanceof Dota2Item) {
+			curPrice = ((Dota2Item)itemStack.getItem()).getTotalPrice() * itemStack.stackSize;
+		} else if (itemStack.getItem() instanceof ItemRecipe) {
+			curPrice = ItemRecipe.getPrice(itemStack);
+		}
+		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
+		return stats.getGold() >= curPrice;
+	}
+	public static boolean hasRecipe(ItemStack itemStack) {
+		return itemStack.getItem() instanceof Dota2Item &&
+				((Dota2Item)itemStack.getItem()).hasRecipe();
+	}
+	
+	public static int getPrice(ItemStack itemStack) {
+		if (itemStack == null) {
+			return 0;
+		}
+		if (itemStack.getItem() instanceof Dota2Item) {
+			Dota2Item item = (Dota2Item) itemStack.getItem(); 
+			return item.getTotalPrice() * itemStack.stackSize;
+		} else if (itemStack.getItem() instanceof ItemRecipe) {
+			return ItemRecipe.getPrice(itemStack) * itemStack.stackSize;
+		} else {
+			return 0;
+		}
+	}
+	public static int getSellPrice(ItemStack itemStack) {
+		return getPrice(itemStack)/2;
 	}
 }

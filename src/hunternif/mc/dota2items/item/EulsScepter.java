@@ -1,6 +1,7 @@
 package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.Config;
+import hunternif.mc.dota2items.Config.Recipe;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
@@ -20,13 +21,14 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
+@Recipe(ingredients={StaffOfWizardry.class, SagesMask.class, VoidStone.class})
 public class EulsScepter extends CooldownItem {
 
 	public EulsScepter(int id) {
 		super(id);
 		setCooldown(30);
 		passiveBuff = new Buff(this).setMovementSpeed(30).setIntelligence(10).setManaRegenPercent(150);
-		setPrice(2800);
+		setPrice(600);
 	}
 	
 	@Override

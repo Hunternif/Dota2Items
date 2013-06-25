@@ -16,6 +16,10 @@ public class ServerPacketHandler implements IPacketHandler {
 				return;
 			} else if (ShopFilterInputPacket.parseAndApply(packet, (EntityPlayer) player)) {
 				return;
+			} else if (ShopSellPacket.parseAndApply(packet, (EntityPlayer) player)) {
+				return;
+			} else if (ShopSetResultPacket.parseAndApply(packet, (EntityPlayer) player)) {
+				return;
 			}
 			
 		}

@@ -5,7 +5,9 @@ import hunternif.mc.dota2items.Config.CfgInfo;
 import hunternif.mc.dota2items.item.Dota2Item;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -15,17 +17,11 @@ import net.minecraft.nbt.NBTTagCompound;
 public class InventoryShop implements IInventory {
 	public static final String TAG_IS_SAMPLE = "D2IisSample";
 	
-	public static final int SLOT_RESULT = 999;
-	public static final int SLOT_RECIPE_RESULT = 1000;
-	public static final int SLOT_INGR_1 = 1001;
-	public static final int SLOT_INGR_2 = 1002;
-	public static final int SLOT_INGR_3 = 1003;
-	public static final int SLOT_INGR_4 = 1004;
-	
 	private static final int COLUMNS = 11;
 	private static final int ROWS = 12;
 	
-	private static ItemStack[][] itemSamples = new ItemStack[COLUMNS][ROWS];
+	private static final ItemStack[][] itemSamples = new ItemStack[COLUMNS][ROWS];
+	private static final Map<Class<?>, ItemStack> samplesMap = new HashMap<Class<?>, ItemStack>();
 	
 	public static void populate() {
 		populateColumn(
@@ -193,8 +189,9 @@ public class InventoryShop implements IInventory {
 	}
 	private static void populateColumn(ItemColumn column, CfgInfo... items) {
 		for (int i = 0; i < items.length; i++) {
-			((Dota2Item)items[i].instance).shopColumn = column;
-			ItemStack stack = new ItemStack((Dota2Item)items[i].instance);
+			Dota2Item item = (Dota2Item)items[i].instance;
+			item.shopColumn = column;
+			ItemStack stack = new ItemStack(item, item.defaultQuantity);
 			NBTTagCompound tag = stack.getTagCompound();
 			if (tag == null) {
 				tag = new NBTTagCompound();
@@ -202,10 +199,14 @@ public class InventoryShop implements IInventory {
 			}
 			tag.setBoolean(TAG_IS_SAMPLE, true);
 			itemSamples[column.id][i] = stack;
+			samplesMap.put(stack.getItem().getClass(), stack);
 		}
 	}
+	public static ItemStack sampleFor(Class<?> clazz) {
+		return samplesMap.get(clazz);
+	}
 	
-	public static InventoryShop newRegularShop() {
+	public static InventoryShop newRegularShop(int rows) {
 		return new InventoryShop(new int[]{
 			ItemColumn.COLUMN_CONSUMABLES.id,
 			ItemColumn.COLUMN_ATTRIBUTES.id,
@@ -217,7 +218,7 @@ public class InventoryShop implements IInventory {
 			ItemColumn.COLUMN_WEAPONS.id,
 			ItemColumn.COLUMN_ARMOR.id,
 			ItemColumn.COLUMN_ARTIFACTS.id
-		}, 5);
+		}, rows);
 	}
 	
 	private int[] columns;
@@ -283,7 +284,7 @@ public class InventoryShop implements IInventory {
 	}
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack) {}
+	public void setInventorySlotContents(int slotID, ItemStack itemstack) {}
 
 	@Override
 	public String getInvName() {
@@ -318,5 +319,4 @@ public class InventoryShop implements IInventory {
 	public boolean isStackValidForSlot(int i, ItemStack itemstack) {
 		return false;
 	}
-
 }

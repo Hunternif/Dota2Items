@@ -3,9 +3,11 @@ package hunternif.mc.dota2items;
 import hunternif.mc.dota2items.block.BlockCycloneContainer;
 import hunternif.mc.dota2items.item.BlinkDagger;
 import hunternif.mc.dota2items.item.BootsOfSpeed;
+import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.item.Dota2Logo;
 import hunternif.mc.dota2items.item.EulsScepter;
 import hunternif.mc.dota2items.item.GoldCoin;
+import hunternif.mc.dota2items.item.ItemRecipe;
 import hunternif.mc.dota2items.item.QuellingBlade;
 import hunternif.mc.dota2items.item.RingOfProtection;
 import hunternif.mc.dota2items.item.SagesMask;
@@ -13,8 +15,12 @@ import hunternif.mc.dota2items.item.StaffOfWizardry;
 import hunternif.mc.dota2items.item.Tango;
 import hunternif.mc.dota2items.item.VoidStone;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -27,6 +33,11 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class Config {
 	private static Map<Class<?>, CfgInfo> map = new HashMap<Class<?>, CfgInfo>();
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	public static @interface Recipe {
+		public Class<?>[] ingredients();
+	}
 	
 	public static void preLoad(Configuration config) {
 		try {
@@ -54,7 +65,9 @@ public class Config {
 	
 	public static void load() {
 		try {
+			List<Field> itemsWithRecipes = new ArrayList<Field>();
 			Field[] fields = Config.class.getFields();
+			// Parse fields to instantiate the items:
 			for (Field field : fields) {
 				if (field.getType().equals(CfgInfo.class)) {
 					CfgInfo info = (CfgInfo)field.get(null);
@@ -69,7 +82,21 @@ public class Config {
 						GameRegistry.registerItem((Item)info.instance, field.getName());
 						Dota2Items.itemList.add((Item)info.instance);
 					}
+					if (info.clazz.getAnnotation(Recipe.class) != null) {
+						itemsWithRecipes.add(field);
+					}
 				}
+			}
+			// Parse fields one more time to set their recipes:
+			for (Field field : itemsWithRecipes) {
+				CfgInfo info = (CfgInfo) field.get(null);
+				Recipe annotation = info.clazz.getAnnotation(Recipe.class);
+				List<Dota2Item> recipe = new ArrayList<Dota2Item>();
+				for (Class<?> itemClass : annotation.ingredients()) {
+					recipe.add((Dota2Item)forClass(itemClass).instance);
+				}
+				((Dota2Item) info.instance).setRecipe(recipe);
+				FMLLog.log(Dota2Items.ID, Level.INFO, "Added recipe for Dota 2 item " + info.name);
 			}
 		} catch(Exception e) {
 			FMLLog.log(Dota2Items.ID, Level.SEVERE, "Failed to instantiate items");
@@ -87,7 +114,7 @@ public class Config {
 	public static CfgInfo voidStone = 		new CfgInfo (VoidStone.class, 27008, "Void Stone");
 	public static CfgInfo sagesMask = 		new CfgInfo (SagesMask.class, 27009, "Sage's Mask");
 	public static CfgInfo staffOfWizardry = new CfgInfo (StaffOfWizardry.class, 27010, "Staff of Wizardry");
-	public static CfgInfo recipe = 			new CfgInfo (SagesMask.class, 27011, "Recipe");
+	public static CfgInfo recipe = 			new CfgInfo (ItemRecipe.class, 27011, "Recipe");
 	
 	public static CfgInfo cycloneContainer = new CfgInfo(BlockCycloneContainer.class, 2700, "Cyclone Container", true);
 	

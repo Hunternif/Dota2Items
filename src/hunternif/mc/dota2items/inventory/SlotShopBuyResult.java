@@ -6,6 +6,7 @@ import hunternif.mc.dota2items.item.Dota2Item;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 public class SlotShopBuyResult extends Slot {
 
@@ -16,10 +17,18 @@ public class SlotShopBuyResult extends Slot {
 	@Override
 	public boolean canTakeStack(EntityPlayer player) {
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
-		if (!(this.getStack().getItem() instanceof Dota2Item)) {
-			return false;
-		}
-		Dota2Item item = (Dota2Item) this.getStack().getItem();
-		return stats.getGold() >= item.getTotalPrice() * this.getStack().stackSize;
+		return stats.getGold() >= Dota2Item.getPrice(getStack());
+	}
+	
+	@Override
+	public boolean isItemValid(ItemStack par1ItemStack) {
+		return false;
+	}
+	
+	@Override
+	public void onPickupFromSlot(EntityPlayer player, ItemStack stack) {
+		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
+		stats.removeGold( Dota2Item.getPrice(stack) );
+		super.onPickupFromSlot(player, stack);
 	}
 }

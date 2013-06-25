@@ -14,7 +14,7 @@ public class GuiHandler implements IGuiHandler {
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		switch (ID) {
 		case GUI_ID_SHOP_BUY:
-			return new ContainerShopBuy();
+			return new ContainerShopBuy(player.inventory);
 		case GUI_ID_SHOP_SELL:
 			return new ContainerShopSell(player.inventory);
 		}

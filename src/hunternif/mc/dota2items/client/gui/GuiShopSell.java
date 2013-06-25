@@ -5,8 +5,10 @@ import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.inventory.ContainerShopSell;
 import hunternif.mc.dota2items.item.Dota2Item;
+import hunternif.mc.dota2items.network.ShopSellPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -17,11 +19,33 @@ public class GuiShopSell extends GuiShopBase {
 	public static final int WIDTH = 176;
 	public static final int HEIGHT = 166;
 	
+	private GuiButtonConfirmSale okBtn;
+	
 	public GuiShopSell(InventoryPlayer inventoryPlayer) {
 		super(inventoryPlayer.player, new ContainerShopSell(inventoryPlayer)); 
 		this.xSize = WIDTH;
 		this.ySize = HEIGHT;
 		this.curTab = ShopTab.SELL;
+	}
+	
+	@Override
+	public void initGui() {
+		super.initGui();
+		okBtn = new GuiButtonConfirmSale(-1, guiLeft + 139, guiTop + 43);
+		okBtn.enabled = false;
+		buttonList.add(okBtn);
+	}
+	
+	@Override
+	protected void actionPerformed(GuiButton button) {
+		if (button == okBtn) {
+			ItemStack stackOnSale = ((ContainerShopSell)this.inventorySlots).getSellingSlot().getStack();
+			int sellPrice = Dota2Item.getSellPrice(stackOnSale);
+			((ContainerShopSell)this.inventorySlots).putStackInSlot(0, null);
+			EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
+			stats.addGold(sellPrice);
+			ShopSellPacket.sendToServer();
+		}
 	}
 	
 	@Override
@@ -33,10 +57,8 @@ public class GuiShopSell extends GuiShopBase {
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
 		ClientProxy.guiGold.renderGoldText(stats.getGold(), WIDTH - GuiGold.GUI_GOLD_WIDTH, 0);
 		ItemStack stackOnSale = ((ContainerShopSell)this.inventorySlots).getSellingSlot().getStack();
-		int sellPrice = 0;
-		if (stackOnSale != null && stackOnSale.getItem() instanceof Dota2Item) {
-			sellPrice = ((Dota2Item)stackOnSale.getItem()).getSellPrice() * stackOnSale.stackSize;
-		}
+		int sellPrice = Dota2Item.getSellPrice(stackOnSale);
+		okBtn.enabled = sellPrice > 0;
 		renderSellPrice(sellPrice, 94, 49);
 		RenderHelper.enableGUIStandardItemLighting();
 	}

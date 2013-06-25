@@ -25,7 +25,7 @@ public class Tango extends Dota2Item {
 		super(id);
 		setMaxStackSize(64);
 		setPrice(30);
-		//TODO make Tango only available in a set of 3 in the shop.
+		defaultQuantity = 3;
 	}
 	
 	@Override

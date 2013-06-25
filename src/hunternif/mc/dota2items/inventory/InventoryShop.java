@@ -243,6 +243,9 @@ public class InventoryShop implements IInventory {
 			onInventoryChanged();
 		}
 	}
+	public int getRows() {
+		return height;
+	}
 	
 	public boolean contains(Dota2Item item) {
 		for (int i = 0; i < columns.length; i++) {

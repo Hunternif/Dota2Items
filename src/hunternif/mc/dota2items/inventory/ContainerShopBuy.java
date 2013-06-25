@@ -21,9 +21,8 @@ public class ContainerShopBuy extends Container {
 	private static final int SHOP_INV_Y = 60;
 	private static final int PLAYER_INV_X = 26;
 	private static final int PLAYER_INV_Y = 215;
-	private static final int ROWS_IN_SHOP = 4;
 	
-	public InventoryShop invShop = InventoryShop.newRegularShop(ROWS_IN_SHOP);
+	public InventoryShop invShop = InventoryShop.newRegularShop(4);
 	private InventoryBasic invResult = new InventoryBasic("Buying", false, 1);
 	private InventoryPlayer invPlayer;
 	private int slotResultNumber;
@@ -34,7 +33,7 @@ public class ContainerShopBuy extends Container {
 	public ContainerShopBuy(InventoryPlayer inventoryPlayer) {
 		this.invPlayer = inventoryPlayer;
 		// Assign shopkeeper's inventory
-		for (int i = 0; i < ROWS_IN_SHOP; i++) {
+		for (int i = 0; i < invShop.getRows(); i++) {
 			for (int j = 0; j < 10; j++) {
 				addSlotToContainer(new SlotShop(invShop, i * 10 + j, SHOP_INV_X + j * 18, SHOP_INV_Y + i * 18));
 			}

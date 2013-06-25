@@ -27,7 +27,7 @@ public class GuiManaBar extends Gui {
 	@ForgeSubscribe
 	public void onRenderExperienceBar(RenderGameOverlayEvent event) {
 		// Only interested in Post-ExperienceBar events (the end of overlay rendering)
-		if (event.isCancelable() || event.type != ElementType.EXPERIENCE) {
+		if (event.isCancelable() || event.type != ElementType.EXPERIENCE || mc.thePlayer.capabilities.isCreativeMode) {
 			return;
 		}
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(mc.thePlayer);

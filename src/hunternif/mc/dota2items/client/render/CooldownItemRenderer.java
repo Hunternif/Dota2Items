@@ -29,10 +29,10 @@ public class CooldownItemRenderer implements IItemRenderer {
 	private static int postCooldownEffectLength = 10;
 	
 	/** See CooldownItem.inventoryStacks */
-	private ItemStack[] inventoryStacks = new ItemStack[36];
-	private Map<ItemStack, Integer> animationsToGoOffCooldown = new ConcurrentHashMap<ItemStack, Integer>();
+	private final ItemStack[] inventoryStacks = new ItemStack[36];
+	private final Map<ItemStack, Integer> animationsToGoOffCooldown = new ConcurrentHashMap<ItemStack, Integer>();
 	
-	private static RenderItem renderItem = new RenderItem();
+	private static final RenderItem renderItem = new RenderItem();
 	
 	
 	private class ItemStackWrapper {
@@ -50,8 +50,7 @@ public class CooldownItemRenderer implements IItemRenderer {
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item,
-			ItemRendererHelper helper) {
+	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
 		return false;
 	}
 

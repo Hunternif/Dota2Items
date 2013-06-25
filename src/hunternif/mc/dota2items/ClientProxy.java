@@ -5,10 +5,13 @@ import hunternif.mc.dota2items.client.gui.GuiGold;
 import hunternif.mc.dota2items.client.gui.IconInText;
 import hunternif.mc.dota2items.client.render.CooldownItemRenderer;
 import hunternif.mc.dota2items.client.render.RenderShopkeeper;
+import hunternif.mc.dota2items.client.render.SecretShopItemRenderer;
 import hunternif.mc.dota2items.core.ClientTickHandler;
 import hunternif.mc.dota2items.core.ServerTickHandler;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
+import hunternif.mc.dota2items.inventory.ItemColumn;
 import hunternif.mc.dota2items.item.CooldownItem;
+import hunternif.mc.dota2items.item.Dota2Item;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -21,6 +24,7 @@ import cpw.mods.fml.relauncher.Side;
 
 public class ClientProxy extends CommonProxy {
 	public static final CooldownItemRenderer cooldownItemRenderer = new CooldownItemRenderer();
+	public static final SecretShopItemRenderer secretShopItemRenderer = new SecretShopItemRenderer();
 	public static final FontRendererWithIcons fontRenderer = new FontRendererWithIcons(
 			Minecraft.getMinecraft().gameSettings, "/font/default.png", Minecraft.getMinecraft().renderEngine, false);
 	public static IconInText ICON_GOLD = new IconInText("$gold$", 12, 12, "/mods/"+Dota2Items.ID+"/textures/gui/gold_coins.png", -1, -3, 3);
@@ -38,6 +42,8 @@ public class ClientProxy extends CommonProxy {
 		for (Item item : Dota2Items.itemList) {
 			if (item instanceof CooldownItem) {
 				MinecraftForgeClient.registerItemRenderer(item.itemID, cooldownItemRenderer);
+			} else if (item instanceof Dota2Item && ((Dota2Item)item).shopColumn == ItemColumn.COLUMN_SECRET_SHOP) {
+				MinecraftForgeClient.registerItemRenderer(item.itemID, secretShopItemRenderer);
 			}
 		}
 		

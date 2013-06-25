@@ -54,8 +54,8 @@ public class GuiGold extends Gui {
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(mc.thePlayer);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDisable(GL11.GL_LIGHTING);
-		mc.renderEngine.bindTexture("/mods/"+Dota2Items.ID+"/textures/gui/gold.png");
-		drawTexturedModalRect(x, y, 0, 0, GUI_GOLD_WIDTH, GUI_GOLD_HEIGHT);
+		mc.renderEngine.bindTexture("/mods/"+Dota2Items.ID+"/textures/gui/shop_sell.png");
+		drawTexturedModalRect(x, y, 115, 0, GUI_GOLD_WIDTH, GUI_GOLD_HEIGHT);
 		// Draw the number
 		renderGoldText(stats.getGold(), x, y);
 	}

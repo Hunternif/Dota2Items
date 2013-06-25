@@ -328,7 +328,7 @@ public class EntityStats implements IExtendedEntityProperties {
 
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {
-		compound.setInteger(TAG_MANA, getMana());
+		compound.setFloat(TAG_MANA, getFloatMana());
 		compound.setFloat(TAG_PARTIAL_HP, partialHalfHeart);
 		compound.setInteger(TAG_GOLD, getGold());
 		NBTTagList buffsList = new NBTTagList();
@@ -340,7 +340,7 @@ public class EntityStats implements IExtendedEntityProperties {
 
 	@Override
 	public void loadNBTData(NBTTagCompound compound) {
-		this.curMana = compound.getInteger(TAG_MANA);
+		this.curMana = compound.getFloat(TAG_MANA);
 		this.partialHalfHeart = compound.getFloat(TAG_PARTIAL_HP);
 		this.curGold = compound.getInteger(TAG_GOLD);
 		NBTTagList buffsList = compound.getTagList(TAG_BUFFS);

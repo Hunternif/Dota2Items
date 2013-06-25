@@ -316,11 +316,12 @@ public class Mechanics {
 			// Drop gold coins
 			if (event.entityLiving instanceof EntityPlayer) {
 				int level = ((EntityPlayer)event.entityLiving).experienceLevel + 1;
+				int goldAmount = MathHelper.floor_float(GOLD_LOST_PER_LEVEL*level);
 				if (!event.entity.worldObj.isRemote) {
-					int goldAmount = 200 + level*9;
+					//200 + level*9; That would allow to farm lots of gold on your own death.
 					scatterGoldAt(event.entity, goldAmount);
 				}
-				stats.removeGold(level * GOLD_LOST_PER_LEVEL);
+				stats.removeGold(goldAmount);
 			} else {
 				if (!event.entity.worldObj.isRemote && (event.entity instanceof IMob ||
 						(event.entity instanceof EntityWolf && ((EntityWolf)event.entity).isAngry()))) {

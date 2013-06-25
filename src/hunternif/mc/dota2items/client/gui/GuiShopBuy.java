@@ -1,6 +1,7 @@
 package hunternif.mc.dota2items.client.gui;
 
 import hunternif.mc.dota2items.ClientProxy;
+import hunternif.mc.dota2items.Config;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.inventory.ContainerShopBuy;
@@ -19,8 +20,10 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
@@ -51,6 +54,8 @@ public class GuiShopBuy extends GuiShopBase {
 		for (int i = 0; i < COLUMNS; i++) {
 			columnIcons[i] = new SlotColumnIcon(ItemColumn.forId(i), COLUMN_ICONS_X+18*i+1, COLUMN_ICONS_Y+1);
 		}
+		//TODO make buttons to traverse full recipe hierarchy up and down.
+		//TODO implement scrolling.
 	}
 	
 	@Override
@@ -103,8 +108,24 @@ public class GuiShopBuy extends GuiShopBase {
 				}
 				// Permit clicking on the button if this item can be bought now
 				// or if it has a recipe to view.
-				btn.enabled = Dota2Item.canBuy(btn.itemStack, player) ||
-						(btn != recipeResultButton && Dota2Item.hasRecipe(btn.itemStack));
+				btn.enabled = shopContains(btn.itemStack.getItem()) && Dota2Item.canBuy(btn.itemStack, player) ||
+						btn != recipeResultButton && Dota2Item.hasRecipe(btn.itemStack);
+				
+				// If item is from the Secret shop, and not in this Shop, display an icon:
+				if (btn.itemStack.getItem() instanceof Dota2Item &&
+						((Dota2Item)btn.itemStack.getItem()).shopColumn == ItemColumn.COLUMN_SECRET_SHOP &&
+						!shopContains(btn.itemStack.getItem())) {
+					renderSecretShopIcon(btn.xPosition - guiLeft + 1, btn.yPosition - guiTop + 1);
+				}
+			}
+		}
+		// We have to traverse buttons again so that the item tooltip overlays Secret shop icons: 
+		for (Object btnObj : buttonList) {
+			if (btnObj instanceof GuiRecipeButton) {
+				GuiRecipeButton btn = (GuiRecipeButton) btnObj;
+				if (btn.itemStack == null) {
+					continue;
+				}
 				if (isPointInRegion(btn.xPosition - guiLeft, btn.yPosition - guiTop, 18, 18, mouseX, mouseY)) {
 					drawItemStackTooltip(btn.itemStack, mouseX - guiLeft, mouseY - guiTop);
 				}
@@ -223,5 +244,28 @@ public class GuiShopBuy extends GuiShopBase {
 			return true;
 		}
 		return false;
+	}
+	
+	private boolean shopContains(Item item) {
+		if (item.itemID == Config.recipe.getID()) {
+			return true;
+		} else if (item instanceof Dota2Item) {
+			 return ((ContainerShopBuy)this.inventorySlots).invShop.contains((Dota2Item)item);
+		} else {
+			return false;
+		}
+	}
+	
+	private static final int SS_ICON_SIZE = 5;
+	private void renderSecretShopIcon(int x, int y) {
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		Minecraft.getMinecraft().renderEngine.bindTexture("/mods/" + Dota2Items.ID + "/textures/gui/secret_shop_item.png");
+		Tessellator tessellator = Tessellator.instance;
+		tessellator.startDrawingQuads();
+		tessellator.addVertexWithUV(x + SS_ICON_SIZE, y + 16, 0, 1, 1);
+		tessellator.addVertexWithUV(x + SS_ICON_SIZE, y + 16 - SS_ICON_SIZE, 0, 1, 0);
+		tessellator.addVertexWithUV(x, y + 16 - SS_ICON_SIZE, 0, 0, 0);
+		tessellator.addVertexWithUV(x, y + 16, 0, 0, 1);
+		tessellator.draw();
 	}
 }

@@ -243,6 +243,15 @@ public class InventoryShop implements IInventory {
 			onInventoryChanged();
 		}
 	}
+	
+	public boolean contains(Dota2Item item) {
+		for (int i = 0; i < columns.length; i++) {
+			if (columns[i] == item.shopColumn.id) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public int getSizeInventory() {

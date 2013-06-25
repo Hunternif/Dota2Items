@@ -13,7 +13,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.relauncher.Side;
 
 /** Used to retain Dota 2 Items on death. */
 public class Dota2PlayerTracker implements IPlayerTracker {
@@ -35,7 +34,9 @@ public class Dota2PlayerTracker implements IPlayerTracker {
 		}
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
 		for (BuffInstance buffInst : stats.getAppliedBuffs()) {
-			PacketDispatcher.sendPacketToAllPlayers(buffInst.toPacket());
+			if (!buffInst.isItemPassiveBuff) {
+				PacketDispatcher.sendPacketToAllPlayers(buffInst.toPacket());
+			}
 		}
 		EntityStatsPacket.sendEntityStatsPacket(stats);
 	}
@@ -57,10 +58,7 @@ public class Dota2PlayerTracker implements IPlayerTracker {
 			}
 			retainedItems.remove(player);
 		}
-		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
-		Dota2Items.mechanics.updatePlayerInventories(Side.SERVER);
-		stats.partialHalfHeart = 0;
-		stats.setMana(stats.getMaxMana());
+		EntityStats stats = Dota2Items.mechanics.onPlayerRespawn(player);
 		EntityStatsPacket.sendEntityStatsPacket(stats);
 	}
 

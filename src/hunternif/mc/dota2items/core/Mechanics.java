@@ -28,6 +28,7 @@ import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MathHelper;
+import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -43,6 +44,8 @@ import cpw.mods.fml.relauncher.Side;
 public class Mechanics {
 	private static final String[] walkSpeedObfFields = {"walkSpeed", "g", "field_75097_g"};
 	private static final String[] timeSinceIgnitedObfFields = {"timeSinceIgnited", "d", "field_70833_d"};
+	
+	private static final String EXT_PROP_STATS = "Dota2ItemsEntityStats";
 	
 	/** Equals to Base Hero health (with base strength bonuses) over Steve's base health.
 	 * This gives a zombie attack damage of 22.5~52.5. Seems fair to me. */
@@ -221,25 +224,30 @@ public class Mechanics {
 		}
 		Map<EntityPlayer, ItemStack[]> inventoryMap = getInventoryMap(side);
 		for (EntityPlayer player : players) {
-			if (player.inventory == null) {
-				continue;
-			}
-			ItemStack[] currentInventory = Arrays.copyOfRange(player.inventory.mainInventory, 0, 10);
-			ItemStack[] oldInventory = inventoryMap.get(player);
-			if (oldInventory == null) {
+			updatePlayerInventory(player);
+		}
+	}
+	private void updatePlayerInventory(EntityPlayer player) {
+		Side side = getSide(player);
+		Map<EntityPlayer, ItemStack[]> inventoryMap = getInventoryMap(side);
+		if (player.inventory == null) {
+			return;
+		}
+		ItemStack[] currentInventory = Arrays.copyOfRange(player.inventory.mainInventory, 0, 10);
+		ItemStack[] oldInventory = inventoryMap.get(player);
+		if (oldInventory == null) {
+			inventoryMap.put(player, currentInventory);
+			updatePlayerBuffs(player);
+		} else {
+			if (!sameItemsStacks(currentInventory, oldInventory)) {
 				inventoryMap.put(player, currentInventory);
-				updatePlayerBuffs(player, currentInventory, side);
-			} else {
-				if (!sameItemsStacks(currentInventory, oldInventory)) {
-					inventoryMap.put(player, currentInventory);
-					updatePlayerBuffs(player, currentInventory, side);
-				}
+				updatePlayerBuffs(player);
 			}
 		}
 	}
 	
-	private void updatePlayerBuffs(EntityPlayer player, ItemStack[] inventory, Side side) {
-		FMLLog.log(Dota2Items.ID, Level.FINER, "Updating buffs on player");
+	private void updatePlayerBuffs(EntityPlayer player) {
+		FMLLog.log(Dota2Items.ID, Level.FINER, "Updating buffs on player " + player.username);
 		EntityStats stats = getEntityStats(player);
 		// Remove all passive item Buffs to add them again later:
 		for (BuffInstance buffInst : stats.getAppliedBuffs()) {
@@ -285,9 +293,12 @@ public class Mechanics {
 			// Regenerate health and mana every second:
 			if (event.entityLiving instanceof EntityPlayer) {
 				regenHealthManaAndGold((EntityPlayer)event.entityLiving, stats);
-				// Synchronize stats with all clients every 5 seconds:
-				if (event.entityLiving.ticksExisted % (20 * SYNC_STATS_INTERVAL) == 0) {
+				// Synchronize stats with all clients every SYNC_STATS_INTERVAL seconds:
+				int tick = event.entityLiving.ticksExisted;
+				if (!event.entity.worldObj.isRemote && tick % (20 * SYNC_STATS_INTERVAL) == 0 &&
+						!EntityStatsPacket.lastSentAt(stats, tick)) {
 					EntityStatsPacket.sendEntityStatsPacket(stats);
+					EntityStatsPacket.sentAtTicks.put(stats, Integer.valueOf(tick));
 				}
 			}
 			if (!stats.canMove()) {
@@ -320,8 +331,9 @@ public class Mechanics {
 				if (!event.entity.worldObj.isRemote) {
 					//200 + level*9; That would allow to farm lots of gold on your own death.
 					scatterGoldAt(event.entity, goldAmount);
+					stats.removeGold(goldAmount);
+					EntityStatsPacket.sendEntityStatsPacket(stats);
 				}
-				stats.removeGold(goldAmount);
 			} else {
 				if (!event.entity.worldObj.isRemote && (event.entity instanceof IMob ||
 						(event.entity instanceof EntityWolf && ((EntityWolf)event.entity).isAngry()))) {
@@ -362,9 +374,32 @@ public class Mechanics {
 	
 	@ForgeSubscribe
 	public void onEntityConstructing(EntityConstructing event) {
-		if (event.entity instanceof EntityPlayer) {
-			event.entity.registerExtendedProperties("Dota2ItemsEntityStats", getEntityStats((EntityLiving)event.entity));
+		if (event.entity instanceof EntityPlayer && !event.entity.worldObj.isRemote) {
+			event.entity.registerExtendedProperties(EXT_PROP_STATS, getEntityStats((EntityLiving)event.entity));
 		}
+	}
+	
+	/**
+	 * Upon respawn the EntityPlayer is constructed anew, however, with a wrong
+	 * entityID at the moment of EntityConstructing event dispatch. That entityID
+	 * is changed later on, but the ExtendedProperties have already been written
+	 * and cannot be removed. So let us manually copy the required values into
+	 * the existing ExtendedProperties.  
+	 */
+	EntityStats onPlayerRespawn(EntityPlayer player) {
+		IExtendedEntityProperties props = (player.getExtendedProperties(EXT_PROP_STATS));
+		if (props != null) {
+			EntityStats oldStats = getEntityStats(player);
+			EntityStats newStats = (EntityStats)props;
+			newStats.entityId = oldStats.entityId;
+			newStats.setGold(oldStats.getFloatGold());
+			Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(getSide(player));
+			entityStats.put(player, newStats);
+			updatePlayerBuffs(player);
+			newStats.setMana(newStats.getMaxMana());
+			return newStats;
+		}
+		return getEntityStats(player);
 	}
 	
 	@ForgeSubscribe
@@ -374,7 +409,9 @@ public class Mechanics {
 			event.entity.worldObj.playSoundAtEntity(event.entity, Sound.COINS.name, 0.8f, 1f);
 			EntityStats stats = getEntityStats(event.entityLiving);
 			stats.addGold(stack.stackSize);
-			EntityStatsPacket.sendEntityStatsPacket(stats);
+			if (!event.entity.worldObj.isRemote) {
+				EntityStatsPacket.sendEntityStatsPacket(stats);
+			}
 			event.item.setDead();
 			event.setCanceled(true);
 		}

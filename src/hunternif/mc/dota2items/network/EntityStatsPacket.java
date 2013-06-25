@@ -8,6 +8,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -19,6 +21,12 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
 
 public class EntityStatsPacket {
+	public static Map<EntityStats, Integer> sentAtTicks = new ConcurrentHashMap<EntityStats, Integer>();
+	public static boolean lastSentAt(EntityStats stats, int tick) {
+		Integer lastTickSent = sentAtTicks.get(stats);
+		return lastTickSent != null && lastTickSent.intValue() == tick;
+	}
+	
 	public static void sendEntityStatsPacket(EntityStats stats) {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream outputStream = new DataOutputStream(bos);

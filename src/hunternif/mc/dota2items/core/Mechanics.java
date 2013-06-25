@@ -283,7 +283,7 @@ public class Mechanics {
 		EntityStats stats = entityStats.get(event.entityLiving);
 		if (stats != null) {
 			// Regenerate health and mana every second:
-			if (event.entityLiving instanceof EntityPlayer && event.entityLiving.ticksExisted % 20 == 0) {
+			if (event.entityLiving instanceof EntityPlayer) {
 				regenHealthManaAndGold((EntityPlayer)event.entityLiving, stats);
 				// Synchronize stats with all clients every 5 seconds:
 				if (event.entityLiving.ticksExisted % (20 * SYNC_STATS_INTERVAL) == 0) {
@@ -343,7 +343,7 @@ public class Mechanics {
 		}
 		if (shouldHeal) {
 			float halfHeartEquivalent = (float)stats.getMaxHealth() / (float)entity.getMaxHealth();
-			float partialHealth = stats.partialHalfHeart + stats.getHealthRegen() / halfHeartEquivalent;
+			float partialHealth = stats.partialHalfHeart + stats.getHealthRegen() /20f / halfHeartEquivalent;
 			if (partialHealth >= 1) {
 				int floor = MathHelper.floor_float(partialHealth);
 				entity.heal(floor);
@@ -354,9 +354,9 @@ public class Mechanics {
 			stats.partialHalfHeart = 0;
 		}
 		if (entity.getHealth() > 0 && stats.getMana() < stats.getMaxMana()) {
-			stats.addMana(stats.getManaRegen());
+			stats.addMana(stats.getManaRegen()/20f);
 		}
-		stats.addGold(GOLD_PER_SECOND);
+		stats.addGold(GOLD_PER_SECOND/20f);
 	}
 	
 	@ForgeSubscribe

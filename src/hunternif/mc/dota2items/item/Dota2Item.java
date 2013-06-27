@@ -103,19 +103,6 @@ public abstract class Dota2Item extends Item {
 		}
 		return totalPrice;
 	}
-	public boolean isSecretShopRequired() {
-		if (this.shopColumn == ItemColumn.COLUMN_SECRET_SHOP) {
-			return true;
-		}
-		if (hasRecipe()) {
-			for (Dota2Item dota2Item : recipe) {
-				if (dota2Item.isSecretShopRequired()) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
 	public int getSellPrice() {
 		return getTotalPrice()/2;
 	}
@@ -145,9 +132,6 @@ public abstract class Dota2Item extends Item {
 		if (isSampleItemStack(stack)) {
 			if (Dota2Items.mechanics.getEntityStats(player).getGold() < itemPrice*stack.stackSize) {
 				list.add(EnumChatFormatting.DARK_RED + "Not enough gold");
-			}
-			if (!isRecipe && isSecretShopRequired()) {
-				list.add(EnumChatFormatting.DARK_RED + "Requires secret shop");
 			}
 		}
 	}

@@ -173,18 +173,18 @@ public class InventoryShop implements IInventory {
 //		);
 		populateColumn(
 				ItemColumn.COLUMN_SECRET_SHOP,
-//				Config.demonEdge,
-//				Config.eaglesong,
-//				Config.reaver,
-//				Config.sacredRelic,
-//				Config.hyperStone,
+//				Config.orbOfVenom,
 //				Config.ringOfHealth,
 				Config.voidStone
-//				Config.mysticStaff,
 //				Config.energyBooster,
-//				Config.pointBooster,
 //				Config.vitalityBooster,
-//				Config.orbOfVenom
+//				Config.pointBooster,
+//				Config.hyperStone,
+//				Config.demonEdge,
+//				Config.mysticStaff,
+//				Config.reaver,
+//				Config.eaglesong,
+//				Config.sacredRelic
 		);
 	}
 	private static void populateColumn(ItemColumn column, CfgInfo... items) {
@@ -206,7 +206,7 @@ public class InventoryShop implements IInventory {
 		return samplesMap.get(clazz);
 	}
 	
-	public static InventoryShop newRegularShop(int rows) {
+	public static InventoryShop newFullShop(int rows) {
 		return new InventoryShop(new int[]{
 			ItemColumn.COLUMN_CONSUMABLES.id,
 			ItemColumn.COLUMN_ATTRIBUTES.id,
@@ -217,7 +217,8 @@ public class InventoryShop implements IInventory {
 			ItemColumn.COLUMN_CASTER.id,
 			ItemColumn.COLUMN_WEAPONS.id,
 			ItemColumn.COLUMN_ARMOR.id,
-			ItemColumn.COLUMN_ARTIFACTS.id
+			ItemColumn.COLUMN_ARTIFACTS.id,
+			ItemColumn.COLUMN_SECRET_SHOP.id
 		}, rows);
 	}
 	
@@ -245,6 +246,9 @@ public class InventoryShop implements IInventory {
 	}
 	public int getRows() {
 		return height;
+	}
+	public int getColumns() {
+		return columns.length;
 	}
 	
 	public boolean contains(Dota2Item item) {

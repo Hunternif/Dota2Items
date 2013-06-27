@@ -19,10 +19,10 @@ import net.minecraft.item.ItemStack;
 public class ContainerShopBuy extends Container {
 	private static final int SHOP_INV_X = 8;
 	private static final int SHOP_INV_Y = 60;
-	private static final int PLAYER_INV_X = 26;
+	private static final int PLAYER_INV_X = 35;
 	private static final int PLAYER_INV_Y = 215;
 	
-	public InventoryShop invShop = InventoryShop.newRegularShop(4);
+	public InventoryShop invShop = InventoryShop.newFullShop(4);
 	private InventoryBasic invResult = new InventoryBasic("Buying", false, 1);
 	private InventoryPlayer invPlayer;
 	private int slotResultNumber;
@@ -34,15 +34,15 @@ public class ContainerShopBuy extends Container {
 		this.invPlayer = inventoryPlayer;
 		// Assign shopkeeper's inventory
 		for (int i = 0; i < invShop.getRows(); i++) {
-			for (int j = 0; j < 10; j++) {
-				addSlotToContainer(new SlotShop(invShop, i * 10 + j, SHOP_INV_X + j * 18, SHOP_INV_Y + i * 18));
+			for (int j = 0; j < invShop.getColumns(); j++) {
+				addSlotToContainer(new SlotShop(invShop, i * invShop.getColumns() + j, SHOP_INV_X + j * 18, SHOP_INV_Y + i * 18));
 			}
 		}
 		// Assign player's hotbar
 		for (int i = 0; i < 9; ++i) {
 			addSlotToContainer(new Slot(inventoryPlayer, i, PLAYER_INV_X + i * 18, PLAYER_INV_Y));
 		}
-		slotResultNumber = addSlotToContainer(new SlotShopBuyResult(invResult, 0, 151, 177)).slotNumber;
+		slotResultNumber = addSlotToContainer(new SlotShopBuyResult(invResult, 0, 160, 175)).slotNumber;
 	}
 
 	@Override

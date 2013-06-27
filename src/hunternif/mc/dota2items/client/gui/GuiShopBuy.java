@@ -20,7 +20,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
@@ -32,13 +31,13 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 public class GuiShopBuy extends GuiShopBase {
-	public static final int WIDTH = 212;
+	public static final int WIDTH = 230;
 	public static final int HEIGHT = 238;
 	private static final int COLUMN_ICONS_X = 8;
 	private static final int COLUMN_ICONS_Y = 41;
 	private static final int COLOR_SEARCH = 0xffffff;
 	public static final int FILTER_STR_LENGTH = 15;
-	public static final int COLUMNS = 10;
+	public static final int COLUMNS = 11;
 	
 	public GuiTextField filterField;
 	private SlotColumnIcon[] columnIcons = new SlotColumnIcon[COLUMNS];
@@ -62,7 +61,7 @@ public class GuiShopBuy extends GuiShopBase {
 	public void initGui() {
 		super.initGui();
 		Keyboard.enableRepeatEvents(true);
-		filterField = new GuiTextField(this.fontRenderer, this.guiLeft + 117, this.guiTop + 29, 89, this.fontRenderer.FONT_HEIGHT);
+		filterField = new GuiTextField(this.fontRenderer, this.guiLeft + 127, this.guiTop + 29, 96, this.fontRenderer.FONT_HEIGHT);
 		filterField.setMaxStringLength(FILTER_STR_LENGTH);
 		filterField.setEnableBackgroundDrawing(false);
 		filterField.setFocused(false);
@@ -82,14 +81,14 @@ public class GuiShopBuy extends GuiShopBase {
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 		//RenderHelper.disableStandardItemLighting();
 		this.fontRenderer.drawString("Shopkeeper", 8, 29, TITLE_COLOR);
-		this.fontRenderer.drawString("Price", 114, 135, TITLE_COLOR);
-		this.fontRenderer.drawString("Purchase", 114, 161, TITLE_COLOR);
+		this.fontRenderer.drawString("Price", 114, 139, TITLE_COLOR);
+		this.fontRenderer.drawString("Purchase", 114, 160, TITLE_COLOR);
 		this.fontRenderer.drawString("Inventory", 114, 204, TITLE_COLOR);
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
 		ClientProxy.guiGold.renderGoldText(stats.getGold(), WIDTH - GuiGold.GUI_GOLD_WIDTH, 0);
 		ItemStack resultStack = ((ContainerShopBuy)this.inventorySlots).getSlotResult().getStack();
 		int price = Dota2Item.getPrice(resultStack);
-		renderBuyPrice(price, 169, 146, stats.getGold() >= price);
+		renderBuyPrice(price, 180, 139, stats.getGold() >= price);
 		
 		// Column icons' hovering text
 		for (int i = 0; i < COLUMNS; i++) {
@@ -111,27 +110,11 @@ public class GuiShopBuy extends GuiShopBase {
 				btn.enabled = shopContains(btn.itemStack.getItem()) && Dota2Item.canBuy(btn.itemStack, player) ||
 						btn != recipeResultButton && Dota2Item.hasRecipe(btn.itemStack);
 				
-				// If item is from the Secret shop, and not in this Shop, display an icon:
-				if (btn.itemStack.getItem() instanceof Dota2Item &&
-						((Dota2Item)btn.itemStack.getItem()).shopColumn == ItemColumn.COLUMN_SECRET_SHOP &&
-						!shopContains(btn.itemStack.getItem())) {
-					renderSecretShopIcon(btn.xPosition - guiLeft + 1, btn.yPosition - guiTop + 1);
-				}
-			}
-		}
-		// We have to traverse buttons again so that the item tooltip overlays Secret shop icons: 
-		for (Object btnObj : buttonList) {
-			if (btnObj instanceof GuiRecipeButton) {
-				GuiRecipeButton btn = (GuiRecipeButton) btnObj;
-				if (btn.itemStack == null) {
-					continue;
-				}
 				if (isPointInRegion(btn.xPosition - guiLeft, btn.yPosition - guiTop, 18, 18, mouseX, mouseY)) {
 					drawItemStackTooltip(btn.itemStack, mouseX - guiLeft, mouseY - guiTop);
 				}
 			}
 		}
-		
 		RenderHelper.enableGUIStandardItemLighting();
 	}
 	
@@ -254,18 +237,5 @@ public class GuiShopBuy extends GuiShopBase {
 		} else {
 			return false;
 		}
-	}
-	
-	private static final int SS_ICON_SIZE = 5;
-	private void renderSecretShopIcon(int x, int y) {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		Minecraft.getMinecraft().renderEngine.bindTexture("/mods/" + Dota2Items.ID + "/textures/gui/secret_shop_item.png");
-		Tessellator tessellator = Tessellator.instance;
-		tessellator.startDrawingQuads();
-		tessellator.addVertexWithUV(x + SS_ICON_SIZE, y + 16, 0, 1, 1);
-		tessellator.addVertexWithUV(x + SS_ICON_SIZE, y + 16 - SS_ICON_SIZE, 0, 1, 0);
-		tessellator.addVertexWithUV(x, y + 16 - SS_ICON_SIZE, 0, 0, 0);
-		tessellator.addVertexWithUV(x, y + 16, 0, 0, 1);
-		tessellator.draw();
 	}
 }

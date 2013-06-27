@@ -63,10 +63,7 @@ public class QuellingBlade extends CooldownItem {
 	@Override
 	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world,
 			int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-		if (!canUseItem(player)) {
-			return false;
-		}
-		if (this.isOnCooldown(itemStack)) {
+		if (world.isRemote || !tryUse(itemStack, player)) {
 			return false;
 		}
 		// Looking for a tree
@@ -130,14 +127,7 @@ public class QuellingBlade extends CooldownItem {
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-		if (!canUseItem(player)) {
-			return itemStack;
-		}
-		if (this.isOnCooldown(itemStack)) {
-			playDenyCooldownSound(world);
-		} else {
-			playDenyGeneralSound(world);
-		}
+		playDenyGeneralSound(player);
 		return itemStack;
 	}
 }

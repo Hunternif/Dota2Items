@@ -55,11 +55,7 @@ public class BlinkDagger extends CooldownItem {
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-		if (!canUseItem(player)) {
-			return itemStack;
-		}
-		if (this.isOnSideSpecificCooldown(world, itemStack)) {
-			playDenyCooldownSound(world);
+		if (!tryUse(itemStack, player)) {
 			return itemStack;
 		}
 		
@@ -191,7 +187,6 @@ public class BlinkDagger extends CooldownItem {
 		
 		//------------------------ Successful blink ------------------------
 		
-		this.startCooldown(itemStack, player);
 		player.motionX = 0;
 		player.motionY = 0;
 		player.motionZ = 0;
@@ -201,6 +196,7 @@ public class BlinkDagger extends CooldownItem {
 		EffectInstance destEffect = new EffectInstance(Effect.blink, destX, destY, destZ);
 		
 		if (!world.isRemote) {
+			startCooldown(itemStack, player);
 			// Server side. Play sounds and send packets about the player blinking.
 			// Play sound both at the initial position and the blink destination,
 			// if they're far apart enough.
@@ -231,14 +227,18 @@ public class BlinkDagger extends CooldownItem {
 	@ForgeSubscribe
 	public void onHurt(LivingHurtEvent event) {
 		// Why is this only called on the server?
-		if (event.entityLiving instanceof EntityPlayer &&
+		if (event.entityLiving instanceof EntityPlayer && !event.entity.worldObj.isRemote &&
 				event.source.getEntity() instanceof EntityLiving) {
 			EntityPlayer player = (EntityPlayer) event.entityLiving;
 			int invSize = player.inventory.getSizeInventory();
 			for (int i = 0; i < invSize; i++) {
 				ItemStack stack = player.inventory.getStackInSlot(i);
 				if (stack != null && stack.itemID == itemID) {
-					startCooldown(stack, hurtCooldown, player);
+					float cdLeft = getRemainingCooldown(stack);
+					if (cdLeft < hurtCooldown) {
+						// This is on the server, so it's ok:
+						startCooldown(stack, hurtCooldown, player);
+					}
 				}
 			}
 		}

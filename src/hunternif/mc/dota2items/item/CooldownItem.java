@@ -1,9 +1,10 @@
 package hunternif.mc.dota2items.item;
 
+import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.client.event.CooldownEndDisplayEvent;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -72,20 +73,9 @@ public abstract class CooldownItem extends Dota2Item {
 	}
 	
 	/**
-	 * Reports the cooldown for the client 0.05 seconds earlier than for the server.
-	 * This should eliminate the problem when the server starts cooldown before the
-	 * client, and as a result the client doesn't perform the item's action.
-	 */
-	//TODO Fix this cooldown KLUDGE! All the checks must only be performed on the server.
-	public boolean isOnSideSpecificCooldown(World world, ItemStack itemStack) {
-		NBTTagCompound tag = itemStack.getTagCompound();
-		float minimum = world.isRemote ? 0.05f : 0;
-		return tag != null && tag.getFloat(TAG_COOLDOWN) > minimum;
-	}
-	
-	/**
 	 * Starts cooldown on this stack for given duration in seconds.
-	 * Returns false if already on cooldown.
+	 * Returns false if already on cooldown.<br>
+	 * <i>To prevent "blank" uses, only call this on the server side!</i>
 	 */
 	public boolean startCooldown(ItemStack itemStack, float duration, EntityPlayer player) {
 		if (player.capabilities.isCreativeMode) {
@@ -116,15 +106,6 @@ public abstract class CooldownItem extends Dota2Item {
 		return startCooldown(itemStack, getCooldown(), player);
 	}
 	
-	/**
-	 * Plays the deny_cooldown sound on the client. On the server does nothing.
-	 */
-	public static void playDenyCooldownSound(World world) {
-		if (world.isRemote) {
-			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.DENY_COOLDOWN.name, 1.0F, 1.0F);
-		}
-	}
-	
 	@Override
 	public void onUpdate(ItemStack itemStack, World world, Entity player, int slotInInventory, boolean isItemHeld) {
 		super.onUpdate(itemStack, world, player, slotInInventory, isItemHeld);
@@ -153,5 +134,18 @@ public abstract class CooldownItem extends Dota2Item {
 				}
 			}
 		}
+	}
+	
+	@Override
+	public Sound canUseItem(ItemStack stack, EntityLiving player, Entity target) {
+		Sound failSound = super.canUseItem(stack, player, target);
+		if (failSound == null) {
+			if (isOnCooldown(stack)) {
+				failSound = Sound.DENY_COOLDOWN;
+			} else if (Dota2Items.mechanics.getEntityStats(player).getMana() < this.getManaCost()) {
+				failSound = Sound.DENY_MANA;
+			}
+		}
+		return failSound;
 	}
 }

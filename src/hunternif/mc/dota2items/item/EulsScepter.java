@@ -49,27 +49,13 @@ public class EulsScepter extends CooldownItem {
 		if (list != null && !list.isEmpty()) {
 			return onUseEulsScepter(itemStack, player, list.get(0));
 		} else {
-			playDenyGeneralSound(world);
+			playDenyGeneralSound(player);
 			return false;
 		}
 	}
 	
 	private boolean onUseEulsScepter(ItemStack stack, EntityPlayer player, Entity entity) {
-		if (!canUseItem(player)) {
-			return false;
-		}
-		if (entity.isDead || !(entity instanceof EntityLiving)) {
-			// Why would this ever happen?
-			playDenyGeneralSound(player.worldObj);
-			return false;
-		}
-		if (isOnCooldown(stack)) {
-			playDenyCooldownSound(player.worldObj);
-			return false;
-		}
-		EntityStats entityStats = Dota2Items.mechanics.getEntityStats((EntityLiving)entity);
-		if (entityStats.isMagicImmune()) {
-			playMagicImmuneSound(player.worldObj);
+		if (!tryUse(stack, player, entity)) {
 			return false;
 		}
 		
@@ -94,11 +80,14 @@ public class EulsScepter extends CooldownItem {
 			
 			long cycloneEndTime = entity.worldObj.getTotalWorldTime() + (long) (TileEntityCyclone.duration * 20f);
 			BuffInstance buff = new BuffInstance(Buff.inCyclone, entity.entityId, cycloneEndTime, false);
+			EntityStats entityStats = Dota2Items.mechanics.getEntityStats((EntityLiving)entity);
 			entityStats.addBuff(buff);
 			PacketDispatcher.sendPacketToAllPlayers(buff.toPacket());
+			
+			// We're on the server, so it's ok:
+			startCooldown(stack, player);
 		}
 		
-		startCooldown(stack, player);
 		player.worldObj.playSoundAtEntity(entity, Sound.CYCLONE_START.name, 0.7f, 1);
 		return true;
 	}

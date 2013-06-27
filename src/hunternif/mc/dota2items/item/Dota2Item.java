@@ -15,6 +15,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -22,7 +23,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -48,25 +48,51 @@ public abstract class Dota2Item extends Item {
 		this.itemIcon = iconRegister.registerIcon(Dota2Items.ID + ":" + getUnlocalizedName().substring("item.".length()));
 	}
 	
-	public static void playDenyGeneralSound(World world) {
-		if (world.isRemote) {
+	public static void playDenyGeneralSound(EntityPlayer player) {
+		if (player.worldObj.isRemote) {
 			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.DENY_GENERAL.name, 1.0F, 1.0F);
 		}
 	}
-	
-	public static void playMagicImmuneSound(World world) {
-		if (world.isRemote) {
-			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.MAGIC_IMMUNE.name, 1.0F, 1.0F);
+
+	/**
+	 * Returns the Sound that signifies the particular reason why the player
+	 * cannot use this item.
+	 */
+	public Sound canUseItem(ItemStack stack, EntityLiving player, Entity target) {
+		EntityStats playerStats = Dota2Items.mechanics.getEntityStats(player);
+		if (!playerStats.canUseItems()) {
+			return Sound.DENY_SILENCE;
 		}
+		if (target != null) {
+			if (!(target instanceof EntityLiving)) {
+				return Sound.DENY_GENERAL;
+			}
+			EntityStats targetStats = Dota2Items.mechanics.getEntityStats((EntityLiving)target);
+			if (targetStats.isMagicImmune()) {
+				return Sound.MAGIC_IMMUNE;
+			}
+		}
+		return null;
+	}
+	/** See {@link #canUseItem(ItemStack, EntityLiving, Entity)} */
+	public Sound canUseItem(ItemStack stack, EntityLiving player) {
+		return canUseItem(stack, player, null);
 	}
 	
-	public boolean canUseItem(EntityLiving player) {
-		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
-		if (stats == null) {
-			return true;
-		} else {
-			return stats.canUseItems();
+	/**
+	 * If the player cannot use this item, a respective sound is played.
+	 * @return whether the player can use this item.
+	 */
+	public boolean tryUse(ItemStack stack, EntityLiving player, Entity target) {
+		Sound failSound = canUseItem(stack, player, target);
+		if (failSound != null && player.worldObj.isRemote) {
+			Minecraft.getMinecraft().sndManager.playSoundFX(failSound.name, 1.0F, 1.0F);
 		}
+		return failSound == null;
+	}
+	/** See {@link #tryUse(ItemStack, EntityLiving, Entity)} */
+	public boolean tryUse(ItemStack stack, EntityLiving player) {
+		return tryUse(stack, player, null);
 	}
 	
 	public void setPrice(int price) {

@@ -36,7 +36,7 @@ public class GuiManaBar extends Gui {
 		}
 		// Let's call the 10 discrete mana units on screen "drops".
 		float halfDrop = (float)stats.getMaxMana() / 20f;
-		int mana = MathHelper.floor_float(stats.getFloatMana() / halfDrop);
+		int mana = MathHelper.floor_float((float)stats.getMana() / halfDrop);
 		long ticksSinceLastChange = mc.thePlayer.ticksExisted - lastChange;
 		boolean highlight = ticksSinceLastChange <= HIGHLIGHT_TIME && ticksSinceLastChange / 3 % 2 == 1;
 		

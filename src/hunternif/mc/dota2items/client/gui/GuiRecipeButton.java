@@ -29,7 +29,7 @@ public class GuiRecipeButton extends GuiButton {
 			// Render background:
 			mc.renderEngine.bindTexture("/mods/" + Dota2Items.ID + "/textures/gui/shop_buy.png");
 			boolean isMouseOver = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-			int u = 212;
+			int u = 230;
 			int v = 23;
 			if (!this.enabled) {
 				v += this.width * 2;

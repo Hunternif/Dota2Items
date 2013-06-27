@@ -60,6 +60,8 @@ public class Dota2PlayerTracker implements IPlayerTracker {
 		}
 		EntityStats stats = Dota2Items.mechanics.onPlayerRespawn(player);
 		EntityStatsPacket.sendEntityStatsPacket(stats);
+		
+		//TODO: bug: sometimes on respawn mana is not sync'ed immediately.
 	}
 
 }

@@ -5,11 +5,13 @@ public enum Sound {
 	BLINK_OUT("blink_out"),
 	DENY_COOLDOWN("deny_cooldown"),
 	DENY_GENERAL("deny_general"),
+	DENY_SILENCE("deny_silence"),
+	DENY_MANA("deny_mana"),
 	MAGIC_IMMUNE("magic_immune"),
 	TREE_FALL("tree_fall"),
 	CYCLONE_START("cyclone_start"),
-	COINS("coins");
-	//CYCLONE_LOOP("cyclone_loop")
+	COINS("coins"),
+	BUY("buy");
 	
 	public String name;
 	private Sound(String name) {

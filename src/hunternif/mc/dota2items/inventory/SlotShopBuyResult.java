@@ -1,8 +1,10 @@
 package hunternif.mc.dota2items.inventory;
 
 import hunternif.mc.dota2items.Dota2Items;
+import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.item.Dota2Item;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -29,6 +31,9 @@ public class SlotShopBuyResult extends Slot {
 	public void onPickupFromSlot(EntityPlayer player, ItemStack stack) {
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
 		stats.removeGold( Dota2Item.getPrice(stack) );
+		if (player.worldObj.isRemote) {
+			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.BUY.name, 0.8f, 1);
+		}
 		super.onPickupFromSlot(player, stack);
 	}
 }

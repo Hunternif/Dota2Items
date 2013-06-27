@@ -2,6 +2,7 @@ package hunternif.mc.dota2items.client.gui;
 
 import hunternif.mc.dota2items.ClientProxy;
 import hunternif.mc.dota2items.Dota2Items;
+import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.inventory.ContainerShopSell;
 import hunternif.mc.dota2items.item.Dota2Item;
@@ -45,6 +46,7 @@ public class GuiShopSell extends GuiShopBase {
 			EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
 			stats.addGold(sellPrice);
 			ShopSellPacket.sendToServer();
+			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.COINS.name, 1, 1);
 		}
 	}
 	

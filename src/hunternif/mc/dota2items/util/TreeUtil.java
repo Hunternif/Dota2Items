@@ -217,7 +217,7 @@ public final class TreeUtil {
 			y++;
 		}
 		
-		if (placeSapling) {
+		if (placeSapling && world.getBlockId(trunkBase.x, trunkBase.y-1, trunkBase.z) == Block.dirt.blockID) {
 			world.setBlock(trunkBase.x, trunkBase.y, trunkBase.z, Block.sapling.blockID, woodMetadata, FLAG_SEND_CHANGE_TO_CLIENTS);
 		}
 				
@@ -307,18 +307,18 @@ public final class TreeUtil {
 			removeVine(world, x, y, z-1);
 			removeVine(world, x, y, z+1);
 			removeSnowAndFlowers(world, x, y+1, z);
-			world.setBlock(x, y, z, 0);
+			world.setBlockToAir(x, y, z);
 		} else if (block == Block.vine) {
 			removeVine(world, x, y, z);
 		} else if (block == Block.cocoaPlant) {
-			world.setBlock(x, y, z, 0);
+			world.setBlockToAir(x, y, z);
 		}
 	}
 	
 	/** Removes vine from (x,y,z) down to its end. */
 	public static void removeVine(World world, int x, int y, int z) {
 		while (Block.blocksList[world.getBlockId(x, y, z)] == Block.vine) {
-			world.setBlock(x, y, z, 0);
+			world.setBlockToAir(x, y, z);
 			y--;
 		}
 	}
@@ -329,7 +329,7 @@ public final class TreeUtil {
 	public static void removeSnowAndFlowers(World world, int x, int y, int z) {
 		Block block = Block.blocksList[world.getBlockId(x, y, z)];
 		if (block == Block.snow || block instanceof BlockFlower) {
-			world.setBlock(x, y, z, 0);
+			world.setBlockToAir(x, y, z);
 		}
 	}
 	

@@ -26,6 +26,7 @@ public abstract class CooldownItem extends Dota2Item {
 	private ItemStack[] inventoryStacks = new ItemStack[36];
 	
 	private float cooldown = 0;
+	private int manaCost = 0;
 	
 	public CooldownItem(int id) {
 		super(id);
@@ -39,6 +40,14 @@ public abstract class CooldownItem extends Dota2Item {
 	/** Get "usual" cooldown duration in seconds. */
 	public float getCooldown() {
 		return cooldown;
+	}
+	
+	public CooldownItem setManaCost(int value) {
+		manaCost = value;
+		return this;
+	}
+	public int getManaCost() {
+		return manaCost;
 	}
 	
 	/**

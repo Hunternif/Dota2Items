@@ -152,6 +152,9 @@ public abstract class Dota2Item extends Item {
 			} else {
 				cooldownStr = String.format("%.0f", cooldown);
 			}
+			if (((CooldownItem)this).getManaCost() > 0) {
+				cooldownStr += "     " + ClientProxy.ICON_MANACOST.key + EnumChatFormatting.GRAY + ((CooldownItem)this).getManaCost();
+			}
 			list.add(ClientProxy.ICON_COOLDOWN.key + EnumChatFormatting.GRAY + cooldownStr);
 		}
 		// If the item is displayed in shop

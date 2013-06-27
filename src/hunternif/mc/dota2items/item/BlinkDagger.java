@@ -39,6 +39,7 @@ public class BlinkDagger extends CooldownItem {
 		MinecraftForge.EVENT_BUS.register(this);
 		rand = new Random();
 		setCooldown(usualCooldown);
+		setManaCost(75);
 		setPrice(2150);
 	}
 	

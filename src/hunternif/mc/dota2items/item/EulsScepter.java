@@ -29,6 +29,7 @@ public class EulsScepter extends CooldownItem {
 		setCooldown(30);
 		passiveBuff = new Buff(this).setMovementSpeed(30).setIntelligence(10).setManaRegenPercent(150);
 		setPrice(600);
+		setManaCost(75);
 	}
 	
 	@Override

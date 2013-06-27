@@ -24,11 +24,13 @@ public class ClientProxy extends CommonProxy {
 	public static final CooldownItemRenderer cooldownItemRenderer = new CooldownItemRenderer();
 	public static final FontRendererWithIcons fontRenderer = new FontRendererWithIcons(
 			Minecraft.getMinecraft().gameSettings, "/font/default.png", Minecraft.getMinecraft().renderEngine, false);
-	public static IconInText ICON_GOLD = new IconInText("$gold$", 12, 12, "/mods/"+Dota2Items.ID+"/textures/gui/gold_coins.png", -1, -3, 3);
-	public static IconInText ICON_COOLDOWN = new IconInText("$cd$", 8, 8, "/mods/"+Dota2Items.ID+"/textures/gui/cooldown.png", 0, 0, 4);
+	public static IconInText ICON_GOLD = new IconInText("$gold$", 12, 12, "/mods/"+Dota2Items.ID+"/textures/gui/gold_coins.png", -1, -3, 2);
+	public static IconInText ICON_COOLDOWN = new IconInText("$cd$", 7, 7, "/mods/"+Dota2Items.ID+"/textures/gui/cooldown.png", 0, 0, 3);
+	public static IconInText ICON_MANACOST = new IconInText("$manacost$", 7, 7, "/mods/"+Dota2Items.ID+"/textures/gui/manacost.png", 0, 0, 3);
 	{
 		fontRenderer.registerIcon(ICON_GOLD);
 		fontRenderer.registerIcon(ICON_COOLDOWN);
+		fontRenderer.registerIcon(ICON_MANACOST);
 	}
 	public static GuiGold guiGold = new GuiGold();
 	public static GuiManaBar guiManaBar = new GuiManaBar(Minecraft.getMinecraft());

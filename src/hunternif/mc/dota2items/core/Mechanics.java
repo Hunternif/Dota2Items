@@ -297,7 +297,7 @@ public class Mechanics {
 				regenHealthManaAndGold((EntityPlayer)event.entityLiving, stats);
 				// Synchronize stats with all clients every SYNC_STATS_INTERVAL seconds:
 				int time = event.entityLiving.ticksExisted;
-				if (!event.entityLiving.worldObj.isRemote && time - stats.lastSyncTime == 20 * SYNC_STATS_INTERVAL) {
+				if (!event.entityLiving.worldObj.isRemote && time - stats.lastSyncTime >= 20 * SYNC_STATS_INTERVAL) {
 					stats.lastSyncTime = time;
 					PacketDispatcher.sendPacketToPlayer(new EntityStatsSyncPacket(stats).makePacket(), (Player)event.entityLiving);
 				}

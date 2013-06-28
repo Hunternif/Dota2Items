@@ -59,6 +59,9 @@ public abstract class Dota2Item extends Item {
 	 * cannot use this item.
 	 */
 	public Sound canUseItem(ItemStack stack, EntityLiving player, Entity target) {
+		if (player instanceof EntityPlayer && ((EntityPlayer)player).capabilities.isCreativeMode) {
+			return null;
+		}
 		EntityStats playerStats = Dota2Items.mechanics.getEntityStats(player);
 		if (!playerStats.canUseItems()) {
 			return Sound.DENY_SILENCE;

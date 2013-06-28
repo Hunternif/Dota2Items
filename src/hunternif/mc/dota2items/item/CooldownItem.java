@@ -147,6 +147,9 @@ public abstract class CooldownItem extends Dota2Item {
 	
 	@Override
 	public Sound canUseItem(ItemStack stack, EntityLiving player, Entity target) {
+		if (player instanceof EntityPlayer && ((EntityPlayer)player).capabilities.isCreativeMode) {
+			return null;
+		}
 		Sound failSound = super.canUseItem(stack, player, target);
 		if (failSound == null) {
 			if (isOnCooldown(stack)) {

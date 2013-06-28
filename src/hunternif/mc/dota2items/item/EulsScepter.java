@@ -88,7 +88,9 @@ public class EulsScepter extends CooldownItem {
 			// We're on the server, so it's ok:
 			startCooldown(stack, player);
 		}
-		Dota2Items.mechanics.getEntityStats(player).removeMana(getManaCost());
+		if (!player.capabilities.isCreativeMode) {
+			Dota2Items.mechanics.getEntityStats(player).removeMana(getManaCost());
+		}
 		
 		player.worldObj.playSoundAtEntity(entity, Sound.CYCLONE_START.name, 0.7f, 1);
 		return true;

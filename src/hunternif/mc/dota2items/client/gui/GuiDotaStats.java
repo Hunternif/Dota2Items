@@ -41,12 +41,16 @@ public class GuiDotaStats {
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(mc.thePlayer);
 		
 		float baseDmg = 1;
-		boolean isMelee = false;
+		boolean isMelee = true;
 		ItemStack item = mc.thePlayer.getCurrentEquippedItem();
 		if (item != null) {
 			// Calculating damage against himself, lol.
 			baseDmg = item.getDamageVsEntity(mc.thePlayer);
-			isMelee = item.itemID == Item.bow.itemID;
+			if (item.itemID == Item.bow.itemID) {
+				isMelee = false;
+				// Assume the damage of an arrow at average charge: 6
+				baseDmg = 6;
+			}
 		}
 		baseDmg *= Mechanics.DOTA_VS_MINECRAFT_DAMAGE;
 		float improvedDmg = stats.getDamage(baseDmg, isMelee);

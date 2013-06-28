@@ -235,7 +235,7 @@ public class Mechanics {
 		if (player.inventory == null) {
 			return;
 		}
-		ItemStack[] currentInventory = Arrays.copyOfRange(player.inventory.mainInventory, 0, 10);
+		ItemStack[] currentInventory = Arrays.copyOfRange(player.inventory.mainInventory, 0, 9);
 		ItemStack[] oldInventory = inventoryMap.get(player);
 		if (oldInventory == null) {
 			inventoryMap.put(player, currentInventory);

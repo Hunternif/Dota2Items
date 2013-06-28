@@ -95,7 +95,7 @@ public class ItemRecipe extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public FontRenderer getFontRenderer(ItemStack stack) {
-		return ClientProxy.fontRenderer;
+		return ClientProxy.fontRWithIcons;
 	}
 	
 	public static ItemStack copy(ItemStack stack, boolean isSample) {

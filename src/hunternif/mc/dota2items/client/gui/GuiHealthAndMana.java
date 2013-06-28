@@ -1,5 +1,6 @@
 package hunternif.mc.dota2items.client.gui;
 
+import hunternif.mc.dota2items.ClientProxy;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.Mechanics;
@@ -13,15 +14,17 @@ public class GuiHealthAndMana {
 	private static final int HP_BAR_WIDTH = 81;
 	
 	private Minecraft mc;
+	private FontRendererContourShadow fontRenderer;
 	
 	public GuiHealthAndMana(Minecraft mc) {
 		this.mc = mc;
+		this.fontRenderer = ClientProxy.fontRContourShadow;
 	}
 	
 	@ForgeSubscribe
-	public void onRenderExperienceBar(RenderGameOverlayEvent event) {
+	public void onRenderHotBar(RenderGameOverlayEvent event) {
 		// Only interested in Post-ExperienceBar events (the end of overlay rendering)
-		if (event.isCancelable() || event.type != ElementType.EXPERIENCE || mc.thePlayer.capabilities.isCreativeMode) {
+		if (event.isCancelable() || event.type != ElementType.HOTBAR || mc.thePlayer.capabilities.isCreativeMode) {
 			return;
 		}
 		int width = event.resolution.getScaledWidth();
@@ -34,11 +37,11 @@ public class GuiHealthAndMana {
 		int left = width / 2 - 91;
 		int top = height - 39;
 		String hp = stats.getHealth(mc.thePlayer) + "/" + stats.getMaxHealth();
-		int strlen = mc.fontRenderer.getStringWidth(hp);
-		mc.fontRenderer.drawStringWithShadow(hp, left - strlen - 2, top, 0xFF1313);
+		int strlen = fontRenderer.getStringWidth(hp);
+		fontRenderer.drawStringWithShadow(hp, left - strlen - 2, top, 0xFF1313);
 		if (Mechanics.shouldHeal(mc.thePlayer)) {
 			String hpRegen = String.format("+%.2f", stats.getHealthRegen());
-			mc.fontRenderer.drawStringWithShadow(hpRegen, left + HP_BAR_WIDTH + 1, top, 0xFF6C6C);
+			fontRenderer.drawStringWithShadow(hpRegen, left + HP_BAR_WIDTH + 1, top, 0xFF6C6C);
 		}
 		
 		int curMana = stats.getMana();
@@ -47,11 +50,11 @@ public class GuiHealthAndMana {
 			boolean renderArmor = ForgeHooks.getTotalArmorValue(mc.thePlayer) > 0;
 			top = height - 49 - (renderArmor ? 10 : 0);
 			String mana = curMana + "/" + maxMana;
-			strlen = mc.fontRenderer.getStringWidth(mana);
-			mc.fontRenderer.drawStringWithShadow(mana, left - strlen - 2, top, 0x2162F8);
+			strlen = fontRenderer.getStringWidth(mana);
+			fontRenderer.drawStringWithShadow(mana, left - strlen - 2, top, 0x2162F8);
 			if (curMana < maxMana) {
 				String manaRegen = String.format("+%.2f", stats.getManaRegen());
-				mc.fontRenderer.drawStringWithShadow(manaRegen, left + HP_BAR_WIDTH + 1, top, 0x4893D4);
+				fontRenderer.drawStringWithShadow(manaRegen, left + HP_BAR_WIDTH + 1, top, 0x4893D4);
 			}
 		}
 	}

@@ -168,7 +168,7 @@ public abstract class Dota2Item extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public FontRenderer getFontRenderer(ItemStack stack) {
-		return ClientProxy.fontRenderer;
+		return ClientProxy.fontRWithIcons;
 	}
 	
 	public static boolean isSampleItemStack(ItemStack itemStack) {

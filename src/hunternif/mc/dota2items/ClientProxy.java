@@ -1,5 +1,6 @@
 package hunternif.mc.dota2items;
 
+import hunternif.mc.dota2items.client.gui.FontRendererContourShadow;
 import hunternif.mc.dota2items.client.gui.FontRendererWithIcons;
 import hunternif.mc.dota2items.client.gui.GuiDotaStats;
 import hunternif.mc.dota2items.client.gui.GuiGold;
@@ -24,15 +25,17 @@ import cpw.mods.fml.relauncher.Side;
 
 public class ClientProxy extends CommonProxy {
 	public static final CooldownItemRenderer cooldownItemRenderer = new CooldownItemRenderer();
-	public static final FontRendererWithIcons fontRenderer = new FontRendererWithIcons(
+	public static final FontRendererWithIcons fontRWithIcons = new FontRendererWithIcons(
+			Minecraft.getMinecraft().gameSettings, "/font/default.png", Minecraft.getMinecraft().renderEngine, false);
+	public static final FontRendererContourShadow fontRContourShadow = new FontRendererContourShadow(
 			Minecraft.getMinecraft().gameSettings, "/font/default.png", Minecraft.getMinecraft().renderEngine, false);
 	public static IconInText ICON_GOLD = new IconInText("$gold$", 12, 12, "/mods/"+Dota2Items.ID+"/textures/gui/gold_coins.png", -1, -3, 2);
 	public static IconInText ICON_COOLDOWN = new IconInText("$cd$", 7, 7, "/mods/"+Dota2Items.ID+"/textures/gui/cooldown.png", 0, 0, 3);
 	public static IconInText ICON_MANACOST = new IconInText("$manacost$", 7, 7, "/mods/"+Dota2Items.ID+"/textures/gui/manacost.png", 0, 0, 3);
 	{
-		fontRenderer.registerIcon(ICON_GOLD);
-		fontRenderer.registerIcon(ICON_COOLDOWN);
-		fontRenderer.registerIcon(ICON_MANACOST);
+		fontRWithIcons.registerIcon(ICON_GOLD);
+		fontRWithIcons.registerIcon(ICON_COOLDOWN);
+		fontRWithIcons.registerIcon(ICON_MANACOST);
 	}
 	public static GuiGold guiGold = new GuiGold();
 	public static GuiManaBar guiManaBar = new GuiManaBar(Minecraft.getMinecraft());

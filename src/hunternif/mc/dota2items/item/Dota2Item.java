@@ -33,10 +33,8 @@ public abstract class Dota2Item extends Item {
 	public ItemColumn shopColumn;
 	public int defaultQuantity = 1;
 	
-	public static int maxTooltipWidth = 180;
-	public String description = "";
-	private String[] descrWords;
-	protected static final String NEWLINE = "NEWLINE";
+	public static int maxTooltipWidth = 128;
+	public List<String> descriptionLines;
 	
 	/** If this item has a recipe, this "price" represents the price of the recipe. */
 	private int price;
@@ -158,32 +156,8 @@ public abstract class Dota2Item extends Item {
 		int itemPrice = isRecipe ? this.getRecipePrice() : this.getTotalPrice();
 		list.add(ClientProxy.ICON_GOLD.key + EnumChatFormatting.GOLD + itemPrice*stack.stackSize);
 		
-		if (!description.isEmpty()) {
-			FontRenderer font = getFontRenderer(stack);
-			if (descrWords == null) {
-				descrWords = description.split("\\s");
-			}
-			int maxWidth = Math.max(maxTooltipWidth, font.getStringWidth((String)list.get(0)));
-			int curLineWidth = 0;
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < descrWords.length; i++) {
-				int wordWidth = font.getStringWidth(descrWords[i]);
-				if (curLineWidth + wordWidth > maxWidth || descrWords[i].equals(NEWLINE)) {
-					curLineWidth = 0;
-					list.add(sb.toString());
-					sb = new StringBuilder();
-				}
-				if (!descrWords[i].equals(NEWLINE)) {
-					curLineWidth += wordWidth + font.getStringWidth(" ");
-					sb.append(descrWords[i]).append(" ");
-				}
-			}
-			if (sb.length() > 0) {
-				list.add(sb.toString());
-			}
-		}
-		if (passiveBuff != null) {
-			list.addAll(passiveBuff.linesForDisplay());
+		if (descriptionLines != null) {
+			list.addAll(descriptionLines);
 		}
 		
 		if (this instanceof CooldownItem) {

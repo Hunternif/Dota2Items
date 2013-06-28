@@ -13,6 +13,7 @@ import hunternif.mc.dota2items.core.ClientTickHandler;
 import hunternif.mc.dota2items.core.ServerTickHandler;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
 import hunternif.mc.dota2items.item.CooldownItem;
+import hunternif.mc.dota2items.util.DescriptionBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -44,6 +45,8 @@ public class ClientProxy extends CommonProxy {
 	
 	@Override
 	public void registerRenderers() {
+		DescriptionBuilder.build();
+		
 		MinecraftForge.EVENT_BUS.register(cooldownItemRenderer);
 		MinecraftForge.EVENT_BUS.register(guiManaBar);
 		MinecraftForge.EVENT_BUS.register(guiHpAndMana);

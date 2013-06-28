@@ -2,12 +2,7 @@ package hunternif.mc.dota2items.core.buff;
 
 import hunternif.mc.dota2items.Config;
 import hunternif.mc.dota2items.item.Dota2Item;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.util.EnumChatFormatting;
-
+import hunternif.mc.dota2items.util.DescriptionBuilder.BuffLineFormat;
 
 public class Buff {
 	public final String name;
@@ -20,20 +15,31 @@ public class Buff {
 	public boolean magicImmune;
 	public boolean invulnerable;
 	
+	@BuffLineFormat("+{%d} Health")
 	public int health = 0;
+	@BuffLineFormat("+{%.0f} HP Regeneration")
 	public float healthRegen = 0;
+	@BuffLineFormat("+{%d} Mana")
 	public int mana = 0;
 	public float manaRegen = 0;
+	@BuffLineFormat("+{%d%%} Mana Regeneration")
 	public int manaRegenPercent = 0;
+	@BuffLineFormat("+{%d} Movement Speed")
 	public int movementSpeed = 0;
+	@BuffLineFormat("+{%d} Attack Speed")
 	public int attackSpeed = 0;
+	@BuffLineFormat("+{%d} Armor")
 	public int armor = 0;
+	@BuffLineFormat("+{%d} Damage")
 	public int damage = 0;
 	public int damagePercentMelee = 0;
 	public int damagePercentRanged = 0;
 	
+	@BuffLineFormat("+{%d} Intelligence")
 	public int intelligence = 0;
+	@BuffLineFormat("+{%d} Strength")
 	public int strength = 0;
+	@BuffLineFormat("+{%d} Agility")
 	public int agility = 0;
 	
 	public boolean stacks = true;
@@ -163,23 +169,5 @@ public class Buff {
 	@Override
 	public String toString() {
 		return name;
-	}
-	
-	public List<String> linesForDisplay() {
-		List<String> list = new ArrayList<String>();
-		if (movementSpeed > 0) {
-			list.add("+" + EnumChatFormatting.GOLD + movementSpeed + EnumChatFormatting.GRAY + " Movement Speed.");
-		}
-		if (armor > 0) {
-			list.add("+" + EnumChatFormatting.GOLD + armor + EnumChatFormatting.GRAY + " Armor.");
-		}
-		if (intelligence > 0) {
-			list.add("+" + EnumChatFormatting.GOLD + intelligence + EnumChatFormatting.GRAY + " Intelligence.");
-		}
-		if (manaRegenPercent > 0) {
-			list.add("+" + EnumChatFormatting.GOLD + manaRegenPercent + "%" + EnumChatFormatting.GRAY + " Mana Regeneration.");
-		}
-		//TODO finish this and use annotations.
-		return list;
 	}
 }

@@ -2,6 +2,7 @@ package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.buff.Buff;
+import hunternif.mc.dota2items.util.DescriptionBuilder.Description;
 import hunternif.mc.dota2items.util.IntVec3;
 import hunternif.mc.dota2items.util.SideHit;
 import hunternif.mc.dota2items.util.TreeUtil;
@@ -16,7 +17,9 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-
+@Description("Active: Destroy Tree/Ward - Destroy a target tree, or deals 100 damage to a ward.\n" +
+		"Passive: Quell - Gives bonus attack damage against non-hero units, depending on the type of hero you are.\n" +
+		"[Melee bonus:] {32%}\n[Ranged bonus:] {12%}")
 public class QuellingBlade extends CooldownItem {
 
 	// Quelling Blade is an axe, so why not make it effective against wood

@@ -50,7 +50,9 @@ public class GuiDotaStats {
 			if (item.itemID == Item.bow.itemID) {
 				isMelee = false;
 				// Assume the damage of an arrow at average charge: 6
-				baseDmg = 6;
+				if (mc.thePlayer.inventory.hasItem(Item.arrow.itemID)) {
+					baseDmg = 6;
+				}
 			}
 		}
 		baseDmg *= Mechanics.DOTA_VS_MINECRAFT_DAMAGE;

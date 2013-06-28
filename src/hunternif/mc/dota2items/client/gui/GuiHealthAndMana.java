@@ -9,12 +9,12 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.ForgeSubscribe;
 
-public class GuiOnScreenStats {
+public class GuiHealthAndMana {
 	private static final int HP_BAR_WIDTH = 81;
 	
 	private Minecraft mc;
 	
-	public GuiOnScreenStats(Minecraft mc) {
+	public GuiHealthAndMana(Minecraft mc) {
 		this.mc = mc;
 	}
 	

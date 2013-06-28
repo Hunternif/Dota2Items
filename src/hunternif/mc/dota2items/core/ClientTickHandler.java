@@ -28,6 +28,7 @@ public class ClientTickHandler implements ITickHandler {
 	public void tickEnd(EnumSet<TickType> type, Object... tickData) {
 		if (type.contains(TickType.RENDER)) {
 			ClientProxy.guiGold.render();
+			ClientProxy.guiStats.render();
 		}
 	}
 

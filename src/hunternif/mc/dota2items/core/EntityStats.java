@@ -216,7 +216,10 @@ public class EntityStats implements IExtendedEntityProperties {
 	
 	/** @return movement speed calculated for Minecraft. */
 	public float getMovementSpeed() {
-		float movementSpeed = baseMovementSpeed;
+		return (float)getDotaMovementSpeed() * MINECRAFT_PLAYER_MOVE_SPEED / (float) baseMovementSpeed;
+	}
+	public int getDotaMovementSpeed() {
+		int movementSpeed = baseMovementSpeed;
 		List<Buff> appliedMSBuffs = new ArrayList<Buff>();
 		for (BuffInstance buffInst : getAppliedBuffs()) {
 			if (!appliedMSBuffs.contains(buffInst.buff)) {
@@ -228,7 +231,7 @@ public class EntityStats implements IExtendedEntityProperties {
 		if (movementSpeed > MAX_MOVE_SPEED) {
 			movementSpeed = MAX_MOVE_SPEED;
 		}
-		return movementSpeed * MINECRAFT_PLAYER_MOVE_SPEED / (float) baseMovementSpeed;
+		return movementSpeed;
 	}
 	
 	public boolean canAttack() {

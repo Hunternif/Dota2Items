@@ -39,6 +39,7 @@ public class GuiDotaStats {
 		tessellator.draw();
 		
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(mc.thePlayer);
+		StringBuilder sb = new StringBuilder();
 		
 		float baseDmg = 1;
 		boolean isMelee = true;
@@ -55,37 +56,56 @@ public class GuiDotaStats {
 		baseDmg *= Mechanics.DOTA_VS_MINECRAFT_DAMAGE;
 		float improvedDmg = stats.getDamage(baseDmg, isMelee);
 		int baseValue = MathHelper.floor_float(baseDmg);
-		int improvedValue = MathHelper.floor_float(improvedDmg) - baseValue;
-		String str = String.valueOf(baseValue) + (improvedValue > 0 ? (EnumChatFormatting.GREEN.toString() + "+" +  improvedValue) : "");
-		int strlen = mc.fontRenderer.getStringWidth(str);
-		mc.fontRenderer.drawString(str, left + 32 - strlen/2, top + 8, COLOR_REGULAR);
+		int bonus = MathHelper.floor_float(improvedDmg) - baseValue;
+		formatStat(sb, baseValue, bonus);
+		int strlen = mc.fontRenderer.getStringWidth(sb.toString());
+		mc.fontRenderer.drawString(sb.toString(), left + 32 - strlen/2, top + 8, COLOR_REGULAR);
 		
+		sb = new StringBuilder();
 		baseValue = stats.baseArmor;
-		improvedValue = stats.getArmor(baseValue);
-		str = String.valueOf(baseValue) + (improvedValue > 0 ? (EnumChatFormatting.GREEN.toString() + "+" +  improvedValue) : "");
-		strlen = mc.fontRenderer.getStringWidth(str);
-		mc.fontRenderer.drawString(str, left + 18 - strlen/2, top + 44, COLOR_REGULAR);
+		bonus = stats.getArmor(baseValue);
+		formatStat(sb, baseValue, bonus);
+		strlen = mc.fontRenderer.getStringWidth(sb.toString());
+		mc.fontRenderer.drawString(sb.toString(), left + 18 - strlen/2, top + 44, COLOR_REGULAR);
 		
-		str = String.valueOf(stats.getDotaMovementSpeed());
-		strlen = mc.fontRenderer.getStringWidth(str);
-		mc.fontRenderer.drawString(str, left + 45 - strlen/2, top + 44, COLOR_REGULAR);
+		String ms = String.valueOf(stats.getDotaMovementSpeed());
+		strlen = mc.fontRenderer.getStringWidth(ms);
+		mc.fontRenderer.drawString(ms, left + 45 - strlen/2, top + 44, COLOR_REGULAR);
 		
+		sb = new StringBuilder();
 		baseValue = stats.baseStrength;
-		improvedValue = stats.getStrength();
-		str = String.valueOf(baseValue) + (improvedValue > 0 ? (EnumChatFormatting.GREEN.toString() + "+" +  improvedValue) : "");
-		strlen = mc.fontRenderer.getStringWidth(str);
-		mc.fontRenderer.drawString(str, left + 93 - strlen/2, top + 11, COLOR_REGULAR);
+		bonus = stats.getStrength();
+		formatStat(sb, baseValue, bonus);
+		strlen = mc.fontRenderer.getStringWidth(sb.toString());
+		mc.fontRenderer.drawString(sb.toString(), left + 93 - strlen/2, top + 11, COLOR_REGULAR);
 		
+		sb = new StringBuilder();
 		baseValue = stats.baseAgility;
-		improvedValue = stats.getAgility();
-		str = String.valueOf(baseValue) + (improvedValue > 0 ? (EnumChatFormatting.GREEN.toString() + "+" +  improvedValue) : "");
-		strlen = mc.fontRenderer.getStringWidth(str);
-		mc.fontRenderer.drawString(str, left + 93 - strlen/2, top + 27, COLOR_REGULAR);
+		bonus = stats.getAgility();
+		formatStat(sb, baseValue, bonus);
+		strlen = mc.fontRenderer.getStringWidth(sb.toString());
+		mc.fontRenderer.drawString(sb.toString(), left + 93 - strlen/2, top + 27, COLOR_REGULAR);
 		
+		sb = new StringBuilder();
 		baseValue = stats.baseIntelligence;
-		improvedValue = stats.getIntelligence();
-		str = String.valueOf(baseValue) + (improvedValue > 0 ? (EnumChatFormatting.GREEN.toString() + "+" +  improvedValue) : "");
-		strlen = mc.fontRenderer.getStringWidth(str);
-		mc.fontRenderer.drawString(str, left + 93 - strlen/2, top + 44, COLOR_REGULAR);
+		bonus = stats.getIntelligence();
+		formatStat(sb, baseValue, bonus);
+		strlen = mc.fontRenderer.getStringWidth(sb.toString());
+		mc.fontRenderer.drawString(sb.toString(), left + 93 - strlen/2, top + 44, COLOR_REGULAR);
+	}
+	
+	private static void formatStat(StringBuilder sb, int baseValue, int bonus) {
+		if (baseValue == 0) {
+			if (bonus == 0) {
+				sb.append("0");
+			}
+		} else {
+			sb.append(baseValue);
+		}
+		if (bonus > 0) {
+			sb.append(EnumChatFormatting.GREEN.toString()).append("+").append(bonus);
+		} else if (bonus < 0) {
+			sb.append(EnumChatFormatting.RED.toString()).append(bonus);
+		}
 	}
 }

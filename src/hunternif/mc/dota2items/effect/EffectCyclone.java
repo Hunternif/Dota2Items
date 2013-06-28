@@ -23,17 +23,13 @@ public class EffectCyclone extends Effect {
 	public void perform(EffectInstance inst) {
 		World world = Minecraft.getMinecraft().theWorld;
 		EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
-		double x = (Integer) inst.data[0] + 0.5;
+		double x = (Integer) inst.data[0];
 		double y = (Integer) inst.data[1];
-		double z = (Integer) inst.data[2] + 0.5;
+		double z = (Integer) inst.data[2];
 		float yaw = (Float) inst.data[3];
 		float pitch = (Float) inst.data[4];
 		float alpha = (Float) inst.data[5];
 		EntityFX effect = new FXCycloneRing(world, x, y, z, yaw, pitch, alpha, effectRenderer);
-		if (inst.data.length > 2) {
-			alpha = (Float) inst.data[2];
-			effect.setAlphaF(alpha);
-		}
 		effectRenderer.addEffect(effect);
 	}
 	
@@ -43,8 +39,9 @@ public class EffectCyclone extends Effect {
 		for (int i = 0; i < 3; i++) {
 			data[i] = in.readInt();
 		}
-		data[3] = in.readFloat();
-		data[4] = in.readFloat();
+		for (int i = 3; i < 6; i++) {
+			data[i] = in.readFloat();
+		}
 		return data;
 	}
 
@@ -53,8 +50,9 @@ public class EffectCyclone extends Effect {
 		for (int i = 0; i < 3; i++) {
 			out.writeInt((Integer)data[i]);
 		}
-		out.writeFloat((Float)data[3]);
-		out.writeFloat((Float)data[4]);
+		for (int i = 3; i < 6; i++) {
+			out.writeFloat((Float)data[i]);
+		}
 	}
 
 }

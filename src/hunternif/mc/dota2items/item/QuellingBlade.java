@@ -66,7 +66,7 @@ public class QuellingBlade extends CooldownItem {
 	@Override
 	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world,
 			int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-		if (world.isRemote || !tryUse(itemStack, player)) {
+		if (!tryUse(itemStack, player)) {
 			return false;
 		}
 		// Looking for a tree
@@ -103,7 +103,9 @@ public class QuellingBlade extends CooldownItem {
 			int trunkBaseY = TreeUtil.getTreeTrunkBaseY(world, x, y, z);
 			if (trunkBaseY > 0) {
 				// Yep, found a tree
-				startCooldown(itemStack, player);
+				if (!world.isRemote) {
+					startCooldown(itemStack, player);
+				}
 				TreeUtil.removeTree(world, new IntVec3(x, trunkBaseY, z), true);
 				world.playSoundEffect(x, trunkBaseY, z, Sound.TREE_FALL.name, 1.0f, 1.0f);
 				return true;
@@ -115,7 +117,9 @@ public class QuellingBlade extends CooldownItem {
 			IntVec3 trunkBase = TreeUtil.findTreeTrunkInBox(world, x, y, z, trunkSearchDeltaY, trunkSearchRadius);
 			if (trunkBase != null) {
 				// Yep, found a tree
-				startCooldown(itemStack, player);
+				if (!world.isRemote) {
+					startCooldown(itemStack, player);
+				}
 				TreeUtil.removeTree(world, trunkBase, true);
 				world.playSoundEffect(trunkBase.x, trunkBase.y, trunkBase.z, Sound.TREE_FALL.name, 1.0f, 1.0f);
 				return true;

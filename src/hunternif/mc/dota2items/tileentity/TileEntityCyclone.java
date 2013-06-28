@@ -25,7 +25,8 @@ public class TileEntityCyclone extends TileEntity {
 	public void updateEntity() {
 		if (elapsed >= duration) {
 			worldObj.removeBlockTileEntity(xCoord, yCoord, zCoord);
-			worldObj.setBlock(xCoord, yCoord, zCoord, 0);
+			worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+			//TODO: BUG: sometimes cyclone is not removed from the world.
 			return;
 		}
 		elapsed += 0.05f;

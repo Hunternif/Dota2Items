@@ -350,11 +350,7 @@ public class Mechanics {
 	}
 	
 	private static void regenHealthManaAndGold(EntityLiving entity, EntityStats stats) {
-		boolean shouldHeal = entity.getHealth() > 0 && entity.getHealth() < entity.getMaxHealth();
-		if (entity instanceof EntityPlayer) {
-			shouldHeal &= ((EntityPlayer)entity).getFoodStats().getFoodLevel() >= FOOD_THRESHOLD_FOR_HEAL;
-		}
-		if (shouldHeal) {
+		if (shouldHeal(entity)) {
 			float halfHeartEquivalent = (float)stats.getMaxHealth() / (float)entity.getMaxHealth();
 			float partialHealth = stats.partialHalfHeart + stats.getHealthRegen() /20f / halfHeartEquivalent;
 			if (partialHealth >= 1) {
@@ -370,6 +366,14 @@ public class Mechanics {
 			stats.addMana(stats.getManaRegen()/20f);
 		}
 		stats.addGold(GOLD_PER_SECOND/20f);
+	}
+	
+	public static boolean shouldHeal(EntityLiving entity) {
+		boolean shouldHeal = entity.getHealth() > 0 && entity.getHealth() < entity.getMaxHealth();
+		if (entity instanceof EntityPlayer) {
+			shouldHeal &= ((EntityPlayer)entity).getFoodStats().getFoodLevel() >= FOOD_THRESHOLD_FOR_HEAL;
+		}
+		return shouldHeal;
 	}
 	
 	@ForgeSubscribe

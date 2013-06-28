@@ -3,6 +3,7 @@ package hunternif.mc.dota2items;
 import hunternif.mc.dota2items.client.gui.FontRendererWithIcons;
 import hunternif.mc.dota2items.client.gui.GuiGold;
 import hunternif.mc.dota2items.client.gui.GuiManaBar;
+import hunternif.mc.dota2items.client.gui.GuiOnScreenStats;
 import hunternif.mc.dota2items.client.gui.IconInText;
 import hunternif.mc.dota2items.client.render.CooldownItemRenderer;
 import hunternif.mc.dota2items.client.render.RenderShopkeeper;
@@ -34,11 +35,13 @@ public class ClientProxy extends CommonProxy {
 	}
 	public static GuiGold guiGold = new GuiGold();
 	public static GuiManaBar guiManaBar = new GuiManaBar(Minecraft.getMinecraft());
+	public static GuiOnScreenStats guiStats = new GuiOnScreenStats(Minecraft.getMinecraft());
 	
 	@Override
 	public void registerRenderers() {
 		MinecraftForge.EVENT_BUS.register(cooldownItemRenderer);
 		MinecraftForge.EVENT_BUS.register(guiManaBar);
+		MinecraftForge.EVENT_BUS.register(guiStats);
 		
 		for (Item item : Dota2Items.itemList) {
 			if (item instanceof CooldownItem) {

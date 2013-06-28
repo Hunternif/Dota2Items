@@ -4,7 +4,6 @@ import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.EntityStats;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
@@ -44,9 +43,8 @@ public class GuiManaBar extends Gui {
 		GL11.glDisable(GL11.GL_LIGHTING);
 		mc.renderEngine.bindTexture("/mods/"+Dota2Items.ID+"/textures/gui/mana.png");
 		
-		ScaledResolution res = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
-		int width = res.getScaledWidth();
-		int height = res.getScaledHeight();
+		int width = event.resolution.getScaledWidth();
+		int height = event.resolution.getScaledHeight();
 
 		boolean renderArmor = ForgeHooks.getTotalArmorValue(mc.thePlayer) > 0;
 		int left = width / 2 - 91;

@@ -38,7 +38,6 @@ public class GuiShopBuy extends GuiShopBase {
 	private static final int COLUMN_ICONS_X = 8;
 	private static final int COLUMN_ICONS_Y = 41;
 	private static final int COLOR_SEARCH = 0xffffff;
-	public static final int FILTER_STR_LENGTH = 15;
 	public static final int COLUMNS = 11;
 	
 	public GuiTextField filterField;
@@ -64,7 +63,7 @@ public class GuiShopBuy extends GuiShopBase {
 		super.initGui();
 		Keyboard.enableRepeatEvents(true);
 		filterField = new GuiTextField(this.fontRenderer, this.guiLeft + 127, this.guiTop + 29, 96, this.fontRenderer.FONT_HEIGHT);
-		filterField.setMaxStringLength(FILTER_STR_LENGTH);
+		filterField.setMaxStringLength(15);
 		filterField.setEnableBackgroundDrawing(false);
 		filterField.setFocused(false);
 		filterField.setCanLoseFocus(true);

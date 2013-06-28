@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
 public class Tango extends Dota2Item {
@@ -26,6 +27,10 @@ public class Tango extends Dota2Item {
 		setMaxStackSize(64);
 		setPrice(30);
 		defaultQuantity = 3;
+		description = "Use: Eat Tree - Consume a tree to restore HP over time. " +
+				"Comes with 3 charges. " + NEWLINE + " " +
+				EnumChatFormatting.GRAY + "Duration: " + EnumChatFormatting.GOLD + "16 " + NEWLINE + " " +
+				EnumChatFormatting.GRAY + "Health restored: " + EnumChatFormatting.GOLD + "115";
 	}
 	
 	@Override

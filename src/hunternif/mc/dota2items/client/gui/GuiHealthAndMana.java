@@ -35,7 +35,7 @@ public class GuiHealthAndMana {
 		
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(mc.thePlayer);
 		int left = width / 2 - 91;
-		int top = height - 39;
+		int top = height - 38;
 		String hp = stats.getHealth(mc.thePlayer) + "/" + stats.getMaxHealth();
 		int strlen = fontRenderer.getStringWidth(hp);
 		fontRenderer.drawStringWithShadow(hp, left - strlen - 2, top, 0xFF1313);
@@ -48,7 +48,7 @@ public class GuiHealthAndMana {
 		int maxMana = stats.getMaxMana();
 		if (maxMana > 0) {
 			boolean renderArmor = ForgeHooks.getTotalArmorValue(mc.thePlayer) > 0;
-			top = height - 49 - (renderArmor ? 10 : 0);
+			top = height - 48 - (renderArmor ? 10 : 0);
 			String mana = curMana + "/" + maxMana;
 			strlen = fontRenderer.getStringWidth(mana);
 			fontRenderer.drawStringWithShadow(mana, left - strlen - 2, top, 0x2162F8);

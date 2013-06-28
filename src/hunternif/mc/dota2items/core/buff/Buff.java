@@ -3,6 +3,11 @@ package hunternif.mc.dota2items.core.buff;
 import hunternif.mc.dota2items.Config;
 import hunternif.mc.dota2items.item.Dota2Item;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.util.EnumChatFormatting;
+
 
 public class Buff {
 	public final String name;
@@ -158,5 +163,23 @@ public class Buff {
 	@Override
 	public String toString() {
 		return name;
+	}
+	
+	public List<String> linesForDisplay() {
+		List<String> list = new ArrayList<String>();
+		if (movementSpeed > 0) {
+			list.add("+" + EnumChatFormatting.GOLD + movementSpeed + EnumChatFormatting.GRAY + " Movement Speed.");
+		}
+		if (armor > 0) {
+			list.add("+" + EnumChatFormatting.GOLD + armor + EnumChatFormatting.GRAY + " Armor.");
+		}
+		if (intelligence > 0) {
+			list.add("+" + EnumChatFormatting.GOLD + intelligence + EnumChatFormatting.GRAY + " Intelligence.");
+		}
+		if (manaRegenPercent > 0) {
+			list.add("+" + EnumChatFormatting.GOLD + manaRegenPercent + "%" + EnumChatFormatting.GRAY + " Mana Regeneration.");
+		}
+		//TODO finish this and use annotations.
+		return list;
 	}
 }

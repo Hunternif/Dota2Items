@@ -43,6 +43,9 @@ public class BlinkDagger extends CooldownItem {
 		setCooldown(usualCooldown);
 		setManaCost(75);
 		setPrice(2150);
+		description = "Active: Blink - Teleport to a target point up to 1200 units" +
+				" away. If damage is taken from an enemy hero, Blink Dagger cannot" +
+				" be used for 3 seconds.";
 	}
 	
 	@Override

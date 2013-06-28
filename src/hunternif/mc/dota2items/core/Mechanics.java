@@ -313,8 +313,8 @@ public class Mechanics {
 			if (!stats.canAttack()) {
 				if (event.entityLiving instanceof EntityCreeper) {
 					EntityCreeper creeper = (EntityCreeper) event.entityLiving;
-					int timeSinceIgnited = ReflectionHelper.getPrivateValue(EntityCreeper.class, creeper, timeSinceIgnitedObfFields);
-					ReflectionHelper.setPrivateValue(EntityCreeper.class, creeper, timeSinceIgnited-1, timeSinceIgnitedObfFields);
+					Integer timeSinceIgnited = ReflectionHelper.getPrivateValue(EntityCreeper.class, creeper, timeSinceIgnitedObfFields);
+					ReflectionHelper.setPrivateValue(EntityCreeper.class, creeper, timeSinceIgnited.intValue()-1, timeSinceIgnitedObfFields);
 				}
 			}
 		}

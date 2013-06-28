@@ -151,8 +151,10 @@ public class EntityStats implements IExtendedEntityProperties {
 	}
 	public void setMana(float amount) {
 		float newMana = amount;
+		int maxMana = getMaxMana();
 		if (newMana < 0) newMana = 0;
-		// Allow having more mana than your maximum so that you don't immediately
+		if (newMana > maxMana && maxMana > 0) newMana = maxMana;
+		// Allow having more mana if the maximum is zero, so that you don't immediately
 		// lose all your mana once you shift your INT item in a different slot.
 		curMana = newMana;
 	}

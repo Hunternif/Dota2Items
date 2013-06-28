@@ -46,8 +46,10 @@ public class EntityMovePacket extends CustomPacket {
 		if (side.isClient()) {
 			Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(entityID);
 			if (entity != null) {
-				//TODO fix the squids teleporting back underwater when the cyclone ends.
 				entity.setPosition(x, y, z);
+				entity.lastTickPosX = entity.prevPosX = x;
+				entity.lastTickPosY = entity.prevPosY = y;
+				entity.lastTickPosZ = entity.prevPosZ = z;
 			}
 		} else {
 			throw new ProtocolException("Cannot send this packet to the server!");

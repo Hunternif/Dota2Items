@@ -75,9 +75,10 @@ public class EulsScepter extends CooldownItem {
 			entity.motionX = 0;
 			entity.motionY = 0;
 			entity.motionZ = 0;
-			entity.posX = ((double) x) + 0.5;
-			entity.posY = ((double) y) + 3;
-			entity.posZ = ((double) z) + 0.5;
+			entity.setPosition(((double) x) + 0.5, ((double) y) + 3, ((double) z) + 0.5);
+			entity.lastTickPosX = entity.prevPosX = entity.posX;
+			entity.lastTickPosY = entity.prevPosY = entity.posY;
+			entity.lastTickPosZ = entity.prevPosZ = entity.posZ;
 			PacketDispatcher.sendPacketToAllPlayers(new EntityMovePacket(entity).makePacket());
 			
 			long cycloneEndTime = entity.worldObj.getTotalWorldTime() + (long) (TileEntityCyclone.duration * 20f);

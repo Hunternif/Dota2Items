@@ -7,7 +7,6 @@ import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.client.gui.ColorHelper;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
-import hunternif.mc.dota2items.entity.EntityShopkeeper;
 import hunternif.mc.dota2items.inventory.InventoryShop;
 import hunternif.mc.dota2items.inventory.ItemColumn;
 
@@ -64,12 +63,6 @@ public abstract class Dota2Item extends Item {
 	 * cannot use this item.
 	 */
 	public Sound canUseItem(ItemStack stack, EntityLiving player, Entity target) {
-		if (target instanceof EntityShopkeeper) { // Not even in Creative mode.
-			return Sound.MAGIC_IMMUNE;
-		}
-		if (player instanceof EntityPlayer && ((EntityPlayer)player).capabilities.isCreativeMode) {
-			return null;
-		}
 		EntityStats playerStats = Dota2Items.mechanics.getEntityStats(player);
 		if (!playerStats.canUseItems()) {
 			return Sound.DENY_SILENCE;

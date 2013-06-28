@@ -3,7 +3,6 @@ package hunternif.mc.dota2items.item;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.client.event.CooldownEndDisplayEvent;
-import hunternif.mc.dota2items.entity.EntityShopkeeper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -148,14 +147,11 @@ public abstract class CooldownItem extends Dota2Item {
 	
 	@Override
 	public Sound canUseItem(ItemStack stack, EntityLiving player, Entity target) {
-		if (target instanceof EntityShopkeeper) { // Not even in Creative mode.
-			return Sound.MAGIC_IMMUNE;
-		}
-		if (player instanceof EntityPlayer && ((EntityPlayer)player).capabilities.isCreativeMode) {
-			return null;
-		}
 		Sound failSound = super.canUseItem(stack, player, target);
 		if (failSound == null) {
+			if (player instanceof EntityPlayer && ((EntityPlayer)player).capabilities.isCreativeMode) {
+				return null;
+			}
 			if (isOnCooldown(stack)) {
 				failSound = Sound.DENY_COOLDOWN;
 			} else if (Dota2Items.mechanics.getEntityStats(player).getMana() < this.getManaCost()) {

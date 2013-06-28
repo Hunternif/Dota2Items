@@ -16,6 +16,8 @@ import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.common.network.PacketDispatcher;
+
 public class GuiShopSell extends GuiShopBase {
 	public static final int WIDTH = 176;
 	public static final int HEIGHT = 166;
@@ -45,7 +47,7 @@ public class GuiShopSell extends GuiShopBase {
 			((ContainerShopSell)this.inventorySlots).putStackInSlot(0, null);
 			EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
 			stats.addGold(sellPrice);
-			ShopSellPacket.sendToServer();
+			PacketDispatcher.sendPacketToServer(new ShopSellPacket().makePacket());
 			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.COINS.name, 1, 1);
 		}
 	}

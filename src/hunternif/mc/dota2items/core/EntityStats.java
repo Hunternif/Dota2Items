@@ -41,6 +41,8 @@ public class EntityStats implements IExtendedEntityProperties {
 	
 	
 	public int entityId;
+	/** Measured in ticks the Entity has existed. */
+	public long lastSyncTime;
 	
 	public int baseHealth = BASE_PLAYER_HP;
 	public float baseHealthRegen = 0.25f;

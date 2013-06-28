@@ -1,14 +1,13 @@
 package hunternif.mc.dota2items;
 
 import hunternif.mc.dota2items.client.gui.GuiHandler;
-import hunternif.mc.dota2items.client.network.ClientPacketHandler;
 import hunternif.mc.dota2items.core.Dota2PlayerTracker;
 import hunternif.mc.dota2items.core.Mechanics;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
 import hunternif.mc.dota2items.entity.ShopkeeperSpawner;
 import hunternif.mc.dota2items.inventory.Dota2CreativeTab;
 import hunternif.mc.dota2items.inventory.InventoryShop;
-import hunternif.mc.dota2items.network.ServerPacketHandler;
+import hunternif.mc.dota2items.network.CustomPacketHandler;
 import hunternif.mc.dota2items.tileentity.TileEntityCyclone;
 
 import java.util.ArrayList;
@@ -34,9 +33,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 @Mod(modid=Dota2Items.ID, name=Dota2Items.NAME, version=Dota2Items.VERSION)
-@NetworkMod(clientSideRequired=true, serverSideRequired=true,
-	clientPacketHandlerSpec=@NetworkMod.SidedPacketHandler(channels={Dota2Items.CHANNEL}, packetHandler=ClientPacketHandler.class),
-	serverPacketHandlerSpec=@NetworkMod.SidedPacketHandler(channels={Dota2Items.CHANNEL}, packetHandler=ServerPacketHandler.class))
+@NetworkMod(clientSideRequired=true, serverSideRequired=true, packetHandler=CustomPacketHandler.class, channels={Dota2Items.CHANNEL})
 public class Dota2Items {
 	public static final String ID = "Dota2Items";
 	public static final String NAME = "Dota 2 Items";

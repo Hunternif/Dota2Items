@@ -1,8 +1,7 @@
 package hunternif.mc.dota2items.effect;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -22,13 +21,7 @@ public abstract class Effect {
 	@SideOnly(Side.CLIENT)
 	public abstract void perform(EffectInstance inst);
 	
-	public boolean hasAdditionalData() {
-		return false;
-	}
+	public abstract Object[] readInstanceData(ByteArrayDataInput in);
 	
-	public Object[] readAdditionalInstanceData(DataInputStream input) throws IOException {
-		return null;
-	}
-	
-	public void writeAdditionalInstanceData(EffectInstance instance, DataOutputStream output) throws IOException {}
+	public abstract void writeInstanceData(Object[] data, ByteArrayDataOutput out);
 }

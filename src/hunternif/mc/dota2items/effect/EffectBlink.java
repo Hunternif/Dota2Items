@@ -8,6 +8,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -38,8 +42,27 @@ public class EffectBlink extends Effect {
 			double velX = -sinYaw*cosPitch / (distance) * 0.05D;
 			double velZ = cosYaw*cosPitch / (distance) * 0.05D;
 			double velY = -sinPitch / (distance) * 0.05D;
-			ParticleBlink particle = new ParticleBlink(world, inst.x + rX, inst.y + rY, inst.z + rZ, velX, velY, velZ);
+			double x = (Double) inst.data[0];
+			double y = (Double) inst.data[1];
+			double z = (Double) inst.data[2];
+			ParticleBlink particle = new ParticleBlink(world, x + rX, y + rY, z + rZ, velX, velY, velZ);
 			effectRenderer.addEffect(particle);
+		}
+	}
+
+	@Override
+	public Object[] readInstanceData(ByteArrayDataInput in) {
+		Object[] data = new Object[3];
+		for (int i = 0; i < 3; i++) {
+			data[i] = in.readDouble();
+		}
+		return data;
+	}
+
+	@Override
+	public void writeInstanceData(Object[] data, ByteArrayDataOutput out) {
+		for (int i = 0; i < 3; i++) {
+			out.writeDouble((Double)data[i]);
 		}
 	}
 

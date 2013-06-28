@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.MathHelper;
+import cpw.mods.fml.common.network.PacketDispatcher;
 
 public abstract class GuiShopBase extends GuiContainer {
 
@@ -59,7 +60,7 @@ public abstract class GuiShopBase extends GuiContainer {
 				int y = MathHelper.floor_double(player.posY);
 				int z = MathHelper.floor_double(player.posZ);
 				
-				OpenGuiPacket.sendOpenGuiPacket(guiId);
+				PacketDispatcher.sendPacketToServer(new OpenGuiPacket(guiId).makePacket());
 				return;
 			}
 		}

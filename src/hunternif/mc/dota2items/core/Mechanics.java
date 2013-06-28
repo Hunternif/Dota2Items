@@ -5,7 +5,7 @@ import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.item.Dota2Item;
-import hunternif.mc.dota2items.network.EntityStatsPacket;
+import hunternif.mc.dota2items.network.EntityStatsSyncPacket;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +38,8 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 
@@ -294,11 +296,10 @@ public class Mechanics {
 			if (event.entityLiving instanceof EntityPlayer) {
 				regenHealthManaAndGold((EntityPlayer)event.entityLiving, stats);
 				// Synchronize stats with all clients every SYNC_STATS_INTERVAL seconds:
-				int tick = event.entityLiving.ticksExisted;
-				if (!event.entity.worldObj.isRemote && tick % (20 * SYNC_STATS_INTERVAL) == 0 &&
-						!EntityStatsPacket.lastSentAt(stats, tick)) {
-					EntityStatsPacket.sendEntityStatsPacket(stats);
-					EntityStatsPacket.sentAtTicks.put(stats, Integer.valueOf(tick));
+				int time = event.entityLiving.ticksExisted;
+				if (!event.entityLiving.worldObj.isRemote && time - stats.lastSyncTime == 20 * SYNC_STATS_INTERVAL) {
+					stats.lastSyncTime = time;
+					PacketDispatcher.sendPacketToPlayer(new EntityStatsSyncPacket(stats).makePacket(), (Player)event.entityLiving);
 				}
 			}
 			if (!stats.canMove()) {
@@ -328,11 +329,12 @@ public class Mechanics {
 			if (event.entityLiving instanceof EntityPlayer) {
 				int level = ((EntityPlayer)event.entityLiving).experienceLevel + 1;
 				int goldAmount = MathHelper.floor_float(GOLD_LOST_PER_LEVEL*level);
-				if (!event.entity.worldObj.isRemote) {
+				if (!event.entityLiving.worldObj.isRemote) {
 					//200 + level*9; That would allow to farm lots of gold on your own death.
-					scatterGoldAt(event.entity, goldAmount);
+					scatterGoldAt(event.entityLiving, goldAmount);
 					stats.removeGold(goldAmount);
-					EntityStatsPacket.sendEntityStatsPacket(stats);
+					PacketDispatcher.sendPacketToPlayer(new EntityStatsSyncPacket(stats).makePacket(), (Player)event.entityLiving);
+					
 				}
 			} else {
 				if (!event.entity.worldObj.isRemote && (event.entity instanceof IMob ||
@@ -410,11 +412,11 @@ public class Mechanics {
 	public void onPickupGold(EntityItemPickupEvent event) {
 		ItemStack stack = event.item.getEntityItem();
 		if (stack.itemID == Config.goldCoin.getID()) {
-			event.entity.worldObj.playSoundAtEntity(event.entity, Sound.COINS.name, 0.8f, 1f);
+			event.entityLiving.worldObj.playSoundAtEntity(event.entity, Sound.COINS.name, 0.8f, 1f);
 			EntityStats stats = getEntityStats(event.entityLiving);
 			stats.addGold(stack.stackSize);
-			if (!event.entity.worldObj.isRemote) {
-				EntityStatsPacket.sendEntityStatsPacket(stats);
+			if (!event.entityLiving.worldObj.isRemote) {
+				PacketDispatcher.sendPacketToPlayer(new EntityStatsSyncPacket(stats).makePacket(), (Player)event.entityLiving);
 			}
 			event.item.setDead();
 			event.setCanceled(true);

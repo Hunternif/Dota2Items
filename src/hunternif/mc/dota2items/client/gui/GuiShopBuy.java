@@ -8,8 +8,8 @@ import hunternif.mc.dota2items.inventory.ContainerShopBuy;
 import hunternif.mc.dota2items.inventory.ItemColumn;
 import hunternif.mc.dota2items.inventory.SlotColumnIcon;
 import hunternif.mc.dota2items.item.Dota2Item;
-import hunternif.mc.dota2items.network.ShopFilterInputPacket;
-import hunternif.mc.dota2items.network.ShopSetResultPacket;
+import hunternif.mc.dota2items.network.ShopBuySetFilterPacket;
+import hunternif.mc.dota2items.network.ShopBuySetResultPacket;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +29,8 @@ import net.minecraft.util.MathHelper;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiShopBuy extends GuiShopBase {
 	public static final int WIDTH = 230;
@@ -164,7 +166,7 @@ public class GuiShopBuy extends GuiShopBase {
 			boolean shouldResetButtons = false;
 			if (Dota2Item.canBuy(btn.itemStack, player)) {
 				((ContainerShopBuy)this.inventorySlots).setResultItem(btn.itemStack);
-				ShopSetResultPacket.sendToServer(btn.itemStack);
+				PacketDispatcher.sendPacketToServer(new ShopBuySetResultPacket(btn.itemStack).makePacket());
 				shouldResetButtons = true;
 			}
 			if (Dota2Item.hasRecipe(btn.itemStack)) {
@@ -179,7 +181,7 @@ public class GuiShopBuy extends GuiShopBase {
 	
 	private void updateFilter() {
 		((ContainerShopBuy)this.inventorySlots).invShop.setFilterStr(filterField.getText());
-		ShopFilterInputPacket.sendToServer(filterField.getText());
+		PacketDispatcher.sendPacketToServer(new ShopBuySetFilterPacket(filterField.getText()).makePacket());
 	}
 	
 	private boolean isMouseOverSlot(Slot slot, int mouseX, int mouseY) {

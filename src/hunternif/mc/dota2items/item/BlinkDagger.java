@@ -4,6 +4,7 @@ import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.effect.Effect;
 import hunternif.mc.dota2items.effect.EffectInstance;
+import hunternif.mc.dota2items.network.EffectPacket;
 import hunternif.mc.dota2items.util.BlockUtil;
 import hunternif.mc.dota2items.util.SideHit;
 
@@ -216,8 +217,8 @@ public class BlinkDagger extends CooldownItem {
 			// Send effect packets to other players
 			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 			if (server != null) {
-				server.getConfigurationManager().sendToAllNearExcept(player, srcX, srcY, srcZ, 30D, player.dimension, srcEffect.toPacket());
-				server.getConfigurationManager().sendToAllNearExcept(player, destX, destY, destZ, 30D, player.dimension, destEffect.toPacket());
+				server.getConfigurationManager().sendToAllNearExcept(player, srcX, srcY, srcZ, 30D, player.dimension, new EffectPacket(srcEffect).makePacket());
+				server.getConfigurationManager().sendToAllNearExcept(player, destX, destY, destZ, 30D, player.dimension, new EffectPacket(destEffect).makePacket());
 			}
 		} else {
 			// Client side. Render blink effect.

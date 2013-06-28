@@ -7,6 +7,7 @@ import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
+import hunternif.mc.dota2items.network.BuffPacket;
 import hunternif.mc.dota2items.network.EntityMovePacket;
 import hunternif.mc.dota2items.tileentity.TileEntityCyclone;
 
@@ -77,13 +78,13 @@ public class EulsScepter extends CooldownItem {
 			entity.posX = ((double) x) + 0.5;
 			entity.posY = ((double) y) + 3;
 			entity.posZ = ((double) z) + 0.5;
-			EntityMovePacket.sendMovePacket(entity);
+			PacketDispatcher.sendPacketToAllPlayers(new EntityMovePacket(entity).makePacket());
 			
 			long cycloneEndTime = entity.worldObj.getTotalWorldTime() + (long) (TileEntityCyclone.duration * 20f);
-			BuffInstance buff = new BuffInstance(Buff.inCyclone, entity.entityId, cycloneEndTime, false);
+			BuffInstance buffInst = new BuffInstance(Buff.inCyclone, entity.entityId, cycloneEndTime, false);
 			EntityStats entityStats = Dota2Items.mechanics.getEntityStats((EntityLiving)entity);
-			entityStats.addBuff(buff);
-			PacketDispatcher.sendPacketToAllPlayers(buff.toPacket());
+			entityStats.addBuff(buffInst);
+			PacketDispatcher.sendPacketToAllPlayers(new BuffPacket(buffInst).makePacket());
 			
 			// We're on the server, so it's ok:
 			startCooldown(stack, player);

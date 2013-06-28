@@ -166,7 +166,11 @@ public class EntityStats implements IExtendedEntityProperties {
 		for (BuffInstance buffInst : getAppliedBuffs()) {
 			regen += buffInst.buff.manaRegen;
 		}
-		return regen + MANA_REGEN_PER_INT*(float)getIntelligence();
+		regen += MANA_REGEN_PER_INT*(float)getIntelligence();
+		for (BuffInstance buffInst : getAppliedBuffs()) {
+			regen *= 1f + buffInst.buff.manaRegenPercent/100f;
+		}
+		return regen;
 	}
 	
 	/** A percentage. */

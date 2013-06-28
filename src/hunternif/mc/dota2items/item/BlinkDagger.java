@@ -1,5 +1,6 @@
 package hunternif.mc.dota2items.item;
 
+import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.effect.Effect;
 import hunternif.mc.dota2items.effect.EffectInstance;
@@ -188,6 +189,7 @@ public class BlinkDagger extends CooldownItem {
 		
 		//------------------------ Successful blink ------------------------
 		
+		Dota2Items.mechanics.getEntityStats(player).removeMana(getManaCost());
 		player.motionX = 0;
 		player.motionY = 0;
 		player.motionZ = 0;

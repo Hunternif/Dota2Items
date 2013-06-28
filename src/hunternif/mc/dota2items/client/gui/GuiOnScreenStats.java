@@ -28,6 +28,7 @@ public class GuiOnScreenStats {
 		int height = event.resolution.getScaledHeight();
 		
 		//TODO make text positioning configurable; add an option to show Dota-like HP and mana bars.
+		//NOTE I could make a sheet for smaller font size, if it's only 0123456789/+
 		
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(mc.thePlayer);
 		int left = width / 2 - 91;

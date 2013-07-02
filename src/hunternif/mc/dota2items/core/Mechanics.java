@@ -143,6 +143,12 @@ public class Mechanics {
 				event.setCanceled(true);
 				return;
 			}
+			// Try evading the attack
+			if (targetStats.canEvade()) {
+				FMLLog.log(Dota2Items.ID, Level.FINE, "evaded");
+				event.setCanceled(true);
+				return;
+			}
 		}
 		
 		// Apply attack bonuses to the source player
@@ -152,7 +158,13 @@ public class Mechanics {
 			if (sourceStats != null) {
 				dotaDamage = sourceStats.getDamage(dotaDamage, !event.source.isProjectile());
 			}
-			// If the player is the attacker, his target must have the EntityStats:
+			float critMultiplier = sourceStats.getCriticalMultiplier();
+			if (critMultiplier > 1f) {
+				player.onCriticalHit(event.entityLiving);
+				FMLLog.log(Dota2Items.ID, Level.FINE, "crit");
+				dotaDamage *= critMultiplier;
+			}
+			// If the player is the attacker, his target must be given EntityStats:
 			if (targetStats == null) {
 				targetStats = new EntityStats(event.entityLiving);
 				entityStats.put(event.entityLiving, targetStats);

@@ -42,6 +42,13 @@ public class Buff {
 	@BuffLineFormat("+{%d} Agility")
 	public int agility = 0;
 	
+	@BuffLineFormat("+{%d%%} Evasion")
+	public int evasionPercent = 0;
+	@BuffLineFormat("[Critical Chance:] {%d%%}")
+	public int critChancePercent = 0;
+	@BuffLineFormat("[Critical Damage:] {%d%%}")
+	public int critDamagePercent = 0;
+	
 	public boolean stacks = true;
 	
 	
@@ -163,6 +170,20 @@ public class Buff {
 	
 	public Buff setDoesNotStack() {
 		stacks = false;
+		return this;
+	}
+	
+	public Buff setEvasionPercent(int value) {
+		evasionPercent = value;
+		return this;
+	}
+	
+	public Buff setCritChancePercent(int value) {
+		critChancePercent = value;
+		return this;
+	}
+	public Buff setCritDamagePercent(int value) {
+		critDamagePercent = value;
 		return this;
 	}
 	

@@ -6,6 +6,8 @@ import hunternif.mc.dota2items.entity.IInvulnerableEntity;
 import hunternif.mc.dota2items.entity.IMagicImmuneEntity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
@@ -329,6 +331,40 @@ public class EntityStats implements IExtendedEntityProperties {
 		}
 		return intel;
 	}
+	
+	public boolean canEvade() {
+		for (BuffInstance buffInst : getAppliedBuffs()) {
+			if (buffInst.buff.evasionPercent > 0 && Math.random()*100 <= buffInst.buff.evasionPercent) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public float getCriticalMultiplier() {
+		List<BuffInstance> critBuffs = new ArrayList<BuffInstance>();
+		for (BuffInstance buffInst : getAppliedBuffs()) {
+			if (buffInst.buff.critChancePercent > 0) {
+				critBuffs.add(buffInst);
+			}
+		}
+		Collections.sort(critBuffs, critDamageComparator);
+		for (BuffInstance buffInst : critBuffs) {
+			if (Math.random()*100 <= buffInst.buff.critChancePercent) {
+				return buffInst.buff.critDamagePercent * 0.01f;
+			}
+		}
+		return 1f;
+	}
+	/** Provides sorting by Critical Damage in descending order. */
+	private static class CritDamageComparator implements Comparator<BuffInstance> {
+		@Override
+		public int compare(BuffInstance o1, BuffInstance o2) {
+			return o1.buff.critDamagePercent > o2.buff.critDamagePercent ? -1 :
+				o1.buff.critDamagePercent < o2.buff.critDamagePercent ? 1 : 0;
+		}
+	}
+	private static CritDamageComparator critDamageComparator = new CritDamageComparator();
 
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {

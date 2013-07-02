@@ -391,6 +391,17 @@ public class EntityStats implements IExtendedEntityProperties {
 		}
 		return result;
 	}
+	
+	public int getDamageBlock(boolean melee) {
+		int block = 0;
+		for (BuffInstance buffInst : getAppliedBuffs()) {
+			if (buffInst.buff.damageBlockChance > 0 && Math.random()*100 <= buffInst.buff.damageBlockChance) {
+				int curBlock = melee ? buffInst.buff.damageBlockMelee : buffInst.buff.damageBlockRanged;
+				if (curBlock > block) block = curBlock;
+			}
+		}
+		return block;
+	}
 
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {

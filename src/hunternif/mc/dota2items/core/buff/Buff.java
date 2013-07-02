@@ -35,6 +35,13 @@ public class Buff {
 	public int damagePercentMelee = 0;
 	public int damagePercentRanged = 0;
 	
+	@BuffLineFormat("[Melee Block:] {%d}")
+	public int damageBlockMelee = 0;
+	@BuffLineFormat("[Ranged Block:] {%d}")
+	public int damageBlockRanged = 0;
+	@BuffLineFormat("[Block Chance:] {%d%%}")
+	public int damageBlockChance = 0;
+	
 	@BuffLineFormat("+{%d} Intelligence")
 	public int intelligence = 0;
 	@BuffLineFormat("+{%d} Strength")
@@ -147,14 +154,9 @@ public class Buff {
 		damage = value;
 		return this;
 	}
-	
-	public Buff setDamagePercentMelee(int value) {
-		damagePercentMelee = value;
-		return this;
-	}
-	
-	public Buff setDamagePercentRanged(int value) {
-		damagePercentRanged = value;
+	public Buff setDamagePercent(int melee, int ranged) {
+		damagePercentMelee = melee;
+		damagePercentRanged = ranged;
 		return this;
 	}
 	
@@ -183,12 +185,9 @@ public class Buff {
 		return this;
 	}
 	
-	public Buff setCritChancePercent(int value) {
-		critChancePercent = value;
-		return this;
-	}
-	public Buff setCritDamagePercent(int value) {
-		critDamagePercent = value;
+	public Buff setCrit(int chancePercent, int damagePercent) {
+		critChancePercent = chancePercent;
+		critDamagePercent = damagePercent;
 		return this;
 	}
 	
@@ -198,6 +197,13 @@ public class Buff {
 	}
 	public Buff setMagicAmplify(int value) {
 		magicAmplify = value;
+		return this;
+	}
+	
+	public Buff setDamageBlock(int melee, int ranged, int chancePercent) {
+		damageBlockMelee = melee;
+		damageBlockRanged = ranged;
+		damageBlockChance = chancePercent;
 		return this;
 	}
 	

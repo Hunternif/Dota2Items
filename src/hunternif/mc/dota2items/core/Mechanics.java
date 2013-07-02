@@ -25,6 +25,7 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerCapabilities;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MathHelper;
@@ -175,6 +176,11 @@ public class Mechanics {
 		int armor = 0;
 		if (targetStats != null) {
 			armor = targetStats.getArmor(armor);
+			// Apply damage block:
+			boolean isRanged = event.entityLiving.getCurrentItemOrArmor(0) != null &&
+					event.entityLiving.getCurrentItemOrArmor(0).itemID == Item.bow.itemID;
+			dotaDamage -= targetStats.getDamageBlock(!isRanged);
+			if (dotaDamage < 0) dotaDamage = 0;
 		}
 		
 		if (event.source.isMagicDamage()) {

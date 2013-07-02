@@ -35,7 +35,7 @@ public class QuellingBlade extends CooldownItem {
 	public QuellingBlade(int id) {
 		super(id);
 		setCooldown(5);
-		passiveBuff = new Buff(this).setDamagePercentMelee(32).setDamagePercentRanged(16).setDoesNotStack();
+		passiveBuff = new Buff(this).setDamagePercent(32, 16).setDoesNotStack();
 		setPrice(225);
 	}
 	

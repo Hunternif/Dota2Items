@@ -1,5 +1,6 @@
 package hunternif.mc.dota2items.item;
 
+import net.minecraft.entity.Entity;
 import hunternif.mc.dota2items.core.buff.Buff;
 
 public class StaffOfWizardry extends Dota2Item {
@@ -8,6 +9,11 @@ public class StaffOfWizardry extends Dota2Item {
 		super(id);
 		passiveBuff = new Buff(this).setIntelligence(10);
 		setPrice(1000);
+	}
+	
+	@Override
+	public int getDamageVsEntity(Entity entity) {
+		return 2;
 	}
 
 	@Override

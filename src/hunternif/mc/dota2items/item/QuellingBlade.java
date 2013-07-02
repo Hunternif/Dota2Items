@@ -54,7 +54,7 @@ public class QuellingBlade extends CooldownItem {
 	
 	@Override
 	public int getDamageVsEntity(Entity par1Entity) {
-		return 4;
+		return 6;
 	}
 	
 	@SideOnly(Side.CLIENT)

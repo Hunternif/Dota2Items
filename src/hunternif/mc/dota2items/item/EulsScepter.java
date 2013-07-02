@@ -37,6 +37,11 @@ public class EulsScepter extends CooldownItem {
 	}
 	
 	@Override
+	public int getDamageVsEntity(Entity entity) {
+		return 2;
+	}
+	
+	@Override
 	public boolean isFull3D() {
 		return true;
 	}

@@ -56,17 +56,17 @@ public class InventoryShop implements IInventory {
 		populateColumn(
 				ItemColumn.COLUMN_ARMAMENTS,
 				Config.ringOfProtection,
-				Config.quellingBlade
+				Config.quellingBlade,
 //				Config.stoutShield,
-//				Config.bladesOfAttack,
-//				Config.chainmail,
-//				Config.helmOfIronWill,
-//				Config.broadsword,
-//				Config.quarterstaff,
-//				Config.claymore,
+				Config.bladesOfAttack,
+				Config.chainmail,
+				Config.helmOfIronWill,
+				Config.broadsword,
+				Config.quarterstaff,
+				Config.claymore,
 //				Config.javelin,
-//				Config.platemail,
-//				Config.mithrilHammer
+				Config.platemail,
+				Config.mithrilHammer
 		);
 		
 		populateColumn(

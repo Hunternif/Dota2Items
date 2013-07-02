@@ -11,10 +11,12 @@ import hunternif.mc.dota2items.item.Broadsword;
 import hunternif.mc.dota2items.item.Chainmail;
 import hunternif.mc.dota2items.item.Circlet;
 import hunternif.mc.dota2items.item.Claymore;
+import hunternif.mc.dota2items.item.Cloak;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.item.Dota2Logo;
 import hunternif.mc.dota2items.item.EulsScepter;
 import hunternif.mc.dota2items.item.GauntletsOfStrength;
+import hunternif.mc.dota2items.item.GlovesOfHaste;
 import hunternif.mc.dota2items.item.GoldCoin;
 import hunternif.mc.dota2items.item.HelmOfIronWill;
 import hunternif.mc.dota2items.item.IronBranch;
@@ -26,10 +28,13 @@ import hunternif.mc.dota2items.item.Platemail;
 import hunternif.mc.dota2items.item.Quarterstaff;
 import hunternif.mc.dota2items.item.QuellingBlade;
 import hunternif.mc.dota2items.item.RingOfProtection;
+import hunternif.mc.dota2items.item.RingOfRegen;
 import hunternif.mc.dota2items.item.RobeOfTheMagi;
 import hunternif.mc.dota2items.item.SagesMask;
 import hunternif.mc.dota2items.item.SlippersOfAgility;
 import hunternif.mc.dota2items.item.StaffOfWizardry;
+import hunternif.mc.dota2items.item.StoutShield;
+import hunternif.mc.dota2items.item.TalismanOfEvasion;
 import hunternif.mc.dota2items.item.Tango;
 import hunternif.mc.dota2items.item.UltimateOrb;
 import hunternif.mc.dota2items.item.VoidStone;
@@ -166,6 +171,11 @@ public class Config {
 	public static CfgInfo claymore = 			new CfgInfo (Claymore.class, 27028, "Claymore");
 	public static CfgInfo platemail = 			new CfgInfo (Platemail.class, 27029, "Platemail");
 	public static CfgInfo mithrilHammer = 		new CfgInfo (MithrilHammer.class, 27030, "Mithril Hammer");
+	public static CfgInfo stoutShield = 		new CfgInfo (StoutShield.class, 27031, "Stout Shield");
+	public static CfgInfo ringOfRegen = 		new CfgInfo (RingOfRegen.class, 27032, "Ring of Regen");
+	public static CfgInfo glovesOfHaste = 		new CfgInfo (GlovesOfHaste.class, 27033, "Gloves of Haste");
+	public static CfgInfo cloak = 				new CfgInfo (Cloak.class, 27034, "Cloak");
+	public static CfgInfo talismanOfEvasion = 	new CfgInfo (TalismanOfEvasion.class, 27035, "Talisman of Evasion");
 	
 	public static CfgInfo cycloneContainer = new CfgInfo(BlockCycloneContainer.class, 2700, "Cyclone Container", true);
 	

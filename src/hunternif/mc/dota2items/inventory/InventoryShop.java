@@ -57,7 +57,7 @@ public class InventoryShop implements IInventory {
 				ItemColumn.COLUMN_ARMAMENTS,
 				Config.ringOfProtection,
 				Config.quellingBlade,
-//				Config.stoutShield,
+				Config.stoutShield,
 				Config.bladesOfAttack,
 				Config.chainmail,
 				Config.helmOfIronWill,
@@ -73,14 +73,14 @@ public class InventoryShop implements IInventory {
 				ItemColumn.COLUMN_ARCANE,
 //				Config.magicStick,
 				Config.sagesMask,
-//				Config.ringOfRegen,
+				Config.ringOfRegen,
 				Config.bootsOfSpeed,
-//				Config.glovesOfHaste,
-//				Config.cloak,
+				Config.glovesOfHaste,
+				Config.cloak,
 //				Config.gemOfTrueSight,
 //				Config.morbidMask,
 //				Config.ghostScepter,
-//				Config.talismanOfEvasion,
+				Config.talismanOfEvasion,
 				Config.blinkDagger
 //				Config.shadowAmulet
 		);

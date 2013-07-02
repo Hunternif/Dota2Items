@@ -1,18 +1,28 @@
 package hunternif.mc.dota2items;
 
 import hunternif.mc.dota2items.block.BlockCycloneContainer;
+import hunternif.mc.dota2items.item.BandOfElvenskin;
+import hunternif.mc.dota2items.item.BeltOfStrength;
+import hunternif.mc.dota2items.item.BladeOfAlacrity;
 import hunternif.mc.dota2items.item.BlinkDagger;
 import hunternif.mc.dota2items.item.BootsOfSpeed;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.item.Dota2Logo;
 import hunternif.mc.dota2items.item.EulsScepter;
+import hunternif.mc.dota2items.item.GauntletsOfStrength;
 import hunternif.mc.dota2items.item.GoldCoin;
+import hunternif.mc.dota2items.item.IronBranch;
 import hunternif.mc.dota2items.item.ItemRecipe;
+import hunternif.mc.dota2items.item.MantleOfIntelligence;
+import hunternif.mc.dota2items.item.OgreClub;
 import hunternif.mc.dota2items.item.QuellingBlade;
 import hunternif.mc.dota2items.item.RingOfProtection;
+import hunternif.mc.dota2items.item.RobeOfTheMagi;
 import hunternif.mc.dota2items.item.SagesMask;
+import hunternif.mc.dota2items.item.SlippersOfAgility;
 import hunternif.mc.dota2items.item.StaffOfWizardry;
 import hunternif.mc.dota2items.item.Tango;
+import hunternif.mc.dota2items.item.UltimateOrb;
 import hunternif.mc.dota2items.item.VoidStone;
 
 import java.lang.annotation.Retention;
@@ -116,18 +126,29 @@ public class Config {
 		}
 	}
 	
-	public static CfgInfo dota2Logo = 		new CfgInfo (Dota2Logo.class, 27000, "Dota 2 Logo");
-	public static CfgInfo blinkDagger = 	new CfgInfo (BlinkDagger.class, 27001, "Blink Dagger");
-	public static CfgInfo tango = 			new CfgInfo (Tango.class, 27002, "Tango");
-	public static CfgInfo quellingBlade = 	new CfgInfo (QuellingBlade.class, 27003, "Quelling Blade");
-	public static CfgInfo eulsScepter = 	new CfgInfo (EulsScepter.class, 27004, "Eul's Scepter of Divinity");
-	public static CfgInfo ringOfProtection = new CfgInfo (RingOfProtection.class, 27005, "Ring of Protection");
-	public static CfgInfo bootsOfSpeed = 	new CfgInfo (BootsOfSpeed.class, 27006, "Boots of Speed");
-	public static CfgInfo goldCoin = 		new CfgInfo (GoldCoin.class, 27007, "Gold Coin");
-	public static CfgInfo voidStone = 		new CfgInfo (VoidStone.class, 27008, "Void Stone");
-	public static CfgInfo sagesMask = 		new CfgInfo (SagesMask.class, 27009, "Sage's Mask");
-	public static CfgInfo staffOfWizardry = new CfgInfo (StaffOfWizardry.class, 27010, "Staff of Wizardry");
-	public static CfgInfo recipe = 			new CfgInfo (ItemRecipe.class, 27011, "Recipe");
+	public static CfgInfo dota2Logo = 			new CfgInfo (Dota2Logo.class, 27000, "Dota 2 Logo");
+	public static CfgInfo blinkDagger = 		new CfgInfo (BlinkDagger.class, 27001, "Blink Dagger");
+	public static CfgInfo tango = 				new CfgInfo (Tango.class, 27002, "Tango");
+	public static CfgInfo quellingBlade = 		new CfgInfo (QuellingBlade.class, 27003, "Quelling Blade");
+	public static CfgInfo eulsScepter = 		new CfgInfo (EulsScepter.class, 27004, "Eul's Scepter of Divinity");
+	public static CfgInfo ringOfProtection = 	new CfgInfo (RingOfProtection.class, 27005, "Ring of Protection");
+	public static CfgInfo bootsOfSpeed = 		new CfgInfo (BootsOfSpeed.class, 27006, "Boots of Speed");
+	public static CfgInfo goldCoin = 			new CfgInfo (GoldCoin.class, 27007, "Gold Coin");
+	public static CfgInfo voidStone = 			new CfgInfo (VoidStone.class, 27008, "Void Stone");
+	public static CfgInfo sagesMask = 			new CfgInfo (SagesMask.class, 27009, "Sage's Mask");
+	public static CfgInfo staffOfWizardry = 	new CfgInfo (StaffOfWizardry.class, 27010, "Staff of Wizardry");
+	public static CfgInfo recipe = 				new CfgInfo (ItemRecipe.class, 27011, "Recipe");
+	public static CfgInfo ironBranch = 			new CfgInfo (IronBranch.class, 27012, "Iron Branch");
+	public static CfgInfo gauntletsOfStrength = new CfgInfo (GauntletsOfStrength.class, 27013, "Gauntlets of Strength");
+	public static CfgInfo slippersOfAgility =	new CfgInfo (SlippersOfAgility.class, 27014, "Slippers of Agility");
+	public static CfgInfo mantleOfIntelligence =new CfgInfo (MantleOfIntelligence.class, 27015, "Mantle of Intelligence");
+	public static CfgInfo circlet = 			new CfgInfo (UltimateOrb.class, 27016, "Circlet");
+	public static CfgInfo beltOfStrength = 		new CfgInfo (BeltOfStrength.class, 27017, "Belt of Strength");
+	public static CfgInfo bandOfElvenskin = 	new CfgInfo (BandOfElvenskin.class, 27018, "Band of Elvenskin");
+	public static CfgInfo robeOfTheMagi = 		new CfgInfo (RobeOfTheMagi.class, 27019, "Robe of the Magi");
+	public static CfgInfo ogreClub = 			new CfgInfo (OgreClub.class, 27020, "Ogre Club");
+	public static CfgInfo bladeOfAlacrity = 	new CfgInfo (BladeOfAlacrity.class, 27021, "Blade of Alacrity");
+	public static CfgInfo ultimateOrb = 		new CfgInfo (UltimateOrb.class, 27022, "Ultimate Orb");
 	
 	public static CfgInfo cycloneContainer = new CfgInfo(BlockCycloneContainer.class, 2700, "Cyclone Container", true);
 	

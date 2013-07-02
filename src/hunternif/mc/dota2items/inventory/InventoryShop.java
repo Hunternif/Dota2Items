@@ -40,18 +40,18 @@ public class InventoryShop implements IInventory {
 		);
 		populateColumn(
 				ItemColumn.COLUMN_ATTRIBUTES,
-//				Config.ironBranch,
-//				Config.gauntletsOfStrength,
-//				Config.slippersOfAgility,
-//				Config.mantleOfIntelligence,
-//				Config.circlet,
-//				Config.beltOfStrength,
-//				Config.bandOfElvenskin,
-//				Config.robeOfTheMagi,
-//				Config.ogreClub,
-//				Config.bladeOfAlacrity,
-				Config.staffOfWizardry
-//				Config.ultimateOrb
+				Config.ironBranch,
+				Config.gauntletsOfStrength,
+				Config.slippersOfAgility,
+				Config.mantleOfIntelligence,
+				Config.circlet,
+				Config.beltOfStrength,
+				Config.bandOfElvenskin,
+				Config.robeOfTheMagi,
+				Config.ogreClub,
+				Config.bladeOfAlacrity,
+				Config.staffOfWizardry,
+				Config.ultimateOrb
 		);
 		populateColumn(
 				ItemColumn.COLUMN_ARMAMENTS,

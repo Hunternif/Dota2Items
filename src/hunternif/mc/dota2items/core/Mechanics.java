@@ -177,15 +177,23 @@ public class Mechanics {
 			armor = targetStats.getArmor(armor);
 		}
 		
-		// The formula was taken from Dota 2 Wiki
-		float armorMultiplier = 1f;
-		if (armor > 0) {
-			armorMultiplier = 1f - ((0.06f * (float)armor) / (1 + 0.06f * (float)armor));
-		} else if (armor < 0) {
-			armor = Math.max(-20, armor);
-			armorMultiplier = 2f - (float) Math.pow(0.94, (double) -armor);
+		if (event.source.isMagicDamage()) {
+			if (targetStats != null) {
+				dotaDamage *= 1f - targetStats.getSpellResistance();
+				dotaDamage *= targetStats.getMagicAmplification();
+				//TODO test spell resistance and magic amplification.
+			}
+		} else {// Armor only applies to non-magical damage
+			// The formula was taken from Dota 2 Wiki
+			float armorMultiplier = 1f;
+			if (armor > 0) {
+				armorMultiplier = 1f - ((0.06f * (float)armor) / (1 + 0.06f * (float)armor));
+			} else if (armor < 0) {
+				armor = Math.max(-20, armor);
+				armorMultiplier = 2f - (float) Math.pow(0.94, (double) -armor);
+			}
+			dotaDamage *= armorMultiplier;
 		}
-		dotaDamage *= armorMultiplier;
 		
 		// Account for the fact that Stats may give bonus health.
 		float bonusHealthMultiplier = 1f;

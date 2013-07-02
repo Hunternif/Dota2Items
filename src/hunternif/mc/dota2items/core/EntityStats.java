@@ -54,6 +54,7 @@ public class EntityStats implements IExtendedEntityProperties {
 	public float baseAttackTime = 1.7f;
 	public int baseArmor = 0;
 	public int baseDamage = 0;
+	public int baseSpellResistance = 0;
 	
 	public boolean baseInvulnerable = false;
 	public boolean baseMagicImmune = false;
@@ -87,6 +88,7 @@ public class EntityStats implements IExtendedEntityProperties {
 			baseHealthRegen = 0.25f;
 			baseAttackTime = 1.7f;
 			baseMovementSpeed = 300;
+			//baseSpellResistance = 25; Cancelled so that normal Minecraft magic hurts as much as before.
 		} else {
 			baseHealthRegen = 0.5f;
 			baseAttackTime = 1.0f;
@@ -365,6 +367,30 @@ public class EntityStats implements IExtendedEntityProperties {
 		}
 	}
 	private static CritDamageComparator critDamageComparator = new CritDamageComparator();
+	
+	public float getSpellResistance() {
+		float resistance = 0;
+		List<Buff> appliedItems = new ArrayList<Buff>();
+		for (BuffInstance buffInst : getAppliedBuffs()) {
+			if (buffInst.buff.spellResistance != 0 && !appliedItems.contains(buffInst.buff)) {
+				if (buffInst.isItemPassiveBuff) {
+					appliedItems.add(buffInst.buff);
+				}
+				resistance += buffInst.buff.spellResistance;
+			}
+		}
+		return resistance * 0.01f;
+	}
+	
+	public float getMagicAmplification() {
+		float result = 1f;
+		for (BuffInstance buffInst : getAppliedBuffs()) {
+			if (buffInst.buff.magicAmplify != 0) {
+				result *= (float)buffInst.buff.magicAmplify * 0.01f;
+			}
+		}
+		return result;
+	}
 
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {

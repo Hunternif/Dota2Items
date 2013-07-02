@@ -49,6 +49,11 @@ public class Buff {
 	@BuffLineFormat("[Critical Damage:] {%d%%}")
 	public int critDamagePercent = 0;
 	
+	@BuffLineFormat("+{%d%%} Spell resistance")
+	public int spellResistance = 0;
+	@BuffLineFormat("[Bonus Magic Damage:] {%d%%}")
+	public int magicAmplify = 0;
+	
 	public boolean stacks = true;
 	
 	
@@ -184,6 +189,15 @@ public class Buff {
 	}
 	public Buff setCritDamagePercent(int value) {
 		critDamagePercent = value;
+		return this;
+	}
+	
+	public Buff setSpellResistance(int value) {
+		spellResistance = value;
+		return this;
+	}
+	public Buff setMagicAmplify(int value) {
+		magicAmplify = value;
 		return this;
 	}
 	

@@ -224,31 +224,41 @@ public class InventoryShop implements IInventory {
 	
 	private int[] columns;
 	private int height;
-	private int scrollPos;
+	private int filteredHeight;
+	private ItemStack[][] displayStacks;
+	private int scrollRow;
 	private String filterStr;
 	public InventoryShop(int[] columns, int height) {
 		this.columns = columns;
 		this.height = height;
-		this.scrollPos = 0;
+		this.scrollRow = 0;
 		this.filterStr = "";
+		displayStacks = new ItemStack[getColumns()][getRows()];
+		updateDisplayStacks();
 	}
 	public void setFilterStr(String value) {
 		if (!this.filterStr.equals(value.toLowerCase())) {
 			this.filterStr = value.toLowerCase();
-			onInventoryChanged();
+			updateDisplayStacks();
 		}
 	}
-	public void setScrollPos(int value) {
-		if (this.scrollPos != value) {
-			this.scrollPos = value;
-			onInventoryChanged();
+	public void scrollToRow(int row) {
+		if (this.scrollRow != row) {
+			this.scrollRow = row;
+			updateDisplayStacks();
 		}
+	}
+	public int getScrollRow() {
+		return scrollRow;
 	}
 	public int getRows() {
 		return height;
 	}
 	public int getColumns() {
 		return columns.length;
+	}
+	public int getFilteredRows() {
+		return filteredHeight;
 	}
 	
 	public boolean contains(Dota2Item item) {
@@ -269,24 +279,7 @@ public class InventoryShop implements IInventory {
 	public ItemStack getStackInSlot(int i) {
 		int xPos = i % columns.length;
 		int yPos = (i - xPos)/columns.length;
-		int columnIndex = columns[xPos];
-		ItemStack[] column = itemSamples[columnIndex];
-		List<ItemStack> filteredColumn = new ArrayList<ItemStack>();
-		for (int j = 0; j < ROWS; j++) {
-			ItemStack stack = column[j];
-			if (stack == null) {
-				continue;
-			}
-			String name = stack.getDisplayName();
-			if (name.toLowerCase().contains(filterStr)) {
-				filteredColumn.add(stack);
-			}
-		}
-		if (filteredColumn.size() < yPos + scrollPos + 1) {
-			return null;
-		} else {
-			return filteredColumn.get(yPos + scrollPos);
-		}
+		return displayStacks[xPos][yPos];
 	}
 
 	@Override
@@ -319,6 +312,28 @@ public class InventoryShop implements IInventory {
 
 	@Override
 	public void onInventoryChanged() {}
+	
+	private void updateDisplayStacks() {
+		int maxFilteredHeight = 0;
+		for (int i = 0; i < getColumns(); i++) {
+			int columnIndex = columns[i];
+			ItemStack[] column = itemSamples[columnIndex];
+			List<ItemStack> filteredColumn = new ArrayList<ItemStack>();
+			for (int j = 0; j < ROWS; j++) {
+				ItemStack stack = column[j];
+				if (stack != null && stack.getDisplayName().toLowerCase().contains(filterStr)) {
+					filteredColumn.add(stack);
+				}
+			}
+			maxFilteredHeight = Math.max(maxFilteredHeight, filteredColumn.size());
+			ItemStack[] displayColumn = new ItemStack[getRows()];
+			for (int j = scrollRow; j < filteredColumn.size() && j-scrollRow < getRows(); j++) {
+				displayColumn[j-scrollRow] = filteredColumn.get(j);
+			}
+			displayStacks[i] = displayColumn;
+		}
+		filteredHeight = maxFilteredHeight;
+	}
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer entityplayer) {

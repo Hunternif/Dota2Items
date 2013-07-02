@@ -5,9 +5,11 @@ import hunternif.mc.dota2items.Config;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.inventory.ContainerShopBuy;
+import hunternif.mc.dota2items.inventory.InventoryShop;
 import hunternif.mc.dota2items.inventory.ItemColumn;
 import hunternif.mc.dota2items.inventory.SlotColumnIcon;
 import hunternif.mc.dota2items.item.Dota2Item;
+import hunternif.mc.dota2items.network.ShopBuyScrollPacket;
 import hunternif.mc.dota2items.network.ShopBuySetFilterPacket;
 import hunternif.mc.dota2items.network.ShopBuySetResultPacket;
 
@@ -28,6 +30,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -39,8 +42,19 @@ public class GuiShopBuy extends GuiShopBase {
 	private static final int COLUMN_ICONS_Y = 41;
 	private static final int COLOR_SEARCH = 0xffffff;
 	public static final int COLUMNS = 11;
+	public static final int SCROLLBAR_X = 210;
+	public static final int SCROLLBAR_Y = 60;
+	public static final int SCROLLBAR_WIDTH = 12;
+	public static final int SCROLLBAR_HEIGHT = 70;
+	public static final int SCROLL_ANCHOR_HEIGHT = 15;
 	
 	public GuiTextField filterField;
+	/** True if the scrollbar is being dragged */
+	private boolean isScrolling = false;
+	/** True if the left mouse button was held down last time drawScreen was called. */
+	private boolean wasClicking = false;
+	/** Amount scrolled (0 = top, 1 = bottom) */
+	private float curScroll = 0;
 	private SlotColumnIcon[] columnIcons = new SlotColumnIcon[COLUMNS];
 	
 	private GuiRecipeButton recipeResultButton;
@@ -55,7 +69,6 @@ public class GuiShopBuy extends GuiShopBase {
 			columnIcons[i] = new SlotColumnIcon(ItemColumn.forId(i), COLUMN_ICONS_X+18*i+1, COLUMN_ICONS_Y+1);
 		}
 		//TODO make buttons to traverse full recipe hierarchy up and down.
-		//TODO implement scrolling.
 	}
 	
 	@Override
@@ -75,6 +88,46 @@ public class GuiShopBuy extends GuiShopBase {
 	public void onGuiClosed() {
 		super.onGuiClosed();
 		Keyboard.enableRepeatEvents(false);
+	}
+	
+	@Override
+	public void drawScreen(int xMouse, int yMouse, float par3) {
+		boolean mouseDown = Mouse.isButtonDown(0);
+		if (!wasClicking && mouseDown && isPointInRegion(SCROLLBAR_X, SCROLLBAR_Y, SCROLLBAR_WIDTH, SCROLLBAR_HEIGHT, xMouse, yMouse)) {
+			isScrolling = needsScrollBar();
+		}
+		if (!mouseDown) {
+			isScrolling = false;
+		}
+		wasClicking = mouseDown;
+		if (isScrolling) {
+			curScroll = ((float)yMouse - (float)SCROLLBAR_Y - 7.5f) / (float)(SCROLLBAR_HEIGHT - SCROLL_ANCHOR_HEIGHT);
+			if (curScroll < 0) curScroll = 0;
+			if (curScroll > 1) curScroll = 1;
+			InventoryShop invShop = ((ContainerShopBuy)inventorySlots).invShop;
+			int scrollRow = MathHelper.floor_float(curScroll * (float)(invShop.getFilteredRows() - invShop.getRows()));
+			if (invShop.getScrollRow() != scrollRow) {
+				invShop.scrollToRow(scrollRow);
+				PacketDispatcher.sendPacketToServer(new ShopBuyScrollPacket(scrollRow).makePacket());
+			}
+		}
+		super.drawScreen(xMouse, yMouse, par3);
+	}
+	
+	@Override
+	public void handleMouseInput() {
+		super.handleMouseInput();
+		int wheelMove = Mouse.getEventDWheel();
+		if (wheelMove != 0 && needsScrollBar()) {
+			wheelMove = wheelMove > 0 ? -1 : 1;
+			InventoryShop invShop = ((ContainerShopBuy)inventorySlots).invShop;
+			int scrollRow = invShop.getScrollRow() + wheelMove;
+			if (scrollRow < 0) scrollRow = 0;
+			if (scrollRow > invShop.getFilteredRows() - invShop.getRows()) scrollRow = invShop.getFilteredRows() - invShop.getRows();
+			curScroll = (float) scrollRow / (float)(invShop.getFilteredRows() - invShop.getRows());
+			invShop.scrollToRow(scrollRow);
+			PacketDispatcher.sendPacketToServer(new ShopBuyScrollPacket(scrollRow).makePacket());
+		}
 	}
 	
 	@Override
@@ -122,11 +175,17 @@ public class GuiShopBuy extends GuiShopBase {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.renderEngine.bindTexture("/mods/"+Dota2Items.ID+"/textures/gui/shop_buy.png");
-		int k = (this.width - this.xSize) / 2;
-		int l = (this.height - this.ySize) / 2;
-		this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
+		// Draw GUI background
+		mc.renderEngine.bindTexture("/mods/"+Dota2Items.ID+"/textures/gui/shop_buy.png");
+		int x = this.guiLeft;
+		int y = this.guiTop;
+		drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
 		filterField.drawTextBox();
+		// Draw scrollbar
+		mc.renderEngine.bindTexture("/gui/allitems.png");
+		x += 210;
+		y += 60 + MathHelper.floor_float((float)(SCROLLBAR_HEIGHT - SCROLL_ANCHOR_HEIGHT) * curScroll);
+		drawTexturedModalRect(x, y, 232 + (needsScrollBar() ? 0 : 12), 0, 12, 15);
 	}
 	
 	private void renderBuyPrice(int price, int x, int y, boolean canAfford) {
@@ -180,6 +239,8 @@ public class GuiShopBuy extends GuiShopBase {
 	
 	private void updateFilter() {
 		((ContainerShopBuy)this.inventorySlots).invShop.setFilterStr(filterField.getText());
+		curScroll = 0;
+		((ContainerShopBuy)this.inventorySlots).invShop.scrollToRow(0);
 		PacketDispatcher.sendPacketToServer(new ShopBuySetFilterPacket(filterField.getText()).makePacket());
 	}
 	
@@ -238,5 +299,10 @@ public class GuiShopBuy extends GuiShopBase {
 		} else {
 			return false;
 		}
+	}
+	
+	private boolean needsScrollBar() {
+		return ((ContainerShopBuy)this.inventorySlots).invShop.getFilteredRows() >
+				((ContainerShopBuy)this.inventorySlots).invShop.getRows();
 	}
 }

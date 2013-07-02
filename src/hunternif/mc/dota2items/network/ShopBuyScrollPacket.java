@@ -8,24 +8,24 @@ import com.google.common.io.ByteArrayDataOutput;
 
 import cpw.mods.fml.relauncher.Side;
 
-public class ShopBuySetFilterPacket extends CustomPacket {
+public class ShopBuyScrollPacket extends CustomPacket {
 	
-	private String filterStr;
+	private int scrollRow;
 	
-	public ShopBuySetFilterPacket() {}
+	public ShopBuyScrollPacket() {}
 	
-	public ShopBuySetFilterPacket(String filterStr) {
-		this.filterStr = filterStr;
+	public ShopBuyScrollPacket(int scrollRow) {
+		this.scrollRow = scrollRow;
 	}
 
 	@Override
 	public void write(ByteArrayDataOutput out) {
-		out.writeUTF(filterStr);
+		out.writeInt(scrollRow);
 	}
 
 	@Override
 	public void read(ByteArrayDataInput in) throws ProtocolException {
-		filterStr = in.readUTF();
+		scrollRow = in.readInt();
 	}
 
 	@Override
@@ -33,8 +33,7 @@ public class ShopBuySetFilterPacket extends CustomPacket {
 		if (!side.isClient()) {
 			if (player.openContainer instanceof ContainerShopBuy) {
 				ContainerShopBuy cont = (ContainerShopBuy)player.openContainer;
-				cont.invShop.setFilterStr(filterStr);
-				cont.invShop.scrollToRow(0);
+				cont.invShop.scrollToRow(scrollRow);
 			}
 		} else {
 			throw new ProtocolException("Cannot send this packet to the client!");

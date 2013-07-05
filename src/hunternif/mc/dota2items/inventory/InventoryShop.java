@@ -84,12 +84,12 @@ public class InventoryShop implements IInventory {
 				Config.blinkDagger
 //				Config.shadowAmulet
 		);
-//		populateColumn(
-//				ItemColumn.COLUMN_COMMON,
-//				Config.wraithBand,
-//				Config.nullTalisman,
+		populateColumn(
+				ItemColumn.COLUMN_COMMON,
+				Config.wraithBand,
+				Config.nullTalisman,
 //				Config.magicWand,
-//				Config.bracer,
+				Config.bracer
 //				Config.poorMansShield,
 //				Config.soulRing,
 //				Config.phaseBoots,
@@ -98,7 +98,7 @@ public class InventoryShop implements IInventory {
 //				Config.perserverance,
 //				Config.handOfMidas,
 //				Config.bootsOfTravel
-//		);
+		);
 //		populateColumn(
 //				ItemColumn.COLUMN_SUPPORT,
 //				Config.ringOfBasilius,

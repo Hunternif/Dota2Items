@@ -55,6 +55,7 @@ public class Dota2Items {
 	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event) {
+		//Test
 		proxy.registerSounds();
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		Config.preLoad(config);

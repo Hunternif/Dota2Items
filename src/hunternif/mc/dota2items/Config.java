@@ -7,7 +7,6 @@ import hunternif.mc.dota2items.item.BladeOfAlacrity;
 import hunternif.mc.dota2items.item.BladesOfAttack;
 import hunternif.mc.dota2items.item.BlinkDagger;
 import hunternif.mc.dota2items.item.BootsOfSpeed;
-import hunternif.mc.dota2items.item.Bracer;
 import hunternif.mc.dota2items.item.Broadsword;
 import hunternif.mc.dota2items.item.Chainmail;
 import hunternif.mc.dota2items.item.Circlet;
@@ -24,7 +23,6 @@ import hunternif.mc.dota2items.item.IronBranch;
 import hunternif.mc.dota2items.item.ItemRecipe;
 import hunternif.mc.dota2items.item.MantleOfIntelligence;
 import hunternif.mc.dota2items.item.MithrilHammer;
-import hunternif.mc.dota2items.item.NullTalisman;
 import hunternif.mc.dota2items.item.OgreClub;
 import hunternif.mc.dota2items.item.Platemail;
 import hunternif.mc.dota2items.item.Quarterstaff;
@@ -40,7 +38,6 @@ import hunternif.mc.dota2items.item.TalismanOfEvasion;
 import hunternif.mc.dota2items.item.Tango;
 import hunternif.mc.dota2items.item.UltimateOrb;
 import hunternif.mc.dota2items.item.VoidStone;
-import hunternif.mc.dota2items.item.WraithBand;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -179,9 +176,6 @@ public class Config {
 	public static CfgInfo glovesOfHaste = 		new CfgInfo (GlovesOfHaste.class, 27033, "Gloves of Haste");
 	public static CfgInfo cloak = 				new CfgInfo (Cloak.class, 27034, "Cloak");
 	public static CfgInfo talismanOfEvasion = 	new CfgInfo (TalismanOfEvasion.class, 27035, "Talisman of Evasion");
-	public static CfgInfo wraithBand = 			new CfgInfo (WraithBand.class, 27036, "Wraith Band");
-	public static CfgInfo nullTalisman = 		new CfgInfo (NullTalisman.class, 27037, "Null Talisman");
-	public static CfgInfo bracer = 				new CfgInfo (Bracer.class, 27038, "Bracer");
 	
 	public static CfgInfo cycloneContainer = new CfgInfo(BlockCycloneContainer.class, 2700, "Cyclone Container", true);
 	

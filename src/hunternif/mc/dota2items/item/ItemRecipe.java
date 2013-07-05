@@ -93,11 +93,6 @@ public class ItemRecipe extends Item {
 	}
 	
 	@Override
-	public int getItemDamageFromStack(ItemStack stack) {
-		return getItemID(stack);
-	}
-	
-	@Override
 	@SideOnly(Side.CLIENT)
 	public FontRenderer getFontRenderer(ItemStack stack) {
 		return ClientProxy.fontRWithIcons;

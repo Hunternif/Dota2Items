@@ -174,17 +174,17 @@ public class InventoryShop implements IInventory {
 		populateColumn(
 				ItemColumn.COLUMN_SECRET_SHOP,
 //				Config.orbOfVenom,
-//				Config.ringOfHealth,
-				Config.voidStone
-//				Config.energyBooster,
-//				Config.vitalityBooster,
-//				Config.pointBooster,
-//				Config.hyperStone,
-//				Config.demonEdge,
-//				Config.mysticStaff,
-//				Config.reaver,
-//				Config.eaglesong,
-//				Config.sacredRelic
+				Config.ringOfHealth,
+				Config.voidStone,
+				Config.energyBooster,
+				Config.vitalityBooster,
+				Config.pointBooster,
+				Config.hyperstone,
+				Config.demonEdge,
+				Config.mysticStaff,
+				Config.reaver,
+				Config.eaglesong,
+				Config.sacredRelic
 		);
 	}
 	private static void populateColumn(ItemColumn column, CfgInfo... items) {

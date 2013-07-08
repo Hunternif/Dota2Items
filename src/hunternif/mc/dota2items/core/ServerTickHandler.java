@@ -15,7 +15,7 @@ public class ServerTickHandler implements ITickHandler {
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {
 		Dota2Items.mechanics.updateAllEntityStats(Side.SERVER);
-		Dota2Items.mechanics.updatePlayerInventories(Side.SERVER);
+		Dota2Items.mechanics.checkAndUpdatePlayerInventories(Side.SERVER);
 		Dota2Items.shopkeeperSpawner.updateVillages((World)tickData[0]);
 	}
 

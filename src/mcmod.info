@@ -3,7 +3,7 @@
   "modid": "Dota2Items",
   "name": "Dota 2 Items",
   "description": "Still a work in progress, this mod aims to recreate items from Dota 2 in Minecraft, keeping as much of their original look-and-feel as possible.",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "mcversion": "1.5.2",
   "logoFile": "/dota2items.png",
   "url": "http://www.minecraftforum.net/topic/1665500-147forgewip-dota-2-items-mod-v023",

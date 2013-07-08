@@ -232,6 +232,7 @@ public class Mechanics {
 		for (Entry<EntityLiving, EntityStats> entry : entityStats.entrySet()) {
 			EntityLiving entity = entry.getKey();
 			EntityStats stats = entry.getValue();
+			stats.clampMana();
 			for (BuffInstance buffInst : stats.getAppliedBuffs()) {
 				if (!buffInst.isItemPassiveBuff && entity.worldObj.getTotalWorldTime() > buffInst.endTime) {
 					stats.removeBuff(buffInst);
@@ -240,7 +241,7 @@ public class Mechanics {
 		}
 	}
 	
-	public void updatePlayerInventories(Side side) {
+	public void checkAndUpdatePlayerInventories(Side side) {
 		List<EntityPlayer> players;
 		if (side.isClient()) {
 			players = new ArrayList<EntityPlayer>();
@@ -252,29 +253,31 @@ public class Mechanics {
 		}
 		Map<EntityPlayer, ItemStack[]> inventoryMap = getInventoryMap(side);
 		for (EntityPlayer player : players) {
-			updatePlayerInventory(player);
+			checkAndUpdatePlayerInventory(player);
 		}
 	}
-	private void updatePlayerInventory(EntityPlayer player) {
+	private void checkAndUpdatePlayerInventory(EntityPlayer player) {
 		Side side = getSide(player);
 		Map<EntityPlayer, ItemStack[]> inventoryMap = getInventoryMap(side);
 		if (player.inventory == null) {
 			return;
 		}
-		ItemStack[] currentInventory = Arrays.copyOfRange(player.inventory.mainInventory, 0, 9);
+		ItemStack[] currentInventory = Arrays.copyOfRange(player.inventory.mainInventory, 0, 10);
+		// Check the item being dragged too:
+		currentInventory[9] = player.inventory.getItemStack();
 		ItemStack[] oldInventory = inventoryMap.get(player);
 		if (oldInventory == null) {
 			inventoryMap.put(player, currentInventory);
-			updatePlayerBuffs(player);
+			updatePlayerInventoryBuffs(player);
 		} else {
 			if (!sameItemsStacks(currentInventory, oldInventory)) {
 				inventoryMap.put(player, currentInventory);
-				updatePlayerBuffs(player);
+				updatePlayerInventoryBuffs(player);
 			}
 		}
 	}
 	
-	private void updatePlayerBuffs(EntityPlayer player) {
+	private void updatePlayerInventoryBuffs(EntityPlayer player) {
 		FMLLog.log(Dota2Items.ID, Level.FINER, "Updating buffs on player " + player.username);
 		EntityStats stats = getEntityStats(player);
 		// Remove all passive item Buffs to add them again later:
@@ -290,6 +293,14 @@ public class Mechanics {
 				if (item.passiveBuff != null) {
 					stats.addBuff(new BuffInstance(item.passiveBuff, player.entityId, true));
 				}
+			}
+		}
+		// Add the item being dragged too:
+		ItemStack stack = player.inventory.getItemStack();
+		if (stack != null && stack.getItem() instanceof Dota2Item) {
+			Dota2Item item = (Dota2Item) stack.getItem();
+			if (item.passiveBuff != null) {
+				stats.addBuff(new BuffInstance(item.passiveBuff, player.entityId, true));
 			}
 		}
 		//NOTE for now movement speed bonus will only be applied to players, not to mobs:
@@ -318,8 +329,8 @@ public class Mechanics {
 		Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(getSide(event.entityLiving));
 		EntityStats stats = entityStats.get(event.entityLiving);
 		if (stats != null) {
-			// Regenerate health and mana every second:
 			if (event.entityLiving instanceof EntityPlayer) {
+				// Regenerate health and mana every second:
 				regenHealthManaAndGold((EntityPlayer)event.entityLiving, stats);
 				// Synchronize stats with all clients every SYNC_STATS_INTERVAL seconds:
 				int time = event.entityLiving.ticksExisted;
@@ -427,7 +438,7 @@ public class Mechanics {
 			newStats.setGold(oldStats.getFloatGold());
 			Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(getSide(player));
 			entityStats.put(player, newStats);
-			updatePlayerBuffs(player);
+			updatePlayerInventoryBuffs(player);
 			newStats.setMana(newStats.getMaxMana());
 			return newStats;
 		}

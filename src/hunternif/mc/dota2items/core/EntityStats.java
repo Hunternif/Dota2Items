@@ -147,20 +147,15 @@ public class EntityStats implements IExtendedEntityProperties {
 		return mana + MAX_MANA_PER_INT*getIntelligence();
 	}
 	public int getMana() {
-		return Math.min(getMaxMana(), MathHelper.floor_float(curMana));
+		return MathHelper.floor_float(curMana); //Math.min(getMaxMana(), MathHelper.floor_float(curMana));
 	}
 	/** Only for "technical" use like writing to NBT and syncing over the network. */
 	public float getFloatMana() {
 		return curMana;
 	}
 	public void setMana(float amount) {
-		float newMana = amount;
-		int maxMana = getMaxMana();
-		if (newMana < 0) newMana = 0;
-		if (newMana > maxMana && maxMana > 0) newMana = maxMana;
-		// Allow having more mana if the maximum is zero, so that you don't immediately
-		// lose all your mana once you shift your INT item in a different slot.
-		curMana = newMana;
+		curMana = amount;
+		clampMana();
 	}
 	public void addMana(float amount) {
 		setMana(curMana + amount);
@@ -430,5 +425,11 @@ public class EntityStats implements IExtendedEntityProperties {
 
 	@Override
 	public void init(Entity entity, World world) {
+	}
+	
+	public void clampMana() {
+		int maxMana = getMaxMana();
+		if (curMana < 0) curMana = 0;
+		if (curMana > maxMana) curMana = maxMana;
 	}
 }

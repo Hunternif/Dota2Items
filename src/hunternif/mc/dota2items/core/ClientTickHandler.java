@@ -17,7 +17,7 @@ public class ClientTickHandler implements ITickHandler {
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {
 		if (type.contains(TickType.CLIENT)) {
 			Dota2Items.mechanics.updateAllEntityStats(Side.CLIENT);
-			Dota2Items.mechanics.updatePlayerInventories(Side.CLIENT);
+			Dota2Items.mechanics.checkAndUpdatePlayerInventories(Side.CLIENT);
 		}
 		if (type.contains(TickType.RENDER)) {
 			timer.updateTimer();

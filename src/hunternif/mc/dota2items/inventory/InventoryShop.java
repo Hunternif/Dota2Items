@@ -89,13 +89,13 @@ public class InventoryShop implements IInventory {
 				Config.wraithBand,
 				Config.nullTalisman,
 //				Config.magicWand,
-				Config.bracer
+				Config.bracer,
 //				Config.poorMansShield,
 //				Config.soulRing,
 //				Config.phaseBoots,
 //				Config.powerTreads,
-//				Config.oblivionStaff,
-//				Config.perserverance,
+				Config.oblivionStaff,
+				Config.perseverance
 //				Config.handOfMidas,
 //				Config.bootsOfTravel
 		);
@@ -116,7 +116,7 @@ public class InventoryShop implements IInventory {
 //		);
 		populateColumn(
 				ItemColumn.COLUMN_CASTER,
-				//Config.forceStaff,
+//				Config.forceStaff,
 //				Config.necronomicon,
 				Config.eulsScepter
 //				Config.dagon,
@@ -127,8 +127,8 @@ public class InventoryShop implements IInventory {
 //				Config.refresherOrb,
 //				Config.scytheOfVyse
 		);
-//		populateColumn(
-//				ItemColumn.COLUMN_WEAPONS,
+		populateColumn(
+				ItemColumn.COLUMN_WEAPONS,
 //				Config.crystalys,
 //				Config.armletOfMordiggian,
 //				Config.skullBasher,
@@ -138,16 +138,16 @@ public class InventoryShop implements IInventory {
 //				Config.radiance,
 //				Config.monkeyKingBar,
 //				Config.daedalus,
-//				Config.butterfly,
-//				Config.divineRapier,
+				Config.butterfly,
+				Config.divineRapier
 //				Config.abyssalBlade
-//		);
-//		populateColumn(
-//				ItemColumn.COLUMN_ARMOR,
+		);
+		populateColumn(
+				ItemColumn.COLUMN_ARMOR,
 //				Config.hoodOfDefiance,
 //				Config.bladeMail,
-//				Config.vanguard,
-//				Config.soulBooster,
+				Config.vanguard,
+				Config.soulBooster
 //				Config.blackKingBar,
 //				Config.shivasGuard,
 //				Config.mantaStyle,
@@ -155,7 +155,7 @@ public class InventoryShop implements IInventory {
 //				Config.linkensSphere,
 //				Config.assaultCuirass,
 //				Config.heartOfTarrasque
-//		);
+		);
 //		populateColumn(
 //				ItemColumn.COLUMN_ARTIFACTS,
 //				Config.helmOfTheDominator,

@@ -1,7 +1,6 @@
 package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.core.buff.Buff;
-import net.minecraft.entity.Entity;
 
 public class RingOfHealth extends Dota2Item {
 

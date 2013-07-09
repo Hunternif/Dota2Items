@@ -69,6 +69,7 @@ import java.util.logging.Level;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.FMLLog;
@@ -101,7 +102,7 @@ public class Config {
 				}
 			}
 		} catch(Exception e) {
-			FMLLog.severe(Dota2Items.ID, Level.SEVERE, "Failed to load config");
+			FMLLog.severe(Dota2Items.ID, Level.SEVERE, "Failed to load config: " + e.toString());
 		} finally {
 			config.save();
 		}
@@ -118,12 +119,12 @@ public class Config {
 					info.instance = info.clazz.getConstructor(int.class).newInstance(info.id);
 					if (info.isBlock) {
 						((Block)info.instance).setUnlocalizedName(field.getName());
-						GameRegistry.registerBlock((Block)info.instance, field.getName());
+						GameRegistry.registerBlock((Block)info.instance, ItemBlock.class, field.getName(), Dota2Items.ID);
 						LanguageRegistry.addName(info.instance, info.name);
 					} else {
 						((Item)info.instance).setUnlocalizedName(field.getName());
 						LanguageRegistry.addName(info.instance, info.name);
-						GameRegistry.registerItem((Item)info.instance, field.getName());
+						GameRegistry.registerItem((Item)info.instance, field.getName(), Dota2Items.ID);
 						Dota2Items.itemList.add((Item)info.instance);
 					}
 					if (info.clazz.getAnnotation(Recipe.class) != null) {
@@ -155,7 +156,7 @@ public class Config {
 				FMLLog.log(Dota2Items.ID, Level.INFO, "Added recipe for Dota 2 item " + info.name);
 			}
 		} catch(Exception e) {
-			FMLLog.log(Dota2Items.ID, Level.SEVERE, "Failed to instantiate items");
+			FMLLog.log(Dota2Items.ID, Level.SEVERE, "Failed to instantiate items: " + e.toString());
 		}
 	}
 	

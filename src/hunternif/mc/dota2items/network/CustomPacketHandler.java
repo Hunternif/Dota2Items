@@ -19,23 +19,6 @@ import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
 
 public class CustomPacketHandler implements IPacketHandler {
-	/*@Override
-	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player) {
-		if (packet.channel.equals(Dota2Items.CHANNEL)) {
-			
-			if (OpenGuiPacket.parseAndApplyOpenGuiPacket(packet, (EntityPlayer) player)) {
-				return;
-			} else if (ShopFilterInputPacket.parseAndApply(packet, (EntityPlayer) player)) {
-				return;
-			} else if (ShopSellPacket.parseAndApply(packet, (EntityPlayer) player)) {
-				return;
-			} else if (ShopSetResultPacket.parseAndApply(packet, (EntityPlayer) player)) {
-				return;
-			}
-			
-		}
-	}*/
-	
 	@Override
 	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player) {
 		try {

@@ -47,7 +47,8 @@ public class DescriptionBuilder {
 					StringBuilder sb = new StringBuilder();
 					for (int i = 0; i < descrWords.length; i++) {
 						int wordWidth = font.getStringWidth(descrWords[i]);
-						if (curLineWidth + wordWidth > Dota2Item.maxTooltipWidth || descrWords[i].equals("\n")) {
+						// At least one word will always fit:
+						if ((curLineWidth > 0 && curLineWidth + wordWidth > Dota2Item.maxTooltipWidth) || descrWords[i].equals("\n")) {
 							curLineWidth = 0;
 							lines.add(sb.toString());
 							sb = new StringBuilder();

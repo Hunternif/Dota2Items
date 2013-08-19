@@ -28,6 +28,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -36,6 +37,8 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiShopBuy extends GuiShopBase {
+	protected static final ResourceLocation texture = new ResourceLocation(Dota2Items.ID+":textures/gui/container/shop_buy.png");
+	
 	public static final int WIDTH = 230;
 	public static final int HEIGHT = 238;
 	private static final int COLUMN_ICONS_X = 8;
@@ -176,16 +179,15 @@ public class GuiShopBuy extends GuiShopBase {
 	protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		// Draw GUI background
-		mc.renderEngine.bindTexture("/mods/"+Dota2Items.ID+"/textures/gui/shop_buy.png");
+		mc.renderEngine.func_110577_a(texture);
 		int x = this.guiLeft;
 		int y = this.guiTop;
 		drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
-		filterField.drawTextBox();
 		// Draw scrollbar
-		mc.renderEngine.bindTexture("/gui/allitems.png");
 		x += 210;
 		y += 60 + MathHelper.floor_float((float)(SCROLLBAR_HEIGHT - SCROLL_ANCHOR_HEIGHT) * curScroll);
 		drawTexturedModalRect(x, y, 232 + (needsScrollBar() ? 0 : 12), 0, 12, 15);
+		filterField.drawTextBox();
 	}
 	
 	private void renderBuyPrice(int price, int x, int y, boolean canAfford) {

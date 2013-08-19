@@ -80,7 +80,7 @@ public class Tango extends Dota2Item {
 				// Yep, found a tree
 				TreeUtil.removeTree(world, new IntVec3(x, trunkBaseY, z), true);
 				itemStack.stackSize --;
-				world.playSoundEffect(x, trunkBaseY, z, Sound.TREE_FALL.name, 1.0f, 1.0f);
+				world.playSoundEffect(x, trunkBaseY, z, Sound.TREE_FALL.getName(), 1.0f, 1.0f);
 				player.addPotionEffect(new PotionEffect(Potion.regeneration.id, duration, amplifier));
 				return true;
 			} else {
@@ -93,7 +93,7 @@ public class Tango extends Dota2Item {
 				// Yep, found a tree
 				TreeUtil.removeTree(world, trunkBase, true);
 				itemStack.stackSize --;
-				world.playSoundEffect(trunkBase.x, trunkBase.y, trunkBase.z, Sound.TREE_FALL.name, 1.0f, 1.0f);
+				world.playSoundEffect(trunkBase.x, trunkBase.y, trunkBase.z, Sound.TREE_FALL.getName(), 1.0f, 1.0f);
 				player.addPotionEffect(new PotionEffect(Potion.regeneration.id, duration, amplifier));
 				return true;
 			} else {

@@ -9,6 +9,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiBeacon;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -17,6 +18,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiGold extends Gui {
+	private static final ResourceLocation texture = new ResourceLocation(Dota2Items.ID+":textures/gui/container/shop_sell.png");
+	
 	public static final int GUI_GOLD_WIDTH = 61;
 	public static final int GUI_GOLD_HEIGHT = 23;
 	public static final int GUI_INVENTORY_WIDTH = 176;
@@ -54,7 +57,7 @@ public class GuiGold extends Gui {
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(mc.thePlayer);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDisable(GL11.GL_LIGHTING);
-		mc.renderEngine.bindTexture("/mods/"+Dota2Items.ID+"/textures/gui/shop_sell.png");
+		mc.renderEngine.func_110577_a(texture);
 		drawTexturedModalRect(x, y, 115, 0, GUI_GOLD_WIDTH, GUI_GOLD_HEIGHT);
 		// Draw the number
 		renderGoldText(stats.getGold(), x, y);

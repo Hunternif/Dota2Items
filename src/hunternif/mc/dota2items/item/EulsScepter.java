@@ -15,7 +15,7 @@ import hunternif.mc.dota2items.util.DescriptionBuilder.Description;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
@@ -34,11 +34,7 @@ public class EulsScepter extends CooldownItem {
 		passiveBuff = new Buff(this).setMovementSpeed(30).setIntelligence(10).setManaRegenPercent(150);
 		setPrice(600);
 		setManaCost(75);
-	}
-	
-	@Override
-	public int getDamageVsEntity(Entity entity) {
-		return 2;
+		weaponDamage = 2;
 	}
 	
 	@Override
@@ -55,7 +51,7 @@ public class EulsScepter extends CooldownItem {
 	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world,
 			int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
 		AxisAlignedBB box = AxisAlignedBB.getBoundingBox((double)x, (double)y-0.5, (double)z, (double)x+1, (double)y+1.5, (double)z+1);
-		List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, box);
+		List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class, box);
 		if (list != null && !list.isEmpty()) {
 			return onUseEulsScepter(itemStack, player, list.get(0));
 		} else {
@@ -91,7 +87,7 @@ public class EulsScepter extends CooldownItem {
 			
 			long cycloneEndTime = entity.worldObj.getTotalWorldTime() + (long) (TileEntityCyclone.duration * 20f);
 			BuffInstance buffInst = new BuffInstance(Buff.inCyclone, entity.entityId, cycloneEndTime, false);
-			EntityStats entityStats = Dota2Items.mechanics.getEntityStats((EntityLiving)entity);
+			EntityStats entityStats = Dota2Items.mechanics.getEntityStats((EntityLivingBase)entity);
 			entityStats.addBuff(buffInst);
 			PacketDispatcher.sendPacketToAllPlayers(new BuffPacket(buffInst).makePacket());
 			
@@ -102,7 +98,7 @@ public class EulsScepter extends CooldownItem {
 			Dota2Items.mechanics.getEntityStats(player).removeMana(getManaCost());
 		}
 		
-		player.worldObj.playSoundAtEntity(entity, Sound.CYCLONE_START.name, 0.7f, 1);
+		player.worldObj.playSoundAtEntity(entity, Sound.CYCLONE_START.getName(), 0.7f, 1);
 		return true;
 	}
 }

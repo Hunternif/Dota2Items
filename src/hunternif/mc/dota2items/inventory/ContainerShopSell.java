@@ -41,8 +41,8 @@ public class ContainerShopSell extends Container {
 	}
 	
 	@Override
-	public void onCraftGuiClosed(EntityPlayer player) {
-		super.onCraftGuiClosed(player);
+	public void onContainerClosed(EntityPlayer player) {
+		super.onContainerClosed(player);
 		if (!player.worldObj.isRemote) {
 			ItemStack stack = invSelling.getStackInSlotOnClosing(0);
 			if (stack != null) {

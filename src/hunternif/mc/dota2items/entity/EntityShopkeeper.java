@@ -3,9 +3,10 @@ package hunternif.mc.dota2items.entity;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.client.gui.GuiHandler;
 import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.INpc;
-import net.minecraft.entity.ai.EntityAIMoveTwardsRestriction;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityAIWatchClosest2;
@@ -22,18 +23,19 @@ public class EntityShopkeeper extends EntityCreature implements INpc, IInvulnera
 	
 	public EntityShopkeeper(World world) {
 		super(world);
-		this.moveSpeed = 0.1F;
 		this.setSize(0.6F, 1.8F);
 		this.getNavigator().setAvoidsWater(true);
-		this.tasks.addTask(1, new EntityAIMoveTwardsRestriction(this, 0.25F));
+		this.tasks.addTask(1, new EntityAIMoveTowardsRestriction(this, 0.25F));
 		this.tasks.addTask(2, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));
 		this.tasks.addTask(3, new EntityAIWander(this, 0.25F));
-		this.tasks.addTask(4, new EntityAIWatchClosest(this, EntityLiving.class, 8.0F));
+		this.tasks.addTask(4, new EntityAIWatchClosest(this, EntityLivingBase.class, 8.0F));
 	}
-
+	
+	/** Presumably sets movement speed. */
 	@Override
-	public int getMaxHealth() {
-		return 100;
+	protected void func_110147_ax() {
+		super.func_110147_ax();
+		this.func_110148_a(SharedMonsterAttributes.field_111263_d).func_111128_a(0.1);
 	}
 	
 	@Override
@@ -54,11 +56,12 @@ public class EntityShopkeeper extends EntityCreature implements INpc, IInvulnera
 			this.villageObj = this.worldObj.villageCollectionObj.findNearestVillage(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ), 32);
 			
 			if (this.villageObj == null) {
-				this.detachHome();
+				this.func_110177_bN(); // detachHome();
 			}
 			else {
 				ChunkCoordinates chunkcoordinates = this.villageObj.getCenter();
-				this.setHomeArea(chunkcoordinates.posX, chunkcoordinates.posY, chunkcoordinates.posZ, (int)((float)this.villageObj.getVillageRadius() * 0.6F));
+				// Set Home area
+				this.func_110171_b(chunkcoordinates.posX, chunkcoordinates.posY, chunkcoordinates.posZ, (int)((float)this.villageObj.getVillageRadius() * 0.6F));
 			}
 		}
 		super.updateAITick();
@@ -69,11 +72,6 @@ public class EntityShopkeeper extends EntityCreature implements INpc, IInvulnera
 		super.entityInit();
 		// Dunno why this is done, probably some kludge.
 		this.dataWatcher.addObject(16, Integer.valueOf(0));
-	}
-	
-	@Override
-	public String getTexture() {
-		return "/mods/"+Dota2Items.ID+"/textures/mob/shopkeeper.png";
 	}
 	
 	@Override

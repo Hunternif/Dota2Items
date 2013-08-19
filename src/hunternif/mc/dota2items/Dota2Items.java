@@ -18,10 +18,8 @@ import net.minecraft.item.Item;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.PostInit;
-import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -37,7 +35,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 public class Dota2Items {
 	public static final String ID = "Dota2Items";
 	public static final String NAME = "Dota 2 Items";
-	public static final String VERSION = "0.5.3";
+	public static final String VERSION = "0.6";
 	public static final String CHANNEL = ID;
 	
 	public static CreativeTabs dota2CreativeTab;
@@ -53,14 +51,14 @@ public class Dota2Items {
 	@SidedProxy(clientSide="hunternif.mc.dota2items.ClientProxy", serverSide="hunternif.mc.dota2items.CommonProxy")
 	public static CommonProxy proxy;
 	
-	@PreInit
+	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		proxy.registerSounds();
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		Config.preLoad(config);
 	}
 	
-	@Init
+	@EventHandler
 	public void load(FMLInitializationEvent event) {
 		dota2CreativeTab = new Dota2CreativeTab("dota2ItemTab");
 		LanguageRegistry.instance().addStringLocalization("itemGroup.dota2ItemTab", "en_US", "Dota 2 Items");
@@ -80,7 +78,7 @@ public class Dota2Items {
 		GameRegistry.registerPlayerTracker(playerTracker);
 	}
 	
-	@PostInit
+	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 	}
 }

@@ -22,7 +22,7 @@ public class Dota2PlayerTracker implements IPlayerTracker {
 	
 	@Override
 	public void onPlayerLogin(EntityPlayer player) {
-		if (player.getHealth() <= 0) {
+		if (player.func_110143_aJ() <= 0) {
 			List<ItemStack> list = retainedItems.get(player);
 			if (list == null) {
 				list = new ArrayList<ItemStack>();

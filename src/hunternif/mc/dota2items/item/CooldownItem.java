@@ -4,7 +4,7 @@ import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.client.event.CooldownEndDisplayEvent;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -146,7 +146,7 @@ public abstract class CooldownItem extends Dota2Item {
 	}
 	
 	@Override
-	public Sound canUseItem(ItemStack stack, EntityLiving player, Entity target) {
+	public Sound canUseItem(ItemStack stack, EntityLivingBase player, Entity target) {
 		Sound failSound = super.canUseItem(stack, player, target);
 		if (failSound == null) {
 			if (player instanceof EntityPlayer && ((EntityPlayer)player).capabilities.isCreativeMode) {

@@ -3,7 +3,6 @@ package hunternif.mc.dota2items.client.particle;
 import hunternif.mc.dota2items.util.MathUtil;
 import hunternif.mc.dota2items.util.SideHit;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.client.particle.EntityFX;
@@ -54,7 +53,7 @@ public class FXCycloneRing extends EntityFX {
 					int metadata = world.getBlockMetadata(xInt, yInt, zInt);
 					// The "y + 0.1" below is a workaround for the bug that digging
 					// particles stayed on the ground and didn't fly up for some reason.
-					puffs[i] = new EntityDiggingFX(world, x + 0.5, y+0.1, z + 0.5, 0, 0, 0, Block.blocksList[blockId], SideHit.TOP, metadata, Minecraft.getMinecraft().renderEngine).func_70596_a(xInt, yInt, zInt).multipleParticleScaleBy(0.5f);
+					puffs[i] = new EntityDiggingFX(world, x + 0.5, y+0.1, z + 0.5, 0, 0, 0, Block.blocksList[blockId], SideHit.TOP, metadata).applyColourMultiplier(xInt, yInt, zInt).multipleParticleScaleBy(0.5f);
 					renderer.addEffect(puffs[i]);
 					continue;
 				}

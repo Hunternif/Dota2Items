@@ -6,6 +6,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -27,7 +28,7 @@ public class GuiRecipeButton extends GuiButton {
 			GL11.glDisable(GL11.GL_LIGHTING);
 			
 			// Render background:
-			mc.renderEngine.bindTexture("/mods/" + Dota2Items.ID + "/textures/gui/shop_buy.png");
+			mc.renderEngine.func_110577_a(GuiShopBuy.texture);
 			boolean isMouseOver = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 			int u = 230;
 			int v = 23;

@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.event.ForgeSubscribe;
 
@@ -25,6 +26,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class CooldownItemRenderer implements IItemRenderer {
+	private static final ResourceLocation minecraftParticles = new ResourceLocation("textures/particle/particles.png");
+	
 	/** Length of post-cooldown animation in ticks. */
 	private static int postCooldownEffectLength = 10;
 	
@@ -74,7 +77,7 @@ public class CooldownItemRenderer implements IItemRenderer {
 				GL11.glEnable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                Minecraft.getMinecraft().renderEngine.bindTexture("/particles.png");
+                Minecraft.getMinecraft().renderEngine.func_110577_a(minecraftParticles);
                 
                 int particleTextureIndex = 159 + (animationsToGo+1)/2;
 				Tessellator tessellator = Tessellator.instance;

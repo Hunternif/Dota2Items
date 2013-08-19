@@ -14,8 +14,7 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -46,11 +45,7 @@ public class BlinkDagger extends CooldownItem {
 		setCooldown(usualCooldown);
 		setManaCost(75);
 		setPrice(2150);
-	}
-	
-	@Override
-	public int getDamageVsEntity(Entity entity) {
-		return 4;
+		weaponDamage = 4;
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -77,7 +72,7 @@ public class BlinkDagger extends CooldownItem {
 		}
         Vec3 look = player.getLook(1.0F);
         Vec3 lookFar = position.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
-		MovingObjectPosition hit = world.rayTraceBlocks_do(position, lookFar, !player.isInWater());
+		MovingObjectPosition hit = world.clip(position, lookFar, !player.isInWater()); // raytrace
 		
 		if (hit != null) {
 			destX = hit.blockX;
@@ -211,11 +206,11 @@ public class BlinkDagger extends CooldownItem {
 			// if they're far apart enough.
 			double distance = player.getDistance(srcX, srcY, srcZ);
 			if (distance < 12) {
-				world.playSoundToNearExcept(player, Sound.BLINK_OUT.name, 1.0F, 1.0F);
+				world.playSoundToNearExcept(player, Sound.BLINK_OUT.getName(), 1.0F, 1.0F);
 			} else {
 				// Sounds for other players to hear:
-				world.playSoundToNearExcept(player, Sound.BLINK_IN.name, 1.0F, 1.0F);
-				world.playSoundEffect(srcX, srcY, srcZ, Sound.BLINK_OUT.name, 1.0F, 1.0F);
+				world.playSoundToNearExcept(player, Sound.BLINK_IN.getName(), 1.0F, 1.0F);
+				world.playSoundEffect(srcX, srcY, srcZ, Sound.BLINK_OUT.getName(), 1.0F, 1.0F);
 			}
 			// Send effect packets to other players
 			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
@@ -225,7 +220,7 @@ public class BlinkDagger extends CooldownItem {
 			}
 		} else {
 			// Client side. Render blink effect.
-			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.BLINK_OUT.name, 1.0F, 1.0F);
+			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.BLINK_OUT.getName(), 1.0F, 1.0F);
 			srcEffect.perform();
 			destEffect.perform();
 		}
@@ -237,7 +232,7 @@ public class BlinkDagger extends CooldownItem {
 	public void onHurt(LivingHurtEvent event) {
 		// Why is this only called on the server?
 		if (event.entityLiving instanceof EntityPlayer && !event.entity.worldObj.isRemote &&
-				event.source.getEntity() instanceof EntityLiving) {
+				event.source.getEntity() instanceof EntityLivingBase) {
 			EntityPlayer player = (EntityPlayer) event.entityLiving;
 			int invSize = player.inventory.getSizeInventory();
 			for (int i = 0; i < invSize; i++) {

@@ -13,12 +13,15 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiShopSell extends GuiShopBase {
+	protected static final ResourceLocation texture = new ResourceLocation(Dota2Items.ID+":textures/gui/container/shop_sell.png");
+	
 	public static final int WIDTH = 176;
 	public static final int HEIGHT = 166;
 	
@@ -48,7 +51,7 @@ public class GuiShopSell extends GuiShopBase {
 			EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
 			stats.addGold(sellPrice);
 			PacketDispatcher.sendPacketToServer(new ShopSellPacket().makePacket());
-			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.COINS.name, 1, 1);
+			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.COINS.getName(), 1, 1);
 		}
 	}
 	
@@ -76,7 +79,7 @@ public class GuiShopSell extends GuiShopBase {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.renderEngine.bindTexture("/mods/"+Dota2Items.ID+"/textures/gui/shop_sell.png");
+		this.mc.renderEngine.func_110577_a(texture);
 		int k = (this.width - this.xSize) / 2;
 		int l = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);

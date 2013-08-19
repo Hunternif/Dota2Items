@@ -3,17 +3,27 @@ package hunternif.mc.dota2items.client.gui;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.Mechanics;
+
+import java.util.Set;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import com.google.common.collect.HashMultimap;
+
 public class GuiDotaStats {
+	private static final ResourceLocation texture = new ResourceLocation(Dota2Items.ID+":textures/gui/stats.png");
+	
 	public static final int WIDTH = 113;
 	public static final int HEIGHT = 60;
 	private static final int COLOR_REGULAR = 0xffffff;
@@ -29,7 +39,7 @@ public class GuiDotaStats {
 		int top = mc.currentScreen.height - HEIGHT;
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDisable(GL11.GL_LIGHTING);
-		mc.renderEngine.bindTexture("/mods/"+Dota2Items.ID+"/textures/gui/stats.png");
+		mc.renderEngine.func_110577_a(texture);
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
 		tessellator.addVertexWithUV(left+WIDTH, top+HEIGHT, 0, 1, 1);
@@ -45,8 +55,14 @@ public class GuiDotaStats {
 		boolean isMelee = true;
 		ItemStack item = mc.thePlayer.getCurrentEquippedItem();
 		if (item != null) {
-			// Calculating damage against himself, lol.
-			baseDmg = item.getDamageVsEntity(mc.thePlayer);
+			// Get player damage output. Not accounting for enchantments yet!
+			HashMultimap map = (HashMultimap)item.func_111283_C();
+			Set<AttributeModifier> damageModifierSet = map.get(SharedMonsterAttributes.field_111264_e.func_111108_a());
+			for (AttributeModifier modifier : damageModifierSet) {
+				baseDmg += (float) modifier.func_111164_d();
+			}
+			// The following line works correctly on the "server" side, but always returns 1 on the "client".
+			//baseDmg = (float)mc.thePlayer.func_110148_a(SharedMonsterAttributes.field_111264_e).func_111126_e();
 			if (item.itemID == Item.bow.itemID) {
 				isMelee = false;
 				// Assume the damage of an arrow at average charge: 6

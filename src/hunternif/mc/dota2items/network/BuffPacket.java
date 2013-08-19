@@ -6,7 +6,7 @@ import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -49,8 +49,8 @@ public class BuffPacket extends CustomPacket {
 	public void execute(EntityPlayer player, Side side) throws ProtocolException {
 		if (side.isClient()) {
 			Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(entityID);
-			if (entity != null && entity instanceof EntityLiving) {
-				EntityStats stats = Dota2Items.mechanics.getEntityStats((EntityLiving)entity);
+			if (entity != null && entity instanceof EntityLivingBase) {
+				EntityStats stats = Dota2Items.mechanics.getEntityStats((EntityLivingBase)entity);
 				BuffInstance buffInst = new BuffInstance(Buff.buffList[buffID], entityID, endTime, isItemPassiveBuff);
 				stats.addBuff(buffInst);
 			}

@@ -2,11 +2,13 @@ package hunternif.mc.dota2items.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 public class GuiButtonConfirmSale extends GuiButton {
+	private static final ResourceLocation beaconTexture = new ResourceLocation("textures/gui/container/beacon.png");
 
 	public GuiButtonConfirmSale(int id, int x, int y) {
 		super(id, x, y, 22, 22, "");
@@ -19,7 +21,7 @@ public class GuiButtonConfirmSale extends GuiButton {
 			GL11.glDisable(GL11.GL_LIGHTING);
 			
 			// Render background:
-			mc.renderEngine.bindTexture("/gui/beacon.png");
+			mc.renderEngine.func_110577_a(beaconTexture);
 			boolean isMouseOver = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 			int u = 0;
 			int v = 219;

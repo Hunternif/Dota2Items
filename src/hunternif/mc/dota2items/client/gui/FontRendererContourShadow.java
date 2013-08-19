@@ -3,15 +3,17 @@ package hunternif.mc.dota2items.client.gui;
 import java.lang.reflect.Method;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.RenderEngine;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class FontRendererContourShadow extends FontRenderer {
 	private static String[] renderStringObfNames = {"renderString", "func_78258_a", "a"};
 	
-	public FontRendererContourShadow(GameSettings settings, String textureName, RenderEngine renderEngine, boolean unicodeFlag) {
-		super(settings, textureName, renderEngine, unicodeFlag);
+	public FontRendererContourShadow(GameSettings settings, ResourceLocation resourceLocation,
+			TextureManager textureManager, boolean unicodeFlag) {
+		super(settings, resourceLocation, textureManager, unicodeFlag);
 	}
 	
 	@Override

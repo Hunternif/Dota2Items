@@ -4,11 +4,12 @@ import hunternif.mc.dota2items.Dota2Items;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import org.lwjgl.opengl.GL11;
-
 public class Dota2Particle extends EntityFX {
+	private static final ResourceLocation dota2itemsParticles = new ResourceLocation(Dota2Items.ID+":textures/particles.png");
+	private static final ResourceLocation minecraftParticles = new ResourceLocation("textures/particle/particles.png");
 	private static float ICON_U_WIDTH = 1f/16f;
 
 	protected Dota2Particle(World world, double x, double y, double z) {
@@ -29,13 +30,13 @@ public class Dota2Particle extends EntityFX {
 		if (tessellator.isDrawing) {
 			tessellator.draw();
 		}
-		Minecraft.getMinecraft().renderEngine.bindTexture("/mods/"+Dota2Items.ID+"/textures/particles.png");
+		Minecraft.getMinecraft().renderEngine.func_110577_a(dota2itemsParticles);
 		tessellator.startDrawingQuads();
 		tessellator.setBrightness(getBrightnessForRender(partialTick));
 		super.renderParticle(tessellator, partialTick, rotX, rotXZ, rotZ, rotYZ, rotXY);
 		tessellator.draw();
 		tessellator.startDrawingQuads();
-		Minecraft.getMinecraft().renderEngine.bindTexture("/particles.png");
+		Minecraft.getMinecraft().renderEngine.func_110577_a(minecraftParticles);
 	}
 
 }

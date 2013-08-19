@@ -1,6 +1,5 @@
 package hunternif.mc.dota2items.item;
 
-import net.minecraft.entity.Entity;
 import hunternif.mc.dota2items.core.buff.Buff;
 
 public class Claymore extends Dota2Item {
@@ -9,11 +8,7 @@ public class Claymore extends Dota2Item {
 		super(id);
 		passiveBuff = new Buff(this).setDamage(21);
 		setPrice(1400);
-	}
-	
-	@Override
-	public int getDamageVsEntity(Entity entity) {
-		return 7;
+		weaponDamage = 7;
 	}
 
 	@Override

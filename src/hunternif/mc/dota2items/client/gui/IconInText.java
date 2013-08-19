@@ -1,12 +1,13 @@
 package hunternif.mc.dota2items.client.gui;
 
+import net.minecraft.util.Icon;
+import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.util.Icon;
 
 @SideOnly(Side.CLIENT)
 public class IconInText implements Icon {
-	public String texture;
+	public ResourceLocation texture;
 	public int width;
 	public int height;
 	public int xOffset;
@@ -16,7 +17,7 @@ public class IconInText implements Icon {
 	
 	public IconInText(String key, int width, int height, String texture, int xOffset, int yOffset, int kerning) {
 		this.key = key;
-		this.texture = texture;
+		this.texture = new ResourceLocation(texture);
 		this.width = width;
 		this.height = height;
 		this.xOffset = xOffset;
@@ -76,18 +77,6 @@ public class IconInText implements Icon {
 	@SideOnly(Side.CLIENT)
 	public String getIconName() {
 		return key;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getSheetWidth() {
-		return width;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getSheetHeight() {
-		return height;
 	}
 
 }

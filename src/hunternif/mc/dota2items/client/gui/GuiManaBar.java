@@ -5,6 +5,7 @@ import hunternif.mc.dota2items.core.EntityStats;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.ForgeHooks;
@@ -13,6 +14,8 @@ import net.minecraftforge.event.ForgeSubscribe;
 import org.lwjgl.opengl.GL11;
 
 public class GuiManaBar extends Gui {
+	private static final ResourceLocation texture = new ResourceLocation(Dota2Items.ID+":textures/gui/mana.png");
+	
 	private static final int HIGHLIGHT_TIME = 10; // [ticks]
 	
 	private Minecraft mc;
@@ -41,7 +44,7 @@ public class GuiManaBar extends Gui {
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDisable(GL11.GL_LIGHTING);
-		mc.renderEngine.bindTexture("/mods/"+Dota2Items.ID+"/textures/gui/mana.png");
+		mc.renderEngine.func_110577_a(texture);
 		
 		int width = event.resolution.getScaledWidth();
 		int height = event.resolution.getScaledHeight();

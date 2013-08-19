@@ -4,7 +4,7 @@ import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.EntityStats;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -47,8 +47,8 @@ public class EntityStatsSyncPacket extends CustomPacket {
 	public void execute(EntityPlayer player, Side side) throws ProtocolException {
 		if (side.isClient()) {
 			Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(entityID);
-			if (entity != null && entity instanceof EntityLiving) {
-				EntityStats stats = Dota2Items.mechanics.getEntityStats((EntityLiving)entity);
+			if (entity != null && entity instanceof EntityLivingBase) {
+				EntityStats stats = Dota2Items.mechanics.getEntityStats((EntityLivingBase)entity);
 				stats.partialHalfHeart = partialHalfHeart;
 				stats.setGold(gold);
 				stats.setMana(mana);

@@ -6,23 +6,25 @@ import java.util.Comparator;
 import java.util.List;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.RenderEngine;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
 public class FontRendererWithIcons extends FontRenderer {
-	private RenderEngine renderEngine;
+	private TextureManager textureManager;
 	private List<IconInText> icons = new ArrayList<IconInText>();
 	
 	public void registerIcon(IconInText icon) {
 		icons.add(icon);
 	}
 
-	public FontRendererWithIcons(GameSettings settings, String textureName, RenderEngine renderEngine, boolean unicodeFlag) {
-		super(settings, textureName, renderEngine, unicodeFlag);
-		this.renderEngine = renderEngine;
+	public FontRendererWithIcons(GameSettings settings, ResourceLocation resourceLocation,
+			TextureManager textureManager, boolean unicodeFlag) {
+		super(settings, resourceLocation, textureManager, unicodeFlag);
+		this.textureManager = textureManager;
 	}
 	
 	private static class IconInTextPos {
@@ -93,7 +95,7 @@ public class FontRendererWithIcons extends FontRenderer {
 		x += icon.xOffset;
 		y += icon.yOffset;
 		GL11.glColor4f(1, 1, 1, 1);
-		this.renderEngine.bindTexture(icon.texture);
+		this.textureManager.func_110577_a(icon.texture);
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
 		tessellator.addVertexWithUV(x, y+icon.height, 0, icon.getMinU(), icon.getMaxV());

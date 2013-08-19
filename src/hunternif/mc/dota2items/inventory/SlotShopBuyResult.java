@@ -32,7 +32,7 @@ public class SlotShopBuyResult extends Slot {
 		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
 		stats.removeGold( Dota2Item.getPrice(stack) );
 		if (player.worldObj.isRemote) {
-			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.BUY.name, 0.8f, 1);
+			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.BUY.getName(), 0.8f, 1);
 		}
 		super.onPickupFromSlot(player, stack);
 	}

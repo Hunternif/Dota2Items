@@ -11,7 +11,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -81,9 +83,12 @@ public class EntityStats implements IExtendedEntityProperties {
 	private List<BuffInstance> appliedBuffs = new ArrayList<BuffInstance>();
 	
 	
-	public EntityStats(EntityLiving entity) {
+	public EntityStats(EntityLivingBase entity) {
 		entityId = entity.entityId;
-		baseHealth = MathHelper.floor_float((float)entity.getMaxHealth() * (float)BASE_PLAYER_HP / 20f);
+		AttributeInstance attrMaxHealth = entity.func_110148_a(SharedMonsterAttributes.field_111267_a);
+		// When EntityPlayer is Constructing, all his attributes are null
+		float maxHealth = attrMaxHealth == null ? 20f : (float)attrMaxHealth.func_111126_e();
+		baseHealth = MathHelper.floor_float(maxHealth * (float)BASE_PLAYER_HP / 20f);
 		if (entity instanceof EntityPlayer) {
 			baseHealthRegen = 0.25f;
 			baseAttackTime = 1.7f;
@@ -126,9 +131,9 @@ public class EntityStats implements IExtendedEntityProperties {
 		}
 		return health + MAX_HP_PER_STR*getStrength();
 	}
-	public int getHealth(EntityLiving entity) {
-		float mcHPProportion = (float)entity.getHealth() / (float)entity.getMaxHealth();
-		float halfHeartEquivalent = (float)getMaxHealth() / (float)entity.getMaxHealth();
+	public int getHealth(EntityLivingBase entity) {
+		float mcHPProportion = (float)entity.func_110143_aJ() / (float)entity.func_110138_aP();
+		float halfHeartEquivalent = (float)getMaxHealth() / (float)entity.func_110138_aP();
 		return MathHelper.floor_float((float)getMaxHealth()*mcHPProportion + halfHeartEquivalent*partialHalfHeart);
 	}
 	public float getHealthRegen() {

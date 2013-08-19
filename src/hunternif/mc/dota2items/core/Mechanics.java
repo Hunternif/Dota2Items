@@ -18,7 +18,7 @@ import java.util.logging.Level;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.IMob;
@@ -61,9 +61,9 @@ public class Mechanics {
 	
 	private static final int SYNC_STATS_INTERVAL = 10;
 	
-	private Map<EntityLiving, EntityStats> clientEntityStats = new ConcurrentHashMap<EntityLiving, EntityStats>();
-	private Map<EntityLiving, EntityStats> serverEntityStats = new ConcurrentHashMap<EntityLiving, EntityStats>();
-	private Map<EntityLiving, EntityStats> getEntityStatsMap(Side side) {
+	private Map<EntityLivingBase, EntityStats> clientEntityStats = new ConcurrentHashMap<>();
+	private Map<EntityLivingBase, EntityStats> serverEntityStats = new ConcurrentHashMap<>();
+	private Map<EntityLivingBase, EntityStats> getEntityStatsMap(Side side) {
 		return side.isClient() ? clientEntityStats : serverEntityStats;
 	}
 	
@@ -74,8 +74,8 @@ public class Mechanics {
 	}
 	
 	/** Guaranteed to be non-null. */
-	public EntityStats getEntityStats(EntityLiving entity) {
-		Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
+	public EntityStats getEntityStats(EntityLivingBase entity) {
+		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
 		EntityStats stats = entityStats.get(entity);
 		if (stats == null) {
 			stats = new EntityStats(entity);
@@ -111,8 +111,8 @@ public class Mechanics {
 	public void onLivingAttack(LivingAttackEvent event) {
 		// Check if the entity can attack
 		Entity entity = event.source.getEntity();
-		if (entity != null && entity instanceof EntityLiving) {
-			Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
+		if (entity != null && entity instanceof EntityLivingBase) {
+			Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
 			EntityStats stats = entityStats.get(entity);
 			if (stats != null) {
 				long worldTime = entity.worldObj.getTotalWorldTime();
@@ -128,9 +128,8 @@ public class Mechanics {
 	
 	@ForgeSubscribe
 	public void onLivingHurt(LivingHurtEvent event) {
-		Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(getSide(event.entity));
-		int damage = event.ammount;
-		float dotaDamage = (float)damage * DOTA_VS_MINECRAFT_DAMAGE;
+		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(event.entity));
+		float dotaDamage = event.ammount * DOTA_VS_MINECRAFT_DAMAGE;
 		
 		// Check if the target entity is invulnerable or if damage is magical and target is magic immune
 		EntityStats targetStats = entityStats.get(event.entityLiving);
@@ -222,15 +221,15 @@ public class Mechanics {
 			}
 		}
 		if (event.entityLiving instanceof EntityPlayer || event.source.getEntity() instanceof EntityPlayer) {
-			FMLLog.log(Dota2Items.ID, Level.INFO, "Changed damage from %d to %.2f", damage, floatMCDamage);
+			FMLLog.log(Dota2Items.ID, Level.INFO, "Changed damage from %.2f to %.2f", event.ammount, floatMCDamage);
 		}
 		event.ammount = intMCDamage;
 	}
 	
 	public void updateAllEntityStats(Side side) {
-		Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(side);
-		for (Entry<EntityLiving, EntityStats> entry : entityStats.entrySet()) {
-			EntityLiving entity = entry.getKey();
+		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(side);
+		for (Entry<EntityLivingBase, EntityStats> entry : entityStats.entrySet()) {
+			EntityLivingBase entity = entry.getKey();
 			EntityStats stats = entry.getValue();
 			stats.clampMana();
 			for (BuffInstance buffInst : stats.getAppliedBuffs()) {
@@ -304,6 +303,7 @@ public class Mechanics {
 			}
 		}
 		//NOTE for now movement speed bonus will only be applied to players, not to mobs:
+		//FIXME movement speed doesn't work. Use attributes!
 		ReflectionHelper.setPrivateValue(PlayerCapabilities.class, player.capabilities, stats.getMovementSpeed(), walkSpeedObfFields);
 	}
 	
@@ -326,7 +326,7 @@ public class Mechanics {
 	@ForgeSubscribe
 	public void onLivingUpdate(LivingUpdateEvent event) {
 		// All forced movement is to be processed here. (Cyclone, Force Staff etc.)
-		Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(getSide(event.entityLiving));
+		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(event.entityLiving));
 		EntityStats stats = entityStats.get(event.entityLiving);
 		if (stats != null) {
 			if (event.entityLiving instanceof EntityPlayer) {
@@ -359,7 +359,7 @@ public class Mechanics {
 	
 	@ForgeSubscribe
 	public void onLivingDeath(LivingDeathEvent event) {
-		Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(getSide(event.entityLiving));
+		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(event.entityLiving));
 		EntityStats stats = entityStats.get(event.entityLiving);
 		if (stats != null) {
 			// Drop gold coins
@@ -376,7 +376,7 @@ public class Mechanics {
 			} else {
 				if (!event.entity.worldObj.isRemote && (event.entity instanceof IMob ||
 						(event.entity instanceof EntityWolf && ((EntityWolf)event.entity).isAngry()))) {
-					int goldAmount = MathHelper.floor_float(GOLD_PER_MOB_HP * (float)event.entityLiving.getMaxHealth());
+					int goldAmount = MathHelper.floor_float(GOLD_PER_MOB_HP * (float)event.entityLiving.func_110138_aP());
 					scatterGoldAt(event.entity, goldAmount);
 				}
 				entityStats.remove(event.entityLiving);
@@ -388,9 +388,10 @@ public class Mechanics {
 		return entity.worldObj.isRemote ? Side.CLIENT : Side.SERVER;
 	}
 	
-	private static void regenHealthManaAndGold(EntityLiving entity, EntityStats stats) {
+	private static void regenHealthManaAndGold(EntityLivingBase entity, EntityStats stats) {
 		if (shouldHeal(entity)) {
-			float halfHeartEquivalent = (float)stats.getMaxHealth() / (float)entity.getMaxHealth();
+			// func_110138_aP = "getMaxHealth"
+			float halfHeartEquivalent = (float)stats.getMaxHealth() / (float)entity.func_110138_aP();
 			float partialHealth = stats.partialHalfHeart + stats.getHealthRegen() /20f / halfHeartEquivalent;
 			if (partialHealth >= 1) {
 				int floor = MathHelper.floor_float(partialHealth);
@@ -401,14 +402,15 @@ public class Mechanics {
 		} else if (stats.partialHalfHeart > 0) {
 			stats.partialHalfHeart = 0;
 		}
-		if (entity.getHealth() > 0 && stats.getMana() < stats.getMaxMana()) {
+		// func_110143_aJ = "getHealth"
+		if (entity.func_110143_aJ() > 0 && stats.getMana() < stats.getMaxMana()) {
 			stats.addMana(stats.getManaRegen()/20f);
 		}
 		stats.addGold(GOLD_PER_SECOND/20f);
 	}
 	
-	public static boolean shouldHeal(EntityLiving entity) {
-		boolean shouldHeal = entity.getHealth() > 0 && entity.getHealth() < entity.getMaxHealth();
+	public static boolean shouldHeal(EntityLivingBase entity) {
+		boolean shouldHeal = entity.func_110143_aJ() > 0 && entity.func_110143_aJ() < entity.func_110138_aP();
 		if (entity instanceof EntityPlayer) {
 			shouldHeal &= ((EntityPlayer)entity).getFoodStats().getFoodLevel() >= FOOD_THRESHOLD_FOR_HEAL;
 		}
@@ -418,7 +420,7 @@ public class Mechanics {
 	@ForgeSubscribe
 	public void onEntityConstructing(EntityConstructing event) {
 		if (event.entity instanceof EntityPlayer && !event.entity.worldObj.isRemote) {
-			event.entity.registerExtendedProperties(EXT_PROP_STATS, getEntityStats((EntityLiving)event.entity));
+			event.entity.registerExtendedProperties(EXT_PROP_STATS, getEntityStats((EntityLivingBase)event.entity));
 		}
 	}
 	
@@ -436,7 +438,7 @@ public class Mechanics {
 			EntityStats newStats = (EntityStats)props;
 			newStats.entityId = oldStats.entityId;
 			newStats.setGold(oldStats.getFloatGold());
-			Map<EntityLiving, EntityStats> entityStats = getEntityStatsMap(getSide(player));
+			Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(player));
 			entityStats.put(player, newStats);
 			updatePlayerInventoryBuffs(player);
 			newStats.setMana(newStats.getMaxMana());
@@ -449,7 +451,7 @@ public class Mechanics {
 	public void onPickupGold(EntityItemPickupEvent event) {
 		ItemStack stack = event.item.getEntityItem();
 		if (stack.itemID == Config.goldCoin.getID()) {
-			event.entityLiving.worldObj.playSoundAtEntity(event.entity, Sound.COINS.name, 0.8f, 1f);
+			event.entityLiving.worldObj.playSoundAtEntity(event.entity, Sound.COINS.getName(), 0.8f, 1f);
 			EntityStats stats = getEntityStats(event.entityLiving);
 			stats.addGold(stack.stackSize);
 			if (!event.entityLiving.worldObj.isRemote) {

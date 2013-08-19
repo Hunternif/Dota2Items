@@ -8,8 +8,7 @@ import hunternif.mc.dota2items.util.SideHit;
 import hunternif.mc.dota2items.util.TreeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
@@ -37,6 +36,7 @@ public class QuellingBlade extends CooldownItem {
 		setCooldown(5);
 		passiveBuff = new Buff(this).setDamagePercent(32, 16).setDoesNotStack();
 		setPrice(225);
+		weaponDamage = 6;
 	}
 	
 	@Override
@@ -45,16 +45,11 @@ public class QuellingBlade extends CooldownItem {
 	}
 	
 	@Override
-	public boolean onBlockDestroyed(ItemStack itemStack, World world, int blockID, int x, int y, int z, EntityLiving player) {
+	public boolean onBlockDestroyed(ItemStack itemStack, World world, int blockID, int x, int y, int z, EntityLivingBase player) {
 		if ((double)Block.blocksList[blockID].getBlockHardness(world, x, y, z) != 0.0D) {
 				itemStack.damageItem(1, player);
 		}
 		return true;
-	}
-	
-	@Override
-	public int getDamageVsEntity(Entity par1Entity) {
-		return 6;
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -107,7 +102,7 @@ public class QuellingBlade extends CooldownItem {
 					startCooldown(itemStack, player);
 				}
 				TreeUtil.removeTree(world, new IntVec3(x, trunkBaseY, z), true);
-				world.playSoundEffect(x, trunkBaseY, z, Sound.TREE_FALL.name, 1.0f, 1.0f);
+				world.playSoundEffect(x, trunkBaseY, z, Sound.TREE_FALL.getName(), 1.0f, 1.0f);
 				return true;
 			} else {
 				return false;
@@ -121,7 +116,7 @@ public class QuellingBlade extends CooldownItem {
 					startCooldown(itemStack, player);
 				}
 				TreeUtil.removeTree(world, trunkBase, true);
-				world.playSoundEffect(trunkBase.x, trunkBase.y, trunkBase.z, Sound.TREE_FALL.name, 1.0f, 1.0f);
+				world.playSoundEffect(trunkBase.x, trunkBase.y, trunkBase.z, Sound.TREE_FALL.getName(), 1.0f, 1.0f);
 				return true;
 			} else {
 				return false;

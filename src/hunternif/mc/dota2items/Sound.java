@@ -13,11 +13,15 @@ public enum Sound {
 	COINS("coins"),
 	BUY("buy");
 	
-	public String name;
+	private String name;
 	private Sound(String name) {
 		this.name = name;
 	}
 	public String toString() {
 		return name;
+	}
+	
+	public String getName() {
+		return Dota2Items.ID+":"+name;
 	}
 }

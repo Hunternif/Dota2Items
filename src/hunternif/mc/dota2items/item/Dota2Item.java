@@ -16,13 +16,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
+
+import com.google.common.collect.Multimap;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -31,6 +36,7 @@ public abstract class Dota2Item extends Item {
 	public Buff passiveBuff;
 	public ItemColumn shopColumn;
 	public int defaultQuantity = 1;
+	protected float weaponDamage = 0;
 	
 	public static int maxTooltipWidth = 128;
 	public List<String> descriptionLines;
@@ -43,7 +49,15 @@ public abstract class Dota2Item extends Item {
 		super(id);
 		setCreativeTab(Dota2Items.dota2CreativeTab);
 		setMaxStackSize(1);
-		
+	}
+	
+	@Override
+	public Multimap func_111205_h() {
+		Multimap multimap = super.func_111205_h();
+		if (weaponDamage > 0) {
+			multimap.put(SharedMonsterAttributes.field_111264_e.func_111108_a(), new AttributeModifier(field_111210_e, "Weapon modifier", (double)this.weaponDamage, 0));
+		}
+		return multimap;
 	}
 	
 	@Override
@@ -54,7 +68,7 @@ public abstract class Dota2Item extends Item {
 	
 	public static void playDenyGeneralSound(EntityPlayer player) {
 		if (player.worldObj.isRemote) {
-			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.DENY_GENERAL.name, 1.0F, 1.0F);
+			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.DENY_GENERAL.getName(), 1.0F, 1.0F);
 		}
 	}
 
@@ -62,24 +76,24 @@ public abstract class Dota2Item extends Item {
 	 * Returns the Sound that signifies the particular reason why the player
 	 * cannot use this item.
 	 */
-	public Sound canUseItem(ItemStack stack, EntityLiving player, Entity target) {
+	public Sound canUseItem(ItemStack stack, EntityLivingBase player, Entity target) {
 		EntityStats playerStats = Dota2Items.mechanics.getEntityStats(player);
 		if (!playerStats.canUseItems()) {
 			return Sound.DENY_SILENCE;
 		}
 		if (target != null) {
-			if (!(target instanceof EntityLiving)) {
+			if (!(target instanceof EntityLivingBase)) {
 				return Sound.DENY_GENERAL;
 			}
-			EntityStats targetStats = Dota2Items.mechanics.getEntityStats((EntityLiving)target);
+			EntityStats targetStats = Dota2Items.mechanics.getEntityStats((EntityLivingBase)target);
 			if (targetStats.isMagicImmune()) {
 				return Sound.MAGIC_IMMUNE;
 			}
 		}
 		return null;
 	}
-	/** See {@link #canUseItem(ItemStack, EntityLiving, Entity)} */
-	public Sound canUseItem(ItemStack stack, EntityLiving player) {
+	/** See {@link #canUseItem(ItemStack, EntityLivingBase, Entity)} */
+	public Sound canUseItem(ItemStack stack, EntityLivingBase player) {
 		return canUseItem(stack, player, null);
 	}
 	
@@ -87,15 +101,15 @@ public abstract class Dota2Item extends Item {
 	 * If the player cannot use this item, a respective sound is played.
 	 * @return whether the player can use this item.
 	 */
-	public boolean tryUse(ItemStack stack, EntityLiving player, Entity target) {
+	public boolean tryUse(ItemStack stack, EntityLivingBase player, Entity target) {
 		Sound failSound = canUseItem(stack, player, target);
 		if (failSound != null && player.worldObj.isRemote) {
-			Minecraft.getMinecraft().sndManager.playSoundFX(failSound.name, 1.0F, 1.0F);
+			Minecraft.getMinecraft().sndManager.playSoundFX(failSound.getName(), 1.0F, 1.0F);
 		}
 		return failSound == null;
 	}
-	/** See {@link #tryUse(ItemStack, EntityLiving, Entity)} */
-	public boolean tryUse(ItemStack stack, EntityLiving player) {
+	/** See {@link #tryUse(ItemStack, EntityLivingBase, Entity)} */
+	public boolean tryUse(ItemStack stack, EntityLivingBase player) {
 		return tryUse(stack, player, null);
 	}
 	

@@ -93,7 +93,7 @@ public class ItemRecipe extends Item {
 	}
 	
 	@Override
-	public int getItemDamageFromStack(ItemStack stack) {
+	public int getDamage(ItemStack stack) {
 		return getItemID(stack);
 	}
 	

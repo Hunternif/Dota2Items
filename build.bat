@@ -1,10 +1,11 @@
 @echo off
 if "%FORGE_HOME%" == "" goto forgeNotSet
+echo "FORGE_HOME is %FORGE_HOME%"
 
 echo ^> Copying "hunternif"
 xcopy src\hunternif /s /y "%FORGE_HOME%\mcp\src\minecraft\hunternif\"
-echo ^> Copying "mods"
-xcopy src\mods /s /y "%FORGE_HOME%\mcp\src\minecraft\mods\"
+echo ^> Copying "assets"
+xcopy src\assets /s /y "%FORGE_HOME%\mcp\src\minecraft\assets\"
 
 set MOD_SRC_DIR=%cd%
 cd /d "%FORGE_HOME%\mcp"
@@ -13,15 +14,15 @@ runtime\bin\python\python_mcp runtime\reobfuscate.py %*
 
 echo ^> Removing "hunternif"
 rmdir /s /q "%FORGE_HOME%\mcp\src\minecraft\hunternif"
-echo ^> Removing "mods"
-rmdir /s /q "%FORGE_HOME%\mcp\src\minecraft\mods"
+echo ^> Removing "assets"
+rmdir /s /q "%FORGE_HOME%\mcp\src\minecraft\assets"
 
 set WINRAR=C:\Program Files\WinRAR\WinRAR.exe
 if not exist "%WINRAR%" goto noWinRAR
 echo Found WinRAR
 cd /d "%FORGE_HOME%\mcp\reobf\minecraft"
 echo ^> Copying resource files to "reobf"
-xcopy "%MOD_SRC_DIR%\src\mods" /s /y "%FORGE_HOME%\mcp\reobf\minecraft\mods\"
+xcopy "%MOD_SRC_DIR%\src\assets" /s /y "%FORGE_HOME%\mcp\reobf\minecraft\assets\"
 xcopy "%MOD_SRC_DIR%\src\mcmod.info" /y "%FORGE_HOME%\mcp\reobf\minecraft\"
 xcopy "%MOD_SRC_DIR%\src\*.png" /y "%FORGE_HOME%\mcp\reobf\minecraft\"
 echo ^> Creating archive

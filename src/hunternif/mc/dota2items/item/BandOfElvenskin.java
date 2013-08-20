@@ -6,7 +6,7 @@ public class BandOfElvenskin extends Dota2Item {
 	
 	public BandOfElvenskin(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setAgility(6);
+		setPassiveBuff(new Buff(this).setAgility(6));
 		setPrice(450);
 	}
 	

@@ -9,7 +9,7 @@ public class WraithBand extends Dota2Item {
 
 	public WraithBand(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setStrength(3).setAgility(6).setIntelligence(3).setDamage(3);
+		setPassiveBuff(new Buff(this).setStrength(3).setAgility(6).setIntelligence(3).setDamage(3));
 		setPrice(150);
 	}
 

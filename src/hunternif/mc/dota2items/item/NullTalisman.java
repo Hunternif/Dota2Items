@@ -9,7 +9,7 @@ public class NullTalisman extends Dota2Item {
 
 	public NullTalisman(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setStrength(3).setAgility(3).setIntelligence(6).setDamage(3);
+		setPassiveBuff(new Buff(this).setStrength(3).setAgility(3).setIntelligence(6).setDamage(3));
 		setPrice(135);
 	}
 

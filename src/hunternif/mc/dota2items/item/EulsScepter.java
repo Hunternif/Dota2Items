@@ -1,7 +1,6 @@
 package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.Config;
-import hunternif.mc.dota2items.Config.Recipe;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
@@ -25,16 +24,12 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 
 @Description("Active: Cyclone - Target unit is swept up in a cyclone for 2.5 seconds, " +
 		"and is invulnerable.\nFlat movement speed bonuses from multiple Eul's Scepters do not stack.")
-@Recipe(ingredients={StaffOfWizardry.class, SagesMask.class, VoidStone.class})
 public class EulsScepter extends CooldownItem {
 
 	public EulsScepter(int id) {
 		super(id);
 		setCooldown(30);
-		passiveBuff = new Buff(this).setMovementSpeed(30).setIntelligence(10).setManaRegenPercent(150);
-		setPrice(600);
 		setManaCost(75);
-		weaponDamage = 2;
 	}
 	
 	@Override

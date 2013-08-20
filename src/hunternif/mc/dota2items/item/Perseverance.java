@@ -8,7 +8,7 @@ public class Perseverance extends Dota2Item {
 
 	public Perseverance(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setHealthRegen(5).setManaRegenPercent(125).setDamage(10);
+		setPassiveBuff(new Buff(this).setHealthRegen(5).setManaRegenPercent(125).setDamage(10));
 	}
 
 }

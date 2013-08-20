@@ -6,7 +6,7 @@ public class RobeOfTheMagi extends Dota2Item {
 	
 	public RobeOfTheMagi(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setIntelligence(6);
+		setPassiveBuff(new Buff(this).setIntelligence(6));
 		setPrice(450);
 	}
 	

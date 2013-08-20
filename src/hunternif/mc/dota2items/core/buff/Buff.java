@@ -1,6 +1,5 @@
 package hunternif.mc.dota2items.core.buff;
 
-import hunternif.mc.dota2items.Config;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.util.DescriptionBuilder.BuffLineFormat;
 
@@ -82,7 +81,14 @@ public class Buff {
 	 * for passive buffs.
 	 */
 	public Buff(Dota2Item item) {
-		this(lastID + 1, Config.forClass(item.getClass()).name);
+		this(lastID + 1, item.getLocalizedName(null));
+	}
+	/**
+	 * For passive item buffs. ID is not specified, because it is never sent
+	 * for passive buffs.
+	 */
+	public Buff(String name) {
+		this(lastID + 1, name);
 	}
 	
 	public Buff setDisableAttack() {

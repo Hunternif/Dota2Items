@@ -6,7 +6,7 @@ public class SagesMask extends Dota2Item {
 
 	public SagesMask(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setManaRegenPercent(50);
+		setPassiveBuff(new Buff(this).setManaRegenPercent(50));
 		setPrice(325);
 	}
 

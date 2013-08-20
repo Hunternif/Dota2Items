@@ -6,7 +6,7 @@ public class SacredRelic extends Dota2Item {
 
 	public SacredRelic(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setDamage(60);
+		setPassiveBuff(new Buff(this).setDamage(60));
 		setPrice(3800);
 		weaponDamage = 7;
 	}

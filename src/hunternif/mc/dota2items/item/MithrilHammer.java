@@ -6,7 +6,7 @@ public class MithrilHammer extends Dota2Item {
 
 	public MithrilHammer(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setDamage(24);
+		setPassiveBuff(new Buff(this).setDamage(24));
 		setPrice(1600);
 		weaponDamage = 7;
 	}

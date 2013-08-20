@@ -10,7 +10,7 @@ public class Vanguard extends Dota2Item {
 
 	public Vanguard(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setHealth(250).setHealthRegen(6).setDamageBlock(40, 20, 70);
+		setPassiveBuff(new Buff(this).setHealth(250).setHealthRegen(6).setDamageBlock(40, 20, 70));
 	}
 
 }

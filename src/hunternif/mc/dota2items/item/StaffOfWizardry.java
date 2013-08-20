@@ -6,7 +6,7 @@ public class StaffOfWizardry extends Dota2Item {
 
 	public StaffOfWizardry(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setIntelligence(10);
+		setPassiveBuff(new Buff(this).setIntelligence(10));
 		setPrice(1000);
 		weaponDamage = 2;
 	}

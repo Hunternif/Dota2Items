@@ -7,7 +7,7 @@ public class VitalityBooster extends Dota2Item {
 
 	public VitalityBooster(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setHealth(250);
+		setPassiveBuff(new Buff(this).setHealth(250));
 		setPrice(1100);
 	}
 

@@ -111,7 +111,7 @@ public class ContainerShopBuy extends Container {
 	public void setResultItem(Dota2Item item) {
 		if (item != null) {
 			if (invShop.contains(item)) {
-				invResult.setInventorySlotContents(0, new ItemStack(item, ((Dota2Item)item).defaultQuantity));
+				invResult.setInventorySlotContents(0, new ItemStack(item, ((Dota2Item)item).getDefaultQuantity()));
 			}
 		} else {
 			invResult.setInventorySlotContents(0, null);

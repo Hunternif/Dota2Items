@@ -6,7 +6,7 @@ public class Reaver extends Dota2Item {
 
 	public Reaver(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setStrength(25);
+		setPassiveBuff(new Buff(this).setStrength(25));
 		setPrice(3200);
 		weaponDamage = 7;
 	}

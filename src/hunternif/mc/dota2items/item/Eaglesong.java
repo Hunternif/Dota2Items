@@ -7,7 +7,7 @@ public class Eaglesong extends Dota2Item {
 
 	public Eaglesong(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setAgility(25);
+		setPassiveBuff(new Buff(this).setAgility(25));
 		setPrice(3300);
 	}
 

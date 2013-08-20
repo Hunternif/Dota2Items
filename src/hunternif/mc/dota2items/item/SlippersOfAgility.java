@@ -6,7 +6,7 @@ public class SlippersOfAgility extends Dota2Item {
 	
 	public SlippersOfAgility(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setAgility(3);
+		setPassiveBuff(new Buff(this).setAgility(3));
 		setPrice(150);
 	}
 	

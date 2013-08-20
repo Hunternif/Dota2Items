@@ -32,11 +32,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class Dota2Item extends Item {
-	public boolean dropsOnDeath = false;
-	public Buff passiveBuff;
-	public ItemColumn shopColumn;
-	public int defaultQuantity = 1;
-	protected float weaponDamage = 0;
+	private boolean dropsOnDeath = false;
+	private Buff passiveBuff;
+	private ItemColumn shopColumn;
+	private int defaultQuantity = 1;
+	private float weaponDamage = 0;
 	
 	public static int maxTooltipWidth = 128;
 	public List<String> descriptionLines;
@@ -64,6 +64,46 @@ public abstract class Dota2Item extends Item {
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister iconRegister) {
 		this.itemIcon = iconRegister.registerIcon(Dota2Items.ID + ":" + getUnlocalizedName().substring("item.".length()));
+	}
+	
+	public Dota2Item setWeaponDamage(float damage) {
+		this.weaponDamage = damage;
+		return this;
+	}
+	public float getWeaponDamage() {
+		return this.weaponDamage;
+	}
+	
+	public Dota2Item setDefaultQuantity(int value) {
+		this.defaultQuantity = value;
+		return this;
+	}
+	public int getDefaultQuantity() {
+		return this.defaultQuantity;
+	}
+	
+	public Dota2Item setDropsOnDeath(boolean value) {
+		this.dropsOnDeath = value;
+		return this;
+	}
+	public boolean getDropsOnDeath() {
+		return this.dropsOnDeath;
+	}
+	
+	public Dota2Item setShopColumn(ItemColumn column) {
+		this.shopColumn = column;
+		return this;
+	}
+	public ItemColumn getShopColumn() {
+		return this.shopColumn;
+	}
+	
+	public Dota2Item setPassiveBuff(Buff buff) {
+		this.passiveBuff = buff;
+		return this;
+	}
+	public Buff getPassiveBuff() {
+		return this.passiveBuff;
 	}
 	
 	public static void playDenyGeneralSound(EntityPlayer player) {
@@ -113,18 +153,22 @@ public abstract class Dota2Item extends Item {
 		return tryUse(stack, player, null);
 	}
 	
-	public void setPrice(int price) {
+	public Dota2Item setPrice(int price) {
 		this.price = price;
+		return this;
 	}
-	public void setRecipePrice(int price) {
+	public Dota2Item setRecipePrice(int price) {
 		setPrice(price);
+		return this;
 	}
-	public void setRecipe(List<Dota2Item> list) {
+	public Dota2Item setRecipe(List<Dota2Item> list) {
 		this.recipe = list;
+		return this;
 	}
-	public void setRecipe(List<Dota2Item> list, int priceOfRecipe) {
+	public Dota2Item setRecipe(List<Dota2Item> list, int priceOfRecipe) {
 		setRecipe(list);
 		setRecipePrice(priceOfRecipe);
+		return this;
 	}
 	public boolean hasRecipe() {
 		return recipe != null && !recipe.isEmpty();

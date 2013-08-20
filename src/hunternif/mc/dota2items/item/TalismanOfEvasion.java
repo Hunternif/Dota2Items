@@ -7,7 +7,7 @@ public class TalismanOfEvasion extends Dota2Item {
 
 	public TalismanOfEvasion(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setEvasionPercent(25);
+		setPassiveBuff(new Buff(this).setEvasionPercent(25));
 		setPrice(1800);
 	}
 

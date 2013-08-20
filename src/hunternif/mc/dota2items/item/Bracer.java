@@ -8,7 +8,7 @@ public class Bracer extends Dota2Item {
 
 	public Bracer(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setStrength(6).setAgility(3).setIntelligence(3).setDamage(3);
+		setPassiveBuff(new Buff(this).setStrength(6).setAgility(3).setIntelligence(3).setDamage(3));
 		setPrice(190);
 	}
 

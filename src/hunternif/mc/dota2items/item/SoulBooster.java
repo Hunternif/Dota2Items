@@ -9,7 +9,7 @@ public class SoulBooster extends Dota2Item {
 
 	public SoulBooster(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setHealth(450).setMana(400).setHealthRegen(4).setManaRegenPercent(100);
+		setPassiveBuff(new Buff(this).setHealth(450).setMana(400).setHealthRegen(4).setManaRegenPercent(100));
 	}
 
 }

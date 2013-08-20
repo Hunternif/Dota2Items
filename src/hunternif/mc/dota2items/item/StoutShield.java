@@ -8,7 +8,7 @@ public class StoutShield extends Dota2Item {
 
 	public StoutShield(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setDamageBlock(20, 10, 60);
+		setPassiveBuff(new Buff(this).setDamageBlock(20, 10, 60));
 		setPrice(250);
 	}
 

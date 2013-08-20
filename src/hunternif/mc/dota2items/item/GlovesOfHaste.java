@@ -6,7 +6,7 @@ public class GlovesOfHaste extends Dota2Item {
 
 	public GlovesOfHaste(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setAttackSpeed(15);
+		setPassiveBuff(new Buff(this).setAttackSpeed(15));
 		setPrice(500);
 	}
 

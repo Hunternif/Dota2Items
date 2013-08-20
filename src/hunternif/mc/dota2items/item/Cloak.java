@@ -8,7 +8,7 @@ public class Cloak extends Dota2Item {
 
 	public Cloak(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setSpellResistance(15);
+		setPassiveBuff(new Buff(this).setSpellResistance(15));
 		setPrice(550);
 	}
 

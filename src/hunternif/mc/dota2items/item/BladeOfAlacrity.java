@@ -6,7 +6,7 @@ public class BladeOfAlacrity extends Dota2Item {
 
 	public BladeOfAlacrity(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setAgility(10);
+		setPassiveBuff(new Buff(this).setAgility(10));
 		setPrice(1000);
 		weaponDamage = 7;
 	}

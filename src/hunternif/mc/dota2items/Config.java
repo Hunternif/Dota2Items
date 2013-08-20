@@ -1,12 +1,13 @@
 package hunternif.mc.dota2items;
 
 import hunternif.mc.dota2items.block.BlockCycloneContainer;
+import hunternif.mc.dota2items.core.buff.Buff;
+import hunternif.mc.dota2items.inventory.ItemColumn;
 import hunternif.mc.dota2items.item.BandOfElvenskin;
 import hunternif.mc.dota2items.item.BeltOfStrength;
 import hunternif.mc.dota2items.item.BladeOfAlacrity;
 import hunternif.mc.dota2items.item.BladesOfAttack;
 import hunternif.mc.dota2items.item.BlinkDagger;
-import hunternif.mc.dota2items.item.BootsOfSpeed;
 import hunternif.mc.dota2items.item.Bracer;
 import hunternif.mc.dota2items.item.Broadsword;
 import hunternif.mc.dota2items.item.Butterfly;
@@ -41,7 +42,6 @@ import hunternif.mc.dota2items.item.Quarterstaff;
 import hunternif.mc.dota2items.item.QuellingBlade;
 import hunternif.mc.dota2items.item.Reaver;
 import hunternif.mc.dota2items.item.RingOfHealth;
-import hunternif.mc.dota2items.item.RingOfProtection;
 import hunternif.mc.dota2items.item.RingOfRegen;
 import hunternif.mc.dota2items.item.RobeOfTheMagi;
 import hunternif.mc.dota2items.item.SacredRelic;
@@ -55,16 +55,12 @@ import hunternif.mc.dota2items.item.Tango;
 import hunternif.mc.dota2items.item.UltimateOrb;
 import hunternif.mc.dota2items.item.Vanguard;
 import hunternif.mc.dota2items.item.VitalityBooster;
-import hunternif.mc.dota2items.item.VoidStone;
 import hunternif.mc.dota2items.item.WraithBand;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 
 import net.minecraft.block.Block;
@@ -77,28 +73,21 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class Config {
-	private static Map<Class<?>, CfgInfo> map = new HashMap<Class<?>, CfgInfo>();
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	public static @interface Recipe {
-		public Class<?>[] ingredients();
-	}
-	
+	// TODO generalize Config for any mod items and blocks, then extend it for Dota2Items.
 	public static void preLoad(Configuration config) {
 		try {
 			config.load();
 			Field[] fields = Config.class.getFields();
 			for (Field field : fields) {
 				if (field.getType().equals(CfgInfo.class)) {
-					CfgInfo info = (CfgInfo)field.get(null);
+					CfgInfo<?> info = (CfgInfo)field.get(null);
 					int id = info.id;
-					if (info.isBlock) {
+					if (info.isBlock()) {
 						id = config.getBlock(field.getName(), id).getInt();
 					} else {
 						id = config.getItem(field.getName(), id).getInt();
 					}
 					info.id = id;
-					map.put(info.clazz, info);
 				}
 			}
 		} catch(Exception e) {
@@ -110,14 +99,15 @@ public class Config {
 	
 	public static void load() {
 		try {
-			List<Field> itemsWithRecipes = new ArrayList<Field>();
+			List<CfgInfo> itemsWithRecipes = new ArrayList<>();
 			Field[] fields = Config.class.getFields();
 			// Parse fields to instantiate the items:
 			for (Field field : fields) {
 				if (field.getType().equals(CfgInfo.class)) {
 					CfgInfo info = (CfgInfo)field.get(null);
-					info.instance = info.clazz.getConstructor(int.class).newInstance(info.id);
-					if (info.isBlock) {
+					//Unchecked conversion
+					info.instance = info.getType().getConstructor(int.class).newInstance(info.id);
+					if (info.isBlock()) {
 						((Block)info.instance).setUnlocalizedName(field.getName());
 						GameRegistry.registerBlock((Block)info.instance, ItemBlock.class, field.getName(), Dota2Items.ID);
 						LanguageRegistry.addName(info.instance, info.name);
@@ -126,31 +116,35 @@ public class Config {
 						LanguageRegistry.addName(info.instance, info.name);
 						GameRegistry.registerItem((Item)info.instance, field.getName(), Dota2Items.ID);
 						Dota2Items.itemList.add((Item)info.instance);
-					}
-					if (info.clazz.getAnnotation(Recipe.class) != null) {
-						itemsWithRecipes.add(field);
+						
+						// Set Dota 2 Item attributes:
+						if (info.instance instanceof Dota2Item) {
+							Dota2Item item = (Dota2Item) info.instance;
+							item.setPrice(info.price).setWeaponDamage(info.weaponDamage)
+								.setPassiveBuff(info.passiveBuff).setShopColumn(info.shopColumn);
+							if (info.recipe != null && !info.recipe.isEmpty()) {
+								itemsWithRecipes.add(info);
+							}
+						}
 					}
 				}
 			}
 			// Parse fields one more time to set their recipes:
-			for (Field field : itemsWithRecipes) {
-				CfgInfo info = (CfgInfo) field.get(null);
-				Recipe annotation = info.clazz.getAnnotation(Recipe.class);
-				List<Dota2Item> recipeForItem = new ArrayList<Dota2Item>();
+			for (CfgInfo<?> info : itemsWithRecipes) {
+				List<Dota2Item> recipeForShop = new ArrayList<>();
+				List<ItemStack> recipeForCraft = new ArrayList<>();
 				
-				List<ItemStack> recipeForCraft = new ArrayList<ItemStack>();
-				
-				for (Class<?> clazz : annotation.ingredients()) {
-					Dota2Item item = (Dota2Item) forClass(clazz).instance;
-					recipeForItem.add(item);
-					recipeForCraft.add(new ItemStack(item, item.defaultQuantity));
+				for (CfgInfo<?> ingredient : info.recipe) {
+					Dota2Item item = (Dota2Item) ingredient.instance;
+					recipeForShop.add(item);
+					recipeForCraft.add(new ItemStack(item, item.getDefaultQuantity()));
 				}
-				((Dota2Item) info.instance).setRecipe(recipeForItem);
+				((Dota2Item) info.instance).setRecipe(recipeForShop);
 				
 				if (((Dota2Item)info.instance).isRecipeItemRequired()) {
 					recipeForCraft.add(ItemRecipe.forItem(info.getID(), false));
 				}
-				ItemStack craftResult = new ItemStack((Dota2Item)info.instance, ((Dota2Item)info.instance).defaultQuantity);
+				ItemStack craftResult = new ItemStack((Dota2Item)info.instance, ((Dota2Item)info.instance).getDefaultQuantity());
 				GameRegistry.addShapelessRecipe(craftResult, recipeForCraft.toArray());
 				
 				FMLLog.log(Dota2Items.ID, Level.INFO, "Added recipe for Dota 2 item " + info.name);
@@ -160,85 +154,114 @@ public class Config {
 		}
 	}
 	
-	public static CfgInfo dota2Logo = 			new CfgInfo (Dota2Logo.class, 27000, "Dota 2 Logo");
-	public static CfgInfo blinkDagger = 		new CfgInfo (BlinkDagger.class, 27001, "Blink Dagger");
-	public static CfgInfo tango = 				new CfgInfo (Tango.class, 27002, "Tango");
-	public static CfgInfo quellingBlade = 		new CfgInfo (QuellingBlade.class, 27003, "Quelling Blade");
-	public static CfgInfo eulsScepter = 		new CfgInfo (EulsScepter.class, 27004, "Eul's Scepter of Divinity");
-	public static CfgInfo ringOfProtection = 	new CfgInfo (RingOfProtection.class, 27005, "Ring of Protection");
-	public static CfgInfo bootsOfSpeed = 		new CfgInfo (BootsOfSpeed.class, 27006, "Boots of Speed");
-	public static CfgInfo goldCoin = 			new CfgInfo (GoldCoin.class, 27007, "Gold Coin");
-	public static CfgInfo voidStone = 			new CfgInfo (VoidStone.class, 27008, "Void Stone");
-	public static CfgInfo sagesMask = 			new CfgInfo (SagesMask.class, 27009, "Sage's Mask");
-	public static CfgInfo staffOfWizardry = 	new CfgInfo (StaffOfWizardry.class, 27010, "Staff of Wizardry");
-	public static CfgInfo recipe = 				new CfgInfo (ItemRecipe.class, 27011, "Recipe");
-	public static CfgInfo ironBranch = 			new CfgInfo (IronBranch.class, 27012, "Iron Branch");
-	public static CfgInfo gauntletsOfStrength = new CfgInfo (GauntletsOfStrength.class, 27013, "Gauntlets of Strength");
-	public static CfgInfo slippersOfAgility =	new CfgInfo (SlippersOfAgility.class, 27014, "Slippers of Agility");
-	public static CfgInfo mantleOfIntelligence =new CfgInfo (MantleOfIntelligence.class, 27015, "Mantle of Intelligence");
-	public static CfgInfo circlet = 			new CfgInfo (Circlet.class, 27016, "Circlet");
-	public static CfgInfo beltOfStrength = 		new CfgInfo (BeltOfStrength.class, 27017, "Belt of Strength");
-	public static CfgInfo bandOfElvenskin = 	new CfgInfo (BandOfElvenskin.class, 27018, "Band of Elvenskin");
-	public static CfgInfo robeOfTheMagi = 		new CfgInfo (RobeOfTheMagi.class, 27019, "Robe of the Magi");
-	public static CfgInfo ogreClub = 			new CfgInfo (OgreClub.class, 27020, "Ogre Club");
-	public static CfgInfo bladeOfAlacrity = 	new CfgInfo (BladeOfAlacrity.class, 27021, "Blade of Alacrity");
-	public static CfgInfo ultimateOrb = 		new CfgInfo (UltimateOrb.class, 27022, "Ultimate Orb");
-	public static CfgInfo bladesOfAttack = 		new CfgInfo (BladesOfAttack.class, 27023, "Blades of Attack");
-	public static CfgInfo chainmail = 			new CfgInfo (Chainmail.class, 27024, "Chainmail");
-	public static CfgInfo helmOfIronWill = 		new CfgInfo (HelmOfIronWill.class, 27025, "Helm of Iron Will");
-	public static CfgInfo broadsword = 			new CfgInfo (Broadsword.class, 27026, "Broadsword");
-	public static CfgInfo quarterstaff = 		new CfgInfo (Quarterstaff.class, 27027, "Quarterstaff");
-	public static CfgInfo claymore = 			new CfgInfo (Claymore.class, 27028, "Claymore");
-	public static CfgInfo platemail = 			new CfgInfo (Platemail.class, 27029, "Platemail");
-	public static CfgInfo mithrilHammer = 		new CfgInfo (MithrilHammer.class, 27030, "Mithril Hammer");
-	public static CfgInfo stoutShield = 		new CfgInfo (StoutShield.class, 27031, "Stout Shield");
-	public static CfgInfo ringOfRegen = 		new CfgInfo (RingOfRegen.class, 27032, "Ring of Regen");
-	public static CfgInfo glovesOfHaste = 		new CfgInfo (GlovesOfHaste.class, 27033, "Gloves of Haste");
-	public static CfgInfo cloak = 				new CfgInfo (Cloak.class, 27034, "Cloak");
-	public static CfgInfo talismanOfEvasion = 	new CfgInfo (TalismanOfEvasion.class, 27035, "Talisman of Evasion");
-	public static CfgInfo wraithBand = 			new CfgInfo (WraithBand.class, 27036, "Wraith Band");
-	public static CfgInfo nullTalisman = 		new CfgInfo (NullTalisman.class, 27037, "Null Talisman");
-	public static CfgInfo bracer = 				new CfgInfo (Bracer.class, 27038, "Bracer");
-	public static CfgInfo ringOfHealth = 		new CfgInfo (RingOfHealth.class, 27039, "Ring of Health");
-	public static CfgInfo hyperstone = 			new CfgInfo (Hyperstone.class, 27040, "Hyperstone");
-	public static CfgInfo demonEdge = 			new CfgInfo (DemonEdge.class, 27041, "Demon Edge");
-	public static CfgInfo sacredRelic = 		new CfgInfo (SacredRelic.class, 27042, "Sacred Relic");
-	public static CfgInfo reaver = 				new CfgInfo (Reaver.class, 27043, "Reaver");
-	public static CfgInfo eaglesong = 			new CfgInfo (Eaglesong.class, 27044, "Eaglesong");
-	public static CfgInfo mysticStaff = 		new CfgInfo (MysticStaff.class, 27045, "Mystic Staff");
-	public static CfgInfo vitalityBooster =		new CfgInfo (VitalityBooster.class, 27046, "Vitality Booster");
-	public static CfgInfo energyBooster = 		new CfgInfo (EnergyBooster.class, 27047, "Energy Booster");
-	public static CfgInfo pointBooster = 		new CfgInfo (PointBooster.class, 27048, "Point Booster");
-	public static CfgInfo soulBooster = 		new CfgInfo (SoulBooster.class, 27049, "Soul Booster");
-	public static CfgInfo perseverance = 		new CfgInfo (Perseverance.class, 27050, "Perseverance");
-	public static CfgInfo oblivionStaff = 		new CfgInfo (OblivionStaff.class, 27051, "Oblivion Staff");
-	public static CfgInfo vanguard = 			new CfgInfo (Vanguard.class, 27052, "Vanguard");
-	public static CfgInfo butterfly = 			new CfgInfo (Butterfly.class, 27053, "Butterfly");
-	public static CfgInfo divineRapier = 		new CfgInfo (DivineRapier.class, 27054, "Divine Rapier");
+	// Items
+	public static CfgInfo<Dota2Logo> dota2Logo = new CfgInfo (27000, "Dota 2 Logo");
+	public static CfgInfo<BlinkDagger> blinkDagger = new CfgInfo<>(27001, "Blink Dagger")
+			.setPrice(2150).setWeaponDamage(4);
+	public static CfgInfo<Tango> tango = new CfgInfo<>(27002, "Tango").setPrice(30);
+	public static CfgInfo<QuellingBlade> quellingBlade = new CfgInfo<>(27003, "Quelling Blade")
+			.setPrice(225).setWeaponDamage(6)
+			.setPassiveBuff(new Buff("Quelling Blade").setDamagePercent(32, 16).setDoesNotStack());
+	public static CfgInfo<EulsScepter> eulsScepter = new CfgInfo<>(27004, "Eul's Scepter of Divinity")
+			.setPrice(600).setWeaponDamage(2).setShopColumn(ItemColumn.COLUMN_CASTER)
+			.setPassiveBuff( new Buff("Eul's Scepter of Divinity").setMovementSpeed(30).setIntelligence(10).setManaRegenPercent(150) )
+			.setRecipe(staffOfWizardry, sagesMask, voidStone);
+	public static CfgInfo<Dota2Item> ringOfProtection = new CfgInfo<>(27005, "Ring of Protection").setPrice(175).setPassiveBuff(new Buff("Ring of Protection").setArmor(2));
+	public static CfgInfo<Dota2Item> bootsOfSpeed = new CfgInfo<>(27006, "Boots of Speed").setPrice(450).setPassiveBuff(new Buff("Boots of Speed").setMovementSpeed(50));
+	public static CfgInfo<GoldCoin> goldCoin = new CfgInfo<>(27007, "Gold Coin");
+	public static CfgInfo<Dota2Item> voidStone = new CfgInfo<>(27008, "Void Stone")
+			.setPrice(875).setPassiveBuff(new Buff("Void Stone").setManaRegenPercent(100));
+	public static CfgInfo<SagesMask> sagesMask = new CfgInfo<>(27009, "Sage's Mask");
+	public static CfgInfo<StaffOfWizardry> staffOfWizardry = new CfgInfo<>(27010, "Staff of Wizardry");
+	public static CfgInfo<ItemRecipe> recipe = new CfgInfo<>(27011, "Recipe");
+	public static CfgInfo<IronBranch> ironBranch = new CfgInfo<>(27012, "Iron Branch");
+	public static CfgInfo<GauntletsOfStrength> gauntletsOfStrength = new CfgInfo<>(27013, "Gauntlets of Strength");
+	public static CfgInfo<SlippersOfAgility> slippersOfAgility = new CfgInfo<>(27014, "Slippers of Agility");
+	public static CfgInfo<MantleOfIntelligence> mantleOfIntelligence =	new CfgInfo<>(27015, "Mantle of Intelligence");
+	public static CfgInfo<Circlet> circlet = new CfgInfo<>(27016, "Circlet");
+	public static CfgInfo<BeltOfStrength> beltOfStrength = new CfgInfo<>(27017, "Belt of Strength");
+	public static CfgInfo<BandOfElvenskin> bandOfElvenskin = new CfgInfo<>(27018, "Band of Elvenskin");
+	public static CfgInfo<RobeOfTheMagi> robeOfTheMagi = new CfgInfo<>(27019, "Robe of the Magi");
+	public static CfgInfo<OgreClub> ogreClub = new CfgInfo<>(27020, "Ogre Club");
+	public static CfgInfo<BladeOfAlacrity> bladeOfAlacrity = new CfgInfo<>(27021, "Blade of Alacrity");
+	public static CfgInfo<UltimateOrb> ultimateOrb = new CfgInfo<>(27022, "Ultimate Orb");
+	public static CfgInfo<BladesOfAttack> bladesOfAttack = new CfgInfo<>(27023, "Blades of Attack");
+	public static CfgInfo<Chainmail> chainmail = new CfgInfo<>(27024, "Chainmail");
+	public static CfgInfo<HelmOfIronWill> helmOfIronWill = new CfgInfo<>(27025, "Helm of Iron Will");
+	public static CfgInfo<Broadsword> broadsword = new CfgInfo<>(27026, "Broadsword");
+	public static CfgInfo<Quarterstaff> quarterstaff = new CfgInfo<>(27027, "Quarterstaff");
+	public static CfgInfo<Claymore> claymore = new CfgInfo<>(27028, "Claymore");
+	public static CfgInfo<Platemail> platemail = new CfgInfo<>(27029, "Platemail");
+	public static CfgInfo<MithrilHammer> mithrilHammer = new CfgInfo<>(27030, "Mithril Hammer");
+	public static CfgInfo<StoutShield> stoutShield = new CfgInfo<>(27031, "Stout Shield");
+	public static CfgInfo<RingOfRegen> ringOfRegen = new CfgInfo<>(27032, "Ring of Regen");
+	public static CfgInfo<GlovesOfHaste> glovesOfHaste = new CfgInfo<>(27033, "Gloves of Haste");
+	public static CfgInfo<Cloak> cloak = new CfgInfo<>(27034, "Cloak");
+	public static CfgInfo<TalismanOfEvasion> talismanOfEvasion = new CfgInfo<>(27035, "Talisman of Evasion");
+	public static CfgInfo<WraithBand> wraithBand = new CfgInfo<>(27036, "Wraith Band");
+	public static CfgInfo<NullTalisman> nullTalisman = new CfgInfo<>(27037, "Null Talisman");
+	public static CfgInfo<Bracer> bracer = new CfgInfo<>(27038, "Bracer");
+	public static CfgInfo<RingOfHealth> ringOfHealth = new CfgInfo<>(27039, "Ring of Health");
+	public static CfgInfo<Hyperstone> hyperstone = new CfgInfo<>(27040, "Hyperstone");
+	public static CfgInfo<DemonEdge> demonEdge = new CfgInfo<>(27041, "Demon Edge");
+	public static CfgInfo<SacredRelic> sacredRelic = new CfgInfo<>(27042, "Sacred Relic");
+	public static CfgInfo<Reaver> reaver = new CfgInfo<>(27043, "Reaver");
+	public static CfgInfo<Eaglesong> eaglesong = new CfgInfo<>(27044, "Eaglesong");
+	public static CfgInfo<MysticStaff> mysticStaff = new CfgInfo<>(27045, "Mystic Staff");
+	public static CfgInfo<VitalityBooster> vitalityBooster = new CfgInfo<>(27046, "Vitality Booster");
+	public static CfgInfo<EnergyBooster> energyBooster = new CfgInfo<>(27047, "Energy Booster");
+	public static CfgInfo<PointBooster> pointBooster = new CfgInfo<>(27048, "Point Booster");
+	public static CfgInfo<SoulBooster> soulBooster = new CfgInfo<>(27049, "Soul Booster");
+	public static CfgInfo<Perseverance> perseverance = new CfgInfo<>(27050, "Perseverance");
+	public static CfgInfo<OblivionStaff> oblivionStaff = new CfgInfo<>(27051, "Oblivion Staff");
+	public static CfgInfo<Vanguard> vanguard = new CfgInfo<>(27052, "Vanguard");
+	public static CfgInfo<Butterfly> butterfly = new CfgInfo<>(27053, "Butterfly");
+	public static CfgInfo<DivineRapier> divineRapier = new CfgInfo<>(27054, "Divine Rapier");
 	
-	public static CfgInfo cycloneContainer = new CfgInfo(BlockCycloneContainer.class, 2700, "Cyclone Container", true);
+	// Blocks
+	public static CfgInfo<BlockCycloneContainer> cycloneContainer = new CfgInfo<>(2700, "Cyclone Container");
 	
-	public static class CfgInfo {
-		protected Class<?> clazz;
+	public static class CfgInfo<T> {
+		public T instance;
 		protected int id;
 		public String name;
-		public boolean isBlock;
-		public Object instance;
-		public CfgInfo(Class<?> clazz, int defaultID, String englishName, boolean isBlock) {
-			this.clazz = clazz;
+		protected int price;
+		protected List<CfgInfo<?>> recipe;
+		protected Buff passiveBuff;
+		protected float weaponDamage;
+		protected ItemColumn shopColumn;
+		public CfgInfo(int defaultID, String englishName) {
 			this.id = defaultID;
 			this.name = englishName;
-			this.isBlock = isBlock;
-		}
-		public CfgInfo(Class<?> clazz, int defaultID, String englishName) {
-			this(clazz, defaultID, englishName, false);
 		}
 		public int getID() {
-			return isBlock ? ((Block)instance).blockID : ((Item)instance).itemID;
+			return isBlock() ? ((Block)instance).blockID : ((Item)instance).itemID;
 		}
-	}
-
-	public static CfgInfo forClass(Class<?> clazz) {
-		return map.get(clazz);
+		public boolean isBlock() {
+			return Block.class.isAssignableFrom(getType());
+		}
+		public CfgInfo setPrice(int value) {
+			this.price = value;
+			return this;
+		}
+		public CfgInfo setRecipe(CfgInfo<?> ... items) {
+			this.recipe = Arrays.asList(items);
+			return this;
+		}
+		public CfgInfo setPassiveBuff(Buff buff) {
+			this.passiveBuff = buff;
+			return this;
+		}
+		public CfgInfo setWeaponDamage(float value) {
+			this.weaponDamage = value;
+			return this;
+		}
+		public CfgInfo setShopColumn(ItemColumn column) {
+			this.shopColumn = column;
+			return this;
+		}
+		public Class<?> getType() {
+			return this.getClass().getTypeParameters()[0].getClass();
+		}
 	}
 }

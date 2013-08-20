@@ -7,7 +7,7 @@ public class Platemail extends Dota2Item {
 
 	public Platemail(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setArmor(10);
+		setPassiveBuff(new Buff(this).setArmor(10));
 		setPrice(1400);
 	}
 

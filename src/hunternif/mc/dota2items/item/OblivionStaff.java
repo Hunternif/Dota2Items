@@ -8,7 +8,7 @@ public class OblivionStaff extends Dota2Item {
 
 	public OblivionStaff(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setIntelligence(6).setAttackSpeed(10).setDamage(15).setManaRegenPercent(75);
+		setPassiveBuff(new Buff(this).setIntelligence(6).setAttackSpeed(10).setDamage(15).setManaRegenPercent(75));
 		weaponDamage = 2;
 	}
 

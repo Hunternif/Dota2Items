@@ -9,7 +9,7 @@ public class BootsOfSpeed extends Dota2Item {
 
 	public BootsOfSpeed(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setMovementSpeed(50);
+		setPassiveBuff(new Buff(this).setMovementSpeed(50));
 		setPrice(450);
 	}
 

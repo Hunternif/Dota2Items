@@ -27,8 +27,7 @@ public class Tango extends Dota2Item {
 	public Tango(int id) {
 		super(id);
 		setMaxStackSize(64);
-		setPrice(30);
-		defaultQuantity = 3;
+		setDefaultQuantity(3);
 	}
 	
 	@Override

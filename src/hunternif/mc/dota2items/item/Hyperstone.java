@@ -6,7 +6,7 @@ public class Hyperstone extends Dota2Item {
 
 	public Hyperstone(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setAttackSpeed(55);
+		setPassiveBuff(new Buff(this).setAttackSpeed(55));
 		setPrice(2100);
 	}
 

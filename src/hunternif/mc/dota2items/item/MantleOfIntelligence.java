@@ -6,7 +6,7 @@ public class MantleOfIntelligence extends Dota2Item {
 	
 	public MantleOfIntelligence(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setIntelligence(3);
+		setPassiveBuff(new Buff(this).setIntelligence(3));
 		setPrice(150);
 	}
 	

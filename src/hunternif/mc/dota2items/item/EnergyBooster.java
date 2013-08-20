@@ -7,7 +7,7 @@ public class EnergyBooster extends Dota2Item {
 
 	public EnergyBooster(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setMana(250);
+		setPassiveBuff(new Buff(this).setMana(250));
 		setPrice(1000);
 	}
 

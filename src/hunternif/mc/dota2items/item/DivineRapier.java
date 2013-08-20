@@ -10,7 +10,7 @@ public class DivineRapier extends Dota2Item {
 
 	public DivineRapier(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setDamage(300);
+		setPassiveBuff(new Buff(this).setDamage(300));
 		dropsOnDeath = true;
 		weaponDamage = 7;
 	}

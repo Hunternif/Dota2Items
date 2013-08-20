@@ -6,7 +6,7 @@ public class OgreClub extends Dota2Item {
 
 	public OgreClub(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setStrength(10);
+		setPassiveBuff(new Buff(this).setStrength(10));
 		setPrice(1000);
 		weaponDamage = 7;
 	}

@@ -6,7 +6,7 @@ public class BladesOfAttack extends Dota2Item {
 
 	public BladesOfAttack(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setDamage(9);
+		setPassiveBuff(new Buff(this).setDamage(9));
 		setPrice(450);
 		weaponDamage = 5;
 	}

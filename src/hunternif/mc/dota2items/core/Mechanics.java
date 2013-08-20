@@ -289,8 +289,8 @@ public class Mechanics {
 			ItemStack stack = player.inventory.mainInventory[i];
 			if (stack != null && stack.getItem() instanceof Dota2Item) {
 				Dota2Item item = (Dota2Item) stack.getItem();
-				if (item.passiveBuff != null) {
-					stats.addBuff(new BuffInstance(item.passiveBuff, player.entityId, true));
+				if (item.getPassiveBuff() != null) {
+					stats.addBuff(new BuffInstance(item.getPassiveBuff(), player.entityId, true));
 				}
 			}
 		}
@@ -298,7 +298,7 @@ public class Mechanics {
 		ItemStack stack = player.inventory.getItemStack();
 		if (stack != null && stack.getItem() instanceof Dota2Item) {
 			Dota2Item item = (Dota2Item) stack.getItem();
-			if (item.passiveBuff != null) {
+			if (item.getPassiveBuff() != null) {
 				stats.addBuff(new BuffInstance(item.passiveBuff, player.entityId, true));
 			}
 		}

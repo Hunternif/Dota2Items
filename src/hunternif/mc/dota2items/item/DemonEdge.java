@@ -6,7 +6,7 @@ public class DemonEdge extends Dota2Item {
 
 	public DemonEdge(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setDamage(46);
+		setPassiveBuff(new Buff(this).setDamage(46));
 		setPrice(2400);
 		weaponDamage = 7;
 	}

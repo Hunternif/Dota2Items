@@ -21,6 +21,7 @@ public class InventoryShop implements IInventory {
 	private static final int ROWS = 12;
 	
 	private static final ItemStack[][] itemSamples = new ItemStack[COLUMNS][ROWS];
+	//TODO: remove class mapping
 	private static final Map<Class<?>, ItemStack> samplesMap = new HashMap<Class<?>, ItemStack>();
 	
 	public static void populate() {
@@ -191,7 +192,7 @@ public class InventoryShop implements IInventory {
 		for (int i = 0; i < items.length; i++) {
 			Dota2Item item = (Dota2Item)items[i].instance;
 			item.shopColumn = column;
-			ItemStack stack = new ItemStack(item, item.defaultQuantity);
+			ItemStack stack = new ItemStack(item, item.getDefaultQuantity());
 			NBTTagCompound tag = stack.getTagCompound();
 			if (tag == null) {
 				tag = new NBTTagCompound();
@@ -263,7 +264,7 @@ public class InventoryShop implements IInventory {
 	
 	public boolean contains(Dota2Item item) {
 		for (int i = 0; i < columns.length; i++) {
-			if (columns[i] == item.shopColumn.id) {
+			if (columns[i] == item.getShopColumn().id) {
 				return true;
 			}
 		}

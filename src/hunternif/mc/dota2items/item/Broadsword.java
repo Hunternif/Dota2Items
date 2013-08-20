@@ -6,7 +6,7 @@ public class Broadsword extends Dota2Item {
 
 	public Broadsword(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setDamage(18);
+		setPassiveBuff(new Buff(this).setDamage(18));
 		setPrice(1200);
 		weaponDamage = 7;
 	}

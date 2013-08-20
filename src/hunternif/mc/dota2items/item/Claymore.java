@@ -6,7 +6,7 @@ public class Claymore extends Dota2Item {
 
 	public Claymore(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setDamage(21);
+		setPassiveBuff(new Buff(this).setDamage(21));
 		setPrice(1400);
 		weaponDamage = 7;
 	}

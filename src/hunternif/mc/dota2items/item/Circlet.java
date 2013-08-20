@@ -6,7 +6,7 @@ public class Circlet extends Dota2Item {
 
 	public Circlet(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setStrength(2).setAgility(2).setIntelligence(2);
+		setPassiveBuff(new Buff(this).setStrength(2).setAgility(2).setIntelligence(2));
 		setPrice(185);
 	}
 }

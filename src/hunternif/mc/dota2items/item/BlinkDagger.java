@@ -44,8 +44,6 @@ public class BlinkDagger extends CooldownItem {
 		rand = new Random();
 		setCooldown(usualCooldown);
 		setManaCost(75);
-		setPrice(2150);
-		weaponDamage = 4;
 	}
 	
 	@SideOnly(Side.CLIENT)

@@ -1,7 +1,6 @@
 package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.Sound;
-import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.util.DescriptionBuilder.Description;
 import hunternif.mc.dota2items.util.IntVec3;
 import hunternif.mc.dota2items.util.SideHit;
@@ -34,9 +33,6 @@ public class QuellingBlade extends CooldownItem {
 	public QuellingBlade(int id) {
 		super(id);
 		setCooldown(5);
-		passiveBuff = new Buff(this).setDamagePercent(32, 16).setDoesNotStack();
-		setPrice(225);
-		weaponDamage = 6;
 	}
 	
 	@Override

@@ -6,7 +6,7 @@ public class MysticStaff extends Dota2Item {
 
 	public MysticStaff(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setIntelligence(25);
+		setPassiveBuff(new Buff(this).setIntelligence(25));
 		setPrice(2700);
 		weaponDamage = 2;
 	}

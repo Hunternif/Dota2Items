@@ -7,7 +7,7 @@ public class PointBooster extends Dota2Item {
 
 	public PointBooster(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setHealth(200).setMana(150);
+		setPassiveBuff(new Buff(this).setHealth(200).setMana(150));
 		setPrice(1200);
 	}
 

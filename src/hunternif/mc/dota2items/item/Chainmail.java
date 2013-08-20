@@ -7,7 +7,7 @@ public class Chainmail extends Dota2Item {
 
 	public Chainmail(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setArmor(5);
+		setPassiveBuff(new Buff(this).setArmor(5));
 		setPrice(550);
 	}
 

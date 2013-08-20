@@ -6,7 +6,7 @@ public class RingOfRegen extends Dota2Item {
 
 	public RingOfRegen(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setHealthRegen(2);
+		setPassiveBuff(new Buff(this).setHealthRegen(2));
 		setPrice(350);
 	}
 

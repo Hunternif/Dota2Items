@@ -6,7 +6,7 @@ public class GauntletsOfStrength extends Dota2Item {
 	
 	public GauntletsOfStrength(int id) {
 		super(id);
-		passiveBuff = new Buff(this).setStrength(3);
+		setPassiveBuff(new Buff(this).setStrength(3));
 		setPrice(150);
 	}
 	

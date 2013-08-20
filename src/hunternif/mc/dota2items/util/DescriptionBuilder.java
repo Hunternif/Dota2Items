@@ -1,6 +1,5 @@
 package hunternif.mc.dota2items.util;
 
-import hunternif.mc.dota2items.Config;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.item.Dota2Item;
@@ -62,12 +61,12 @@ public class DescriptionBuilder {
 						lines.add(sb.toString());
 					}
 				}
-				Buff buff = ((Dota2Item) item).passiveBuff;
+				Buff buff = ((Dota2Item) item).getPassiveBuff();
 				if (buff != null) {
 					lines.addAll(buffDescription(buff));
 				}
 				((Dota2Item) item).descriptionLines = lines;
-				FMLLog.log(Dota2Items.ID, Level.INFO, "Built description lines for item %s", Config.forClass(item.getClass()).name);
+				FMLLog.log(Dota2Items.ID, Level.INFO, "Built description lines for item %s", item.getLocalizedName(null));
 			}
 		}
 	}

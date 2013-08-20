@@ -102,7 +102,7 @@ public class Config {
 				}
 			}
 		} catch(Exception e) {
-			FMLLog.severe(Dota2Items.ID, Level.SEVERE, "Failed to load config: " + e.toString());
+			FMLLog.log(Dota2Items.ID, Level.SEVERE, "Failed to load config: " + e.toString());
 		} finally {
 			config.save();
 		}

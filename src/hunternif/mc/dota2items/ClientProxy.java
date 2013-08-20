@@ -1,5 +1,7 @@
 package hunternif.mc.dota2items;
 
+import java.util.logging.Level;
+
 import hunternif.mc.dota2items.client.gui.FontRendererContourShadow;
 import hunternif.mc.dota2items.client.gui.FontRendererWithIcons;
 import hunternif.mc.dota2items.client.gui.GuiDotaStats;
@@ -25,6 +27,7 @@ import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
@@ -90,7 +93,7 @@ public class ClientProxy extends CommonProxy {
         	}
         }
         catch (Exception e) {
-            System.err.println("Failed to register one or more sounds.");
+        	FMLLog.log(Dota2Items.ID, Level.WARNING, "Failed to register one or more sounds.");
         }
     }
 }

@@ -5,7 +5,9 @@ import hunternif.mc.dota2items.item.Dota2Item;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -20,6 +22,7 @@ public class InventoryShop implements IInventory {
 	private static final int ROWS = 12;
 	
 	private static final ItemStack[][] itemSamples = new ItemStack[COLUMNS][ROWS];
+	private static final Map<Dota2Item, ItemStack> samplesMap = new HashMap<Dota2Item, ItemStack>();
 	
 	public static void populate() {
 		int[] yPosInColumn = new int[COLUMNS];
@@ -37,9 +40,14 @@ public class InventoryShop implements IInventory {
 				}
 				tag.setBoolean(TAG_IS_SAMPLE, true);
 				itemSamples[xPos][yPos] = stack;
+				samplesMap.put(dota2Item, stack);
 				yPosInColumn[xPos] = yPos + 1;
 			}
 		}
+	}
+	
+	public ItemStack sampleFor(Dota2Item item) {
+		return samplesMap.get(item);
 	}
 	
 	public static InventoryShop newFullShop(int rows) {

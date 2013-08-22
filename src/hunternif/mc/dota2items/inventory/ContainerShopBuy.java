@@ -15,7 +15,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemStack;
 
 public class ContainerShopBuy extends Container {
 	private static final int SHOP_INV_X = 8;
@@ -88,11 +87,11 @@ public class ContainerShopBuy extends Container {
 	}
 	public void setRecipeResultItem(Dota2Item item) {
 		if (item != null) {
-			recipeResultItem = new ItemStack(item, item.getDefaultQuantity());
+			recipeResultItem = invShop.sampleFor(item);
 			if (item.hasRecipe()) {
 				recipeIngredients = new ArrayList<ItemStack>();
 				for (Dota2Item curRecipeItem : item.getRecipe()) {
-					recipeIngredients.add(new ItemStack(curRecipeItem, curRecipeItem.getDefaultQuantity()));
+					recipeIngredients.add(invShop.sampleFor(curRecipeItem));
 				}
 				if (item.isRecipeItemRequired()) {
 					recipeIngredients.add(ItemRecipe.forItem(item, true));

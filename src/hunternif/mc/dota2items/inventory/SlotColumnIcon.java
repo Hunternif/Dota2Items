@@ -4,9 +4,9 @@ import net.minecraft.inventory.Slot;
 
 public class SlotColumnIcon extends Slot {
 
-	public final ItemColumn column;
+	public final Column column;
 	
-	public SlotColumnIcon(ItemColumn column, int x, int y) {
+	public SlotColumnIcon(Column column, int x, int y) {
 		super(null, 0, x, y);
 		this.column = column;
 	}

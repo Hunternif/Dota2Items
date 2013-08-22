@@ -1,6 +1,8 @@
 package hunternif.mc.dota2items;
 
 import hunternif.mc.dota2items.client.gui.GuiHandler;
+import hunternif.mc.dota2items.config.Config;
+import hunternif.mc.dota2items.config.ConfigLoader;
 import hunternif.mc.dota2items.core.Dota2PlayerTracker;
 import hunternif.mc.dota2items.core.Mechanics;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
@@ -55,7 +57,7 @@ public class Dota2Items {
 	public void preInit(FMLPreInitializationEvent event) {
 		proxy.registerSounds();
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-		Config.preLoad(config);
+		ConfigLoader.preLoad(config, Config.class);
 	}
 	
 	@EventHandler
@@ -63,7 +65,7 @@ public class Dota2Items {
 		dota2CreativeTab = new Dota2CreativeTab("dota2ItemTab");
 		LanguageRegistry.instance().addStringLocalization("itemGroup.dota2ItemTab", "en_US", "Dota 2 Items");
 		
-		Config.load();
+		ConfigLoader.load(Config.class);
 		
 		InventoryShop.populate();
 		

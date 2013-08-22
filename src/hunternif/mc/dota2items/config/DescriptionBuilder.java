@@ -1,4 +1,4 @@
-package hunternif.mc.dota2items.util;
+package hunternif.mc.dota2items.config;
 
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.buff.Buff;
@@ -13,7 +13,6 @@ import java.util.logging.Level;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.item.Item;
 import net.minecraft.util.EnumChatFormatting;
 import cpw.mods.fml.common.FMLLog;
 
@@ -25,50 +24,40 @@ public class DescriptionBuilder {
 	public static @interface BuffLineFormat {
 		String value();
 	}
-	/** Same color formatting as in {@link BuffLineFormat} */
-	@Retention(RetentionPolicy.RUNTIME)
-	public static @interface Description {
-		String value();
-	}
 	
-	public static void build() {
-		for (Item item : Dota2Items.itemList) {
-			if (item instanceof Dota2Item) {
-				List<String> lines = new ArrayList<String>();
-				Description desAn = item.getClass().getAnnotation(Description.class);
-				if (desAn != null) {
-					String description = desAn.value();
-					// Build list of strings from the description string
-					description = applyColorFormatting(description.replace("\n", " \n "));
-					FontRenderer font = Minecraft.getMinecraft().fontRenderer;
-					String[] descrWords = description.split(" ");
-					int curLineWidth = 0;
-					StringBuilder sb = new StringBuilder();
-					for (int i = 0; i < descrWords.length; i++) {
-						int wordWidth = font.getStringWidth(descrWords[i]);
-						// At least one word will always fit:
-						if ((curLineWidth > 0 && curLineWidth + wordWidth > Dota2Item.maxTooltipWidth) || descrWords[i].equals("\n")) {
-							curLineWidth = 0;
-							lines.add(sb.toString());
-							sb = new StringBuilder();
-						}
-						if (!descrWords[i].equals("\n")) {
-							curLineWidth += font.getStringWidth(descrWords[i] + " ");
-							sb.append(descrWords[i]).append(" ");
-						}
-					}
-					if (sb.length() > 0) {
-						lines.add(sb.toString());
-					}
+	public static void build(CfgInfo<? extends Dota2Item> config) {
+		List<String> lines = new ArrayList<String>();
+		Dota2Item item = (Dota2Item) config.instance;
+		if (config.description != null && !config.description.isEmpty()) {
+			// Build list of strings from the description string
+			String description = applyColorFormatting(config.description.replace("\n", " \n "));
+			FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+			String[] descrWords = description.split(" ");
+			int curLineWidth = 0;
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < descrWords.length; i++) {
+				int wordWidth = font.getStringWidth(descrWords[i]);
+				// At least one word will always fit:
+				if ((curLineWidth > 0 && curLineWidth + wordWidth > Dota2Item.maxTooltipWidth) || descrWords[i].equals("\n")) {
+					curLineWidth = 0;
+					lines.add(sb.toString());
+					sb = new StringBuilder();
 				}
-				Buff buff = ((Dota2Item) item).getPassiveBuff();
-				if (buff != null) {
-					lines.addAll(buffDescription(buff));
+				if (!descrWords[i].equals("\n")) {
+					curLineWidth += font.getStringWidth(descrWords[i] + " ");
+					sb.append(descrWords[i]).append(" ");
 				}
-				((Dota2Item) item).descriptionLines = lines;
-				FMLLog.log(Dota2Items.ID, Level.INFO, "Built description lines for item %s", item.getLocalizedName(null));
+			}
+			if (sb.length() > 0) {
+				lines.add(sb.toString());
 			}
 		}
+		Buff buff = config.passiveBuff;
+		if (buff != null) {
+			lines.addAll(buffDescription(buff));
+		}
+		item.descriptionLines = lines;
+		FMLLog.log(Dota2Items.ID, Level.FINE, "Built description lines for item %s", item.getLocalizedName(null));
 	}
 	
 	public static List<String> buffDescription(Buff buff) {

@@ -1,6 +1,6 @@
 package hunternif.mc.dota2items.inventory;
 
-import hunternif.mc.dota2items.Config;
+import hunternif.mc.dota2items.config.Config;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

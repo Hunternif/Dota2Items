@@ -1,14 +1,14 @@
 package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.ClientProxy;
-import hunternif.mc.dota2items.Config;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.client.gui.ColorHelper;
+import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
+import hunternif.mc.dota2items.inventory.Column;
 import hunternif.mc.dota2items.inventory.InventoryShop;
-import hunternif.mc.dota2items.inventory.ItemColumn;
 
 import java.util.List;
 
@@ -31,10 +31,10 @@ import com.google.common.collect.Multimap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class Dota2Item extends Item {
+public class Dota2Item extends Item {
 	private boolean dropsOnDeath = false;
 	private Buff passiveBuff;
-	private ItemColumn shopColumn;
+	private Column shopColumn;
 	private int defaultQuantity = 1;
 	private float weaponDamage = 0;
 	
@@ -90,11 +90,11 @@ public abstract class Dota2Item extends Item {
 		return this.dropsOnDeath;
 	}
 	
-	public Dota2Item setShopColumn(ItemColumn column) {
+	public Dota2Item setShopColumn(Column column) {
 		this.shopColumn = column;
 		return this;
 	}
-	public ItemColumn getShopColumn() {
+	public Column getShopColumn() {
 		return this.shopColumn;
 	}
 	

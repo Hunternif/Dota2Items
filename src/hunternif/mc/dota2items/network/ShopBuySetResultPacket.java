@@ -1,6 +1,6 @@
 package hunternif.mc.dota2items.network;
 
-import hunternif.mc.dota2items.Config;
+import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.inventory.ContainerShopBuy;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.item.ItemRecipe;

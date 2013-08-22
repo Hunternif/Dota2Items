@@ -1,7 +1,5 @@
 package hunternif.mc.dota2items;
 
-import java.util.logging.Level;
-
 import hunternif.mc.dota2items.client.gui.FontRendererContourShadow;
 import hunternif.mc.dota2items.client.gui.FontRendererWithIcons;
 import hunternif.mc.dota2items.client.gui.GuiDotaStats;
@@ -15,7 +13,9 @@ import hunternif.mc.dota2items.core.ClientTickHandler;
 import hunternif.mc.dota2items.core.ServerTickHandler;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
 import hunternif.mc.dota2items.item.CooldownItem;
-import hunternif.mc.dota2items.util.DescriptionBuilder;
+
+import java.util.logging.Level;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.ReloadableResourceManager;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
@@ -59,8 +59,6 @@ public class ClientProxy extends CommonProxy {
 	
 	@Override
 	public void registerRenderers() {
-		DescriptionBuilder.build();
-		
 		MinecraftForge.EVENT_BUS.register(cooldownItemRenderer);
 		MinecraftForge.EVENT_BUS.register(guiManaBar);
 		MinecraftForge.EVENT_BUS.register(guiHpAndMana);

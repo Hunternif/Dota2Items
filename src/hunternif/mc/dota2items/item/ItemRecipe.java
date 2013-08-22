@@ -1,8 +1,8 @@
 package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.ClientProxy;
-import hunternif.mc.dota2items.Config;
 import hunternif.mc.dota2items.Dota2Items;
+import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.inventory.InventoryShop;
 
 import java.util.List;

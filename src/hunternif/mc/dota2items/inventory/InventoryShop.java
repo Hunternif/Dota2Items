@@ -1,16 +1,15 @@
 package hunternif.mc.dota2items.inventory;
 
-import hunternif.mc.dota2items.Config;
-import hunternif.mc.dota2items.Config.CfgInfo;
+import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.item.Dota2Item;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -21,205 +20,41 @@ public class InventoryShop implements IInventory {
 	private static final int ROWS = 12;
 	
 	private static final ItemStack[][] itemSamples = new ItemStack[COLUMNS][ROWS];
-	//TODO: remove class mapping
-	private static final Map<Class<?>, ItemStack> samplesMap = new HashMap<Class<?>, ItemStack>();
 	
 	public static void populate() {
-		populateColumn(
-				ItemColumn.COLUMN_CONSUMABLES,
-//				Config.clarity,
-				Config.tango
-//				Config.healingSalve,
-//				Config.smokeOfDeceit,
-//				Config.townPortal,
-//				Config.dustOfAppearance,
-//				Config.animalCourier,
-//				Config.flyingCourier,
-//				Config.observerWard,
-//				Config.sentryWard,
-//				Config.bottle
-		);
-		populateColumn(
-				ItemColumn.COLUMN_ATTRIBUTES,
-				Config.ironBranch,
-				Config.gauntletsOfStrength,
-				Config.slippersOfAgility,
-				Config.mantleOfIntelligence,
-				Config.circlet,
-				Config.beltOfStrength,
-				Config.bandOfElvenskin,
-				Config.robeOfTheMagi,
-				Config.ogreClub,
-				Config.bladeOfAlacrity,
-				Config.staffOfWizardry,
-				Config.ultimateOrb
-		);
-		populateColumn(
-				ItemColumn.COLUMN_ARMAMENTS,
-				Config.ringOfProtection,
-				Config.quellingBlade,
-				Config.stoutShield,
-				Config.bladesOfAttack,
-				Config.chainmail,
-				Config.helmOfIronWill,
-				Config.broadsword,
-				Config.quarterstaff,
-				Config.claymore,
-//				Config.javelin,
-				Config.platemail,
-				Config.mithrilHammer
-		);
-		
-		populateColumn(
-				ItemColumn.COLUMN_ARCANE,
-//				Config.magicStick,
-				Config.sagesMask,
-				Config.ringOfRegen,
-				Config.bootsOfSpeed,
-				Config.glovesOfHaste,
-				Config.cloak,
-//				Config.gemOfTrueSight,
-//				Config.morbidMask,
-//				Config.ghostScepter,
-				Config.talismanOfEvasion,
-				Config.blinkDagger
-//				Config.shadowAmulet
-		);
-		populateColumn(
-				ItemColumn.COLUMN_COMMON,
-				Config.wraithBand,
-				Config.nullTalisman,
-//				Config.magicWand,
-				Config.bracer,
-//				Config.poorMansShield,
-//				Config.soulRing,
-//				Config.phaseBoots,
-//				Config.powerTreads,
-				Config.oblivionStaff,
-				Config.perseverance
-//				Config.handOfMidas,
-//				Config.bootsOfTravel
-		);
-//		populateColumn(
-//				ItemColumn.COLUMN_SUPPORT,
-//				Config.ringOfBasilius,
-//				Config.headdress,
-//				Config.buckler,
-//				Config.urnOfShadows,
-//				Config.ringOfAquila,
-//				Config.tranquilBoots,
-//				Config.medallionOfCourage,
-//				Config.arcaneBoots,
-//				Config.drumOfEndurance,
-//				Config.vladmirsOffering,
-//				Config.mekansm,
-//				Config.pipeOfInsight
-//		);
-		populateColumn(
-				ItemColumn.COLUMN_CASTER,
-//				Config.forceStaff,
-//				Config.necronomicon,
-				Config.eulsScepter
-//				Config.dagon,
-//				Config.veilOfDiscord,
-//				Config.rodOfAtos,
-//				Config.AghanimsScepter,
-//				Config.orchidMalevolence,
-//				Config.refresherOrb,
-//				Config.scytheOfVyse
-		);
-		populateColumn(
-				ItemColumn.COLUMN_WEAPONS,
-//				Config.crystalys,
-//				Config.armletOfMordiggian,
-//				Config.skullBasher,
-//				Config.shadowBlade,
-//				Config.battleFury,
-//				Config.etherealBlade,
-//				Config.radiance,
-//				Config.monkeyKingBar,
-//				Config.daedalus,
-				Config.butterfly,
-				Config.divineRapier
-//				Config.abyssalBlade
-		);
-		populateColumn(
-				ItemColumn.COLUMN_ARMOR,
-//				Config.hoodOfDefiance,
-//				Config.bladeMail,
-				Config.vanguard,
-				Config.soulBooster
-//				Config.blackKingBar,
-//				Config.shivasGuard,
-//				Config.mantaStyle,
-//				Config.bloodstone,
-//				Config.linkensSphere,
-//				Config.assaultCuirass,
-//				Config.heartOfTarrasque
-		);
-//		populateColumn(
-//				ItemColumn.COLUMN_ARTIFACTS,
-//				Config.helmOfTheDominator,
-//				Config.maskOfMadness,
-//				Config.sange,
-//				Config.yasha,
-//				Config.maelstrom,
-//				Config.diffusalBlade,
-//				Config.desolator,
-//				Config.heavensHalberd,
-//				Config.sangeAndYasha,
-//				Config.mjollnir,
-//				Config.eyeOfSkadi,
-//				Config.satanic
-//		);
-		populateColumn(
-				ItemColumn.COLUMN_SECRET_SHOP,
-//				Config.orbOfVenom,
-				Config.ringOfHealth,
-				Config.voidStone,
-				Config.energyBooster,
-				Config.vitalityBooster,
-				Config.pointBooster,
-				Config.hyperstone,
-				Config.demonEdge,
-				Config.mysticStaff,
-				Config.reaver,
-				Config.eaglesong,
-				Config.sacredRelic
-		);
-	}
-	private static void populateColumn(ItemColumn column, CfgInfo... items) {
-		for (int i = 0; i < items.length; i++) {
-			Dota2Item item = (Dota2Item)items[i].instance;
-			item.shopColumn = column;
-			ItemStack stack = new ItemStack(item, item.getDefaultQuantity());
-			NBTTagCompound tag = stack.getTagCompound();
-			if (tag == null) {
-				tag = new NBTTagCompound();
-				stack.setTagCompound(tag);
+		int[] yPosInColumn = new int[COLUMNS];
+		Arrays.fill(yPosInColumn, 0);
+		for (Item item : Dota2Items.itemList) {
+			if (item instanceof Dota2Item) {
+				Dota2Item dota2Item = (Dota2Item) item;
+				int xPos = ((Dota2Item) item).getShopColumn().id;
+				int yPos = yPosInColumn[xPos];
+				ItemStack stack = new ItemStack(dota2Item, dota2Item.getDefaultQuantity());
+				NBTTagCompound tag = stack.getTagCompound();
+				if (tag == null) {
+					tag = new NBTTagCompound();
+					stack.setTagCompound(tag);
+				}
+				tag.setBoolean(TAG_IS_SAMPLE, true);
+				itemSamples[xPos][yPos] = stack;
+				yPosInColumn[xPos] = yPos + 1;
 			}
-			tag.setBoolean(TAG_IS_SAMPLE, true);
-			itemSamples[column.id][i] = stack;
-			samplesMap.put(stack.getItem().getClass(), stack);
 		}
-	}
-	public static ItemStack sampleFor(Class<?> clazz) {
-		return samplesMap.get(clazz);
 	}
 	
 	public static InventoryShop newFullShop(int rows) {
 		return new InventoryShop(new int[]{
-			ItemColumn.COLUMN_CONSUMABLES.id,
-			ItemColumn.COLUMN_ATTRIBUTES.id,
-			ItemColumn.COLUMN_ARMAMENTS.id,
-			ItemColumn.COLUMN_ARCANE.id,
-			ItemColumn.COLUMN_COMMON.id,
-			ItemColumn.COLUMN_SUPPORT.id,
-			ItemColumn.COLUMN_CASTER.id,
-			ItemColumn.COLUMN_WEAPONS.id,
-			ItemColumn.COLUMN_ARMOR.id,
-			ItemColumn.COLUMN_ARTIFACTS.id,
-			ItemColumn.COLUMN_SECRET_SHOP.id
+			Column.CONSUMABLES.id,
+			Column.ATTRIBUTES.id,
+			Column.ARMAMENTS.id,
+			Column.ARCANE.id,
+			Column.COMMON.id,
+			Column.SUPPORT.id,
+			Column.CASTER.id,
+			Column.WEAPONS.id,
+			Column.ARMOR.id,
+			Column.ARTIFACTS.id,
+			Column.SECRET_SHOP.id
 		}, rows);
 	}
 	

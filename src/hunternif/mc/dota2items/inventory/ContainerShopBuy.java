@@ -1,7 +1,7 @@
 package hunternif.mc.dota2items.inventory;
 
-import hunternif.mc.dota2items.Config;
 import hunternif.mc.dota2items.Dota2Items;
+import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.item.ItemRecipe;
@@ -14,6 +14,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemStack;
 
 public class ContainerShopBuy extends Container {
@@ -87,11 +88,11 @@ public class ContainerShopBuy extends Container {
 	}
 	public void setRecipeResultItem(Dota2Item item) {
 		if (item != null) {
-			recipeResultItem = InventoryShop.sampleFor(item.getClass());
+			recipeResultItem = new ItemStack(item, item.getDefaultQuantity());
 			if (item.hasRecipe()) {
 				recipeIngredients = new ArrayList<ItemStack>();
 				for (Dota2Item curRecipeItem : item.getRecipe()) {
-					recipeIngredients.add(InventoryShop.sampleFor(curRecipeItem.getClass()));
+					recipeIngredients.add(new ItemStack(curRecipeItem, curRecipeItem.getDefaultQuantity()));
 				}
 				if (item.isRecipeItemRequired()) {
 					recipeIngredients.add(ItemRecipe.forItem(item, true));

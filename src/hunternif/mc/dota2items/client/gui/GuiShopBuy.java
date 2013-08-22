@@ -1,12 +1,12 @@
 package hunternif.mc.dota2items.client.gui;
 
 import hunternif.mc.dota2items.ClientProxy;
-import hunternif.mc.dota2items.Config;
 import hunternif.mc.dota2items.Dota2Items;
+import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.EntityStats;
+import hunternif.mc.dota2items.inventory.Column;
 import hunternif.mc.dota2items.inventory.ContainerShopBuy;
 import hunternif.mc.dota2items.inventory.InventoryShop;
-import hunternif.mc.dota2items.inventory.ItemColumn;
 import hunternif.mc.dota2items.inventory.SlotColumnIcon;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.network.ShopBuyScrollPacket;
@@ -69,7 +69,7 @@ public class GuiShopBuy extends GuiShopBase {
 		this.ySize = HEIGHT;
 		this.curTab = ShopTab.BUY;
 		for (int i = 0; i < COLUMNS; i++) {
-			columnIcons[i] = new SlotColumnIcon(ItemColumn.forId(i), COLUMN_ICONS_X+18*i+1, COLUMN_ICONS_Y+1);
+			columnIcons[i] = new SlotColumnIcon(Column.forId(i), COLUMN_ICONS_X+18*i+1, COLUMN_ICONS_Y+1);
 		}
 		//TODO make buttons to traverse full recipe hierarchy up and down.
 	}

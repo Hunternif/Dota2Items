@@ -1,59 +1,59 @@
 package hunternif.mc.dota2items.client.gui;
 
-import hunternif.mc.dota2items.inventory.ItemColumn;
+import hunternif.mc.dota2items.inventory.Column;
 import net.minecraft.util.EnumChatFormatting;
 
 public class ColorHelper {
-	public static int colourForColumn(ItemColumn column) {
+	public static int colourForColumn(Column column) {
 		if (column == null) {
 			return 0xffffff;
 		}
 		switch (column) {
-		case COLUMN_CONSUMABLES:
+		case CONSUMABLES:
 			return 0x1D80E7;
-		case COLUMN_ATTRIBUTES:
-		case COLUMN_ARMAMENTS:
-		case COLUMN_ARCANE:
+		case ATTRIBUTES:
+		case ARMAMENTS:
+		case ARCANE:
 			return 0xffffff;
-		case COLUMN_COMMON:
+		case COMMON:
 			return 0x2BAB01;
-		case COLUMN_SUPPORT:
-		case COLUMN_CASTER:
+		case SUPPORT:
+		case CASTER:
 			return 0x1A87F9;
-		case COLUMN_WEAPONS:
-		case COLUMN_ARMOR:
+		case WEAPONS:
+		case ARMOR:
 			return 0xB812F9;
-		case COLUMN_ARTIFACTS:
+		case ARTIFACTS:
 			return 0xE29B01;
-		case COLUMN_SECRET_SHOP:
+		case SECRET_SHOP:
 			return 0xffffff;
 		default:
 			return -1;
 		}
 	}
 	
-	public static EnumChatFormatting prefixForColumn(ItemColumn column) {
+	public static EnumChatFormatting prefixForColumn(Column column) {
 		if (column == null) {
 			return EnumChatFormatting.WHITE;
 		}
 		switch (column) {
-		case COLUMN_CONSUMABLES:
+		case CONSUMABLES:
 			return EnumChatFormatting.BLUE;
-		case COLUMN_ATTRIBUTES:
-		case COLUMN_ARMAMENTS:
-		case COLUMN_ARCANE:
+		case ATTRIBUTES:
+		case ARMAMENTS:
+		case ARCANE:
 			return EnumChatFormatting.WHITE;
-		case COLUMN_COMMON:
+		case COMMON:
 			return EnumChatFormatting.DARK_GREEN;
-		case COLUMN_SUPPORT:
-		case COLUMN_CASTER:
+		case SUPPORT:
+		case CASTER:
 			return EnumChatFormatting.BLUE;
-		case COLUMN_WEAPONS:
-		case COLUMN_ARMOR:
+		case WEAPONS:
+		case ARMOR:
 			return EnumChatFormatting.DARK_PURPLE;
-		case COLUMN_ARTIFACTS:
+		case ARTIFACTS:
 			return EnumChatFormatting.GOLD;
-		case COLUMN_SECRET_SHOP:
+		case SECRET_SHOP:
 		default:
 			return EnumChatFormatting.WHITE;
 		}

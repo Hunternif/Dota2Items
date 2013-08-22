@@ -1,15 +1,14 @@
 package hunternif.mc.dota2items.item;
 
-import hunternif.mc.dota2items.Config;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
+import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.network.BuffPacket;
 import hunternif.mc.dota2items.network.EntityMovePacket;
 import hunternif.mc.dota2items.tileentity.TileEntityCyclone;
-import hunternif.mc.dota2items.util.DescriptionBuilder.Description;
 
 import java.util.List;
 
@@ -22,8 +21,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
-@Description("Active: Cyclone - Target unit is swept up in a cyclone for 2.5 seconds, " +
-		"and is invulnerable.\nFlat movement speed bonuses from multiple Eul's Scepters do not stack.")
 public class EulsScepter extends CooldownItem {
 
 	public EulsScepter(int id) {

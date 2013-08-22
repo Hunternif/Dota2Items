@@ -1,8 +1,8 @@
 package hunternif.mc.dota2items.core;
 
-import hunternif.mc.dota2items.Config;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
+import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.network.EntityStatsSyncPacket;
@@ -93,7 +93,7 @@ public class Mechanics {
 			ItemStack stack = entityItem.getEntityItem();
 			if (stack.getItem() instanceof Dota2Item) {
 				Dota2Item dota2Item = (Dota2Item) stack.getItem();
-				if (!dota2Item.dropsOnDeath) {
+				if (!dota2Item.getDropsOnDeath()) {
 					iter.remove();
 					List<ItemStack> list = Dota2Items.playerTracker.retainedItems.get(event.entityPlayer);
 					if (list == null) {
@@ -128,9 +128,13 @@ public class Mechanics {
 	
 	@ForgeSubscribe
 	public void onLivingHurt(LivingHurtEvent event) {
-		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(event.entity));
 		float dotaDamage = event.ammount * DOTA_VS_MINECRAFT_DAMAGE;
+		if (dotaDamage == Float.POSITIVE_INFINITY) {
+			// This much damage can only come from a "kill" command, so disregard all calculations:
+			return;
+		}
 		
+		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(event.entity));
 		// Check if the target entity is invulnerable or if damage is magical and target is magic immune
 		EntityStats targetStats = entityStats.get(event.entityLiving);
 		if (targetStats != null) {
@@ -299,7 +303,7 @@ public class Mechanics {
 		if (stack != null && stack.getItem() instanceof Dota2Item) {
 			Dota2Item item = (Dota2Item) stack.getItem();
 			if (item.getPassiveBuff() != null) {
-				stats.addBuff(new BuffInstance(item.passiveBuff, player.entityId, true));
+				stats.addBuff(new BuffInstance(item.getPassiveBuff(), player.entityId, true));
 			}
 		}
 		//NOTE for now movement speed bonus will only be applied to players, not to mobs:

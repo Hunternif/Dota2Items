@@ -1,7 +1,6 @@
 package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.Sound;
-import hunternif.mc.dota2items.util.DescriptionBuilder.Description;
 import hunternif.mc.dota2items.util.IntVec3;
 import hunternif.mc.dota2items.util.SideHit;
 import hunternif.mc.dota2items.util.TreeUtil;
@@ -12,8 +11,6 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 
-@Description("Use: Eat Tree - Consume a tree to restore HP over time. Comes with 3 charges.\n" +
-		"[Duration:] {16}\n[Health restored:] {115}")
 public class Tango extends Dota2Item {
 
 	public static final int duration = 20*16; //16 seconds

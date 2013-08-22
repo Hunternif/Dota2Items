@@ -6,7 +6,6 @@ import hunternif.mc.dota2items.effect.Effect;
 import hunternif.mc.dota2items.effect.EffectInstance;
 import hunternif.mc.dota2items.network.EffectPacket;
 import hunternif.mc.dota2items.util.BlockUtil;
-import hunternif.mc.dota2items.util.DescriptionBuilder.Description;
 import hunternif.mc.dota2items.util.SideHit;
 
 import java.util.Random;
@@ -28,8 +27,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Description("Active: Blink - Teleport to a target point up to 1200 units away. " +
-		"If damage is taken from an enemy hero, Blink Dagger cannot be used for 3 seconds.")
 public class BlinkDagger extends CooldownItem {
 
 	public static final double maxDistance = 30;

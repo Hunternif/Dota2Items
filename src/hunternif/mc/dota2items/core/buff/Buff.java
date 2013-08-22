@@ -1,7 +1,7 @@
 package hunternif.mc.dota2items.core.buff;
 
+import hunternif.mc.dota2items.config.DescriptionBuilder.BuffLineFormat;
 import hunternif.mc.dota2items.item.Dota2Item;
-import hunternif.mc.dota2items.util.DescriptionBuilder.BuffLineFormat;
 
 public class Buff {
 	public final String name;
@@ -33,7 +33,7 @@ public class Buff {
 	public int damage = 0;
 	public int damagePercentMelee = 0;
 	public int damagePercentRanged = 0;
-	
+
 	@BuffLineFormat("[Melee Block:] {%d}")
 	public int damageBlockMelee = 0;
 	@BuffLineFormat("[Ranged Block:] {%d}")

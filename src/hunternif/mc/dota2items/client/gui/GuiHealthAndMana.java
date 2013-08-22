@@ -39,7 +39,7 @@ public class GuiHealthAndMana {
 		String hp = stats.getHealth(mc.thePlayer) + "/" + stats.getMaxHealth();
 		int strlen = fontRenderer.getStringWidth(hp);
 		fontRenderer.drawStringWithShadow(hp, left - strlen - 2, top, 0xFF1313);
-		if (Mechanics.shouldHeal(mc.thePlayer)) {
+		if (Mechanics.shouldHeal(mc.thePlayer, stats)) {
 			String hpRegen = String.format("+%.2f", stats.getHealthRegen());
 			fontRenderer.drawStringWithShadow(hpRegen, left + HP_BAR_WIDTH + 1, top, 0xFF6C6C);
 		}

@@ -67,8 +67,8 @@ public class Mechanics {
 	
 	private static final int SYNC_STATS_INTERVAL = 10;
 	
-	private Map<EntityLivingBase, EntityStats> clientEntityStats = new ConcurrentHashMap<>();
-	private Map<EntityLivingBase, EntityStats> serverEntityStats = new ConcurrentHashMap<>();
+	private Map<EntityLivingBase, EntityStats> clientEntityStats = new ConcurrentHashMap<EntityLivingBase, EntityStats>();
+	private Map<EntityLivingBase, EntityStats> serverEntityStats = new ConcurrentHashMap<EntityLivingBase, EntityStats>();
 	private Map<EntityLivingBase, EntityStats> getEntityStatsMap(Side side) {
 		return side.isClient() ? clientEntityStats : serverEntityStats;
 	}
@@ -247,12 +247,11 @@ public class Mechanics {
 					stats.removeBuff(buffInst);
 				}
 			}
-			updateMoveSpeed(entity);
+			updateMoveSpeed(entity, stats);
 		}
 	}
 	
-	private void updateMoveSpeed(EntityLivingBase entity) {
-		EntityStats stats = getEntityStats(entity);
+	private void updateMoveSpeed(EntityLivingBase entity, EntityStats stats) {
 		AttributeInstance moveSpeedAttribute = entity.func_110148_a(SharedMonsterAttributes.field_111263_d);
 		double newMoveSpeed = stats.getMovementSpeed();
 		double oldMoveSpeed = moveSpeedAttribute.func_111126_e();
@@ -417,7 +416,7 @@ public class Mechanics {
 	}
 	
 	private static void regenHealthManaAndGold(EntityLivingBase entity, EntityStats stats) {
-		if (shouldHeal(entity)) {
+		if (shouldHeal(entity, stats)) {
 			// func_110138_aP = "getMaxHealth"
 			float halfHeartEquivalent = (float)stats.getMaxHealth() / (float)entity.func_110138_aP();
 			float partialHealth = stats.partialHalfHeart + stats.getHealthRegen() /20f / halfHeartEquivalent;
@@ -437,8 +436,10 @@ public class Mechanics {
 		stats.addGold(GOLD_PER_SECOND/20f);
 	}
 	
-	public static boolean shouldHeal(EntityLivingBase entity) {
-		boolean shouldHeal = entity.func_110143_aJ() > 0 && entity.func_110143_aJ() < entity.func_110138_aP();
+	public static boolean shouldHeal(EntityLivingBase entity, EntityStats stats) {
+		int health = stats.getHealth(entity);
+		int maxHealth = stats.getMaxHealth();
+		boolean shouldHeal = health > 0 && health < maxHealth;
 		if (entity instanceof EntityPlayer) {
 			shouldHeal &= ((EntityPlayer)entity).getFoodStats().getFoodLevel() >= FOOD_THRESHOLD_FOR_HEAL;
 		}

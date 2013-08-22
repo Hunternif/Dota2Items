@@ -48,7 +48,7 @@ public class ConfigLoader {
 	
 	public static void load(Class config) {
 		try {
-			List<CfgInfo> itemsWithRecipes = new ArrayList<>();
+			List<CfgInfo> itemsWithRecipes = new ArrayList<CfgInfo>();
 			Field[] fields = config.getFields();
 			// Parse fields to instantiate the items:
 			for (Field field : fields) {
@@ -85,8 +85,8 @@ public class ConfigLoader {
 			}
 			// Parse fields one more time to set their recipes:
 			for (CfgInfo<?> info : itemsWithRecipes) {
-				List<Dota2Item> recipeForShop = new ArrayList<>();
-				List<ItemStack> recipeForCraft = new ArrayList<>();
+				List<Dota2Item> recipeForShop = new ArrayList<Dota2Item>();
+				List<ItemStack> recipeForCraft = new ArrayList<ItemStack>();
 				
 				for (CfgInfo<?> ingredient : info.recipe) {
 					Dota2Item item = (Dota2Item) ingredient.instance;

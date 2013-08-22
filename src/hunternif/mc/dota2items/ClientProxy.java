@@ -9,11 +9,16 @@ import hunternif.mc.dota2items.client.gui.GuiManaBar;
 import hunternif.mc.dota2items.client.gui.IconInText;
 import hunternif.mc.dota2items.client.render.CooldownItemRenderer;
 import hunternif.mc.dota2items.client.render.RenderShopkeeper;
+import hunternif.mc.dota2items.config.CfgInfo;
+import hunternif.mc.dota2items.config.Config;
+import hunternif.mc.dota2items.config.DescriptionBuilder;
 import hunternif.mc.dota2items.core.ClientTickHandler;
 import hunternif.mc.dota2items.core.ServerTickHandler;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
 import hunternif.mc.dota2items.item.CooldownItem;
+import hunternif.mc.dota2items.item.Dota2Item;
 
+import java.lang.reflect.Field;
 import java.util.logging.Level;
 
 import net.minecraft.client.Minecraft;
@@ -59,6 +64,21 @@ public class ClientProxy extends CommonProxy {
 	
 	@Override
 	public void registerRenderers() {
+		// Build item description
+		try {
+			Field[] fields = Config.class.getFields();
+			for (Field field : fields) {
+				if (field.getType().equals(CfgInfo.class)) {
+					CfgInfo<?> info = (CfgInfo)field.get(null);
+					if (info.instance instanceof Dota2Item) {
+						DescriptionBuilder.build((CfgInfo<? extends Dota2Item>)info);
+					}
+				}
+			}
+		} catch (Exception e) {
+			FMLLog.log(Dota2Items.ID, Level.WARNING, "Failed to build item description: " + e.toString());
+		}
+		
 		MinecraftForge.EVENT_BUS.register(cooldownItemRenderer);
 		MinecraftForge.EVENT_BUS.register(guiManaBar);
 		MinecraftForge.EVENT_BUS.register(guiHpAndMana);

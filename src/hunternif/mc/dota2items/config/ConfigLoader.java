@@ -75,7 +75,6 @@ public class ConfigLoader {
 							if (info.recipe != null && !info.recipe.isEmpty()) {
 								itemsWithRecipes.add(info);
 							}
-							DescriptionBuilder.build(info);
 							if (info.isFull3D) {
 								item.setFull3D();
 							}

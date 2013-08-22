@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
 public class EntityStats implements IExtendedEntityProperties {
-	private static final float MINECRAFT_PLAYER_MOVE_SPEED = 0.1f;
+	public static final float MINECRAFT_PLAYER_MOVE_SPEED = 0.1f;
 	public static final int MAX_MOVE_SPEED = 522;
 	public static final int MAX_HP_PER_STR = 19;
 	public static final float HP_REGEN_PER_STR = 0.03f;

@@ -13,18 +13,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeInstance;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -45,6 +48,9 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 
 public class Mechanics {
+	/** I have no idea how to generate these properly. */
+	private static final UUID uuid = UUID.fromString("92f7a640-0ac7-11e3-8ffd-0800200c9a66");
+	
 	private static final String[] walkSpeedObfFields = {"walkSpeed", "g", "field_75097_g"};
 	private static final String[] timeSinceIgnitedObfFields = {"timeSinceIgnited", "d", "field_70833_d"};
 	
@@ -241,6 +247,27 @@ public class Mechanics {
 					stats.removeBuff(buffInst);
 				}
 			}
+			updateMoveSpeed(entity);
+		}
+	}
+	
+	private void updateMoveSpeed(EntityLivingBase entity) {
+		EntityStats stats = getEntityStats(entity);
+		AttributeInstance moveSpeedAttribute = entity.func_110148_a(SharedMonsterAttributes.field_111263_d);
+		double newMoveSpeed = stats.getMovementSpeed();
+		double oldMoveSpeed = moveSpeedAttribute.func_111126_e();
+		if (newMoveSpeed != oldMoveSpeed) {
+			double baseMoveSpeed = moveSpeedAttribute.func_111125_b();
+			// Get the modifier:
+			AttributeModifier speedModifier = moveSpeedAttribute.func_111127_a(uuid);
+			if (speedModifier != null) {
+				// Remove the old modifier
+				moveSpeedAttribute.func_111124_b(speedModifier);
+			}
+			// I think the argument "2" stands for operation "add percentage":
+			speedModifier = new AttributeModifier(uuid, "Speed bonus from Dota 2 Items", newMoveSpeed / baseMoveSpeed - 1.0, 2)
+				.func_111168_a(false); // I think this makes it non-persistent
+			moveSpeedAttribute.func_111121_a(speedModifier);
 		}
 	}
 	
@@ -306,9 +333,6 @@ public class Mechanics {
 				stats.addBuff(new BuffInstance(item.getPassiveBuff(), player.entityId, true));
 			}
 		}
-		//NOTE for now movement speed bonus will only be applied to players, not to mobs:
-		//FIXME movement speed doesn't work. Use attributes!
-		ReflectionHelper.setPrivateValue(PlayerCapabilities.class, player.capabilities, stats.getMovementSpeed(), walkSpeedObfFields);
 	}
 	
 	private static boolean sameItemsStacks(ItemStack[] bar1, ItemStack[] bar2) {

@@ -13,7 +13,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-public class Tango extends Dota2Item {
+public class Tango extends CooldownItem {
 
 	public static final int duration = MathHelper.ceiling_float_int(MCConstants.TICKS_PER_SECOND * 16f); //16 seconds
 	public static final int amplifier = 0;
@@ -27,6 +27,8 @@ public class Tango extends Dota2Item {
 		super(id);
 		setMaxStackSize(64);
 		setDefaultQuantity(3);
+		setCooldown(0);
+		setManaCost(0);
 	}
 	
 	@Override

@@ -29,7 +29,7 @@ public class ClientTickHandler implements ITickHandler {
 						!ClientProxy.swingRenderer.isSwinging) {
 					ClientProxy.swingRenderer.startSwinging();
 				}
-				ClientProxy.swingRenderer.onRender((float)tickData[0]);
+				ClientProxy.swingRenderer.onRender((Float)tickData[0]);
 			}
 		}
 	}

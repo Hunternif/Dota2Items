@@ -2,7 +2,6 @@ package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.ClientProxy;
 import hunternif.mc.dota2items.Dota2Items;
-import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.client.gui.ColorHelper;
 import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.EntityStats;
@@ -12,11 +11,8 @@ import hunternif.mc.dota2items.inventory.InventoryShop;
 
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
@@ -104,53 +100,6 @@ public class Dota2Item extends Item {
 	}
 	public Buff getPassiveBuff() {
 		return this.passiveBuff;
-	}
-	
-	public static void playDenyGeneralSound(EntityPlayer player) {
-		if (player.worldObj.isRemote) {
-			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.DENY_GENERAL.getName(), 1.0F, 1.0F);
-		}
-	}
-
-	/**
-	 * Returns the Sound that signifies the particular reason why the player
-	 * cannot use this item.
-	 */
-	public Sound canUseItem(ItemStack stack, EntityLivingBase player, Entity target) {
-		EntityStats playerStats = Dota2Items.mechanics.getEntityStats(player);
-		if (!playerStats.canUseItems()) {
-			return Sound.DENY_SILENCE;
-		}
-		if (target != null) {
-			if (!(target instanceof EntityLivingBase)) {
-				return Sound.DENY_GENERAL;
-			}
-			EntityStats targetStats = Dota2Items.mechanics.getEntityStats((EntityLivingBase)target);
-			if (targetStats.isMagicImmune()) {
-				return Sound.MAGIC_IMMUNE;
-			}
-		}
-		return null;
-	}
-	/** See {@link #canUseItem(ItemStack, EntityLivingBase, Entity)} */
-	public Sound canUseItem(ItemStack stack, EntityLivingBase player) {
-		return canUseItem(stack, player, null);
-	}
-	
-	/**
-	 * If the player cannot use this item, a respective sound is played.
-	 * @return whether the player can use this item.
-	 */
-	public boolean tryUse(ItemStack stack, EntityLivingBase player, Entity target) {
-		Sound failSound = canUseItem(stack, player, target);
-		if (failSound != null && player.worldObj.isRemote) {
-			Minecraft.getMinecraft().sndManager.playSoundFX(failSound.getName(), 1.0F, 1.0F);
-		}
-		return failSound == null;
-	}
-	/** See {@link #tryUse(ItemStack, EntityLivingBase, Entity)} */
-	public boolean tryUse(ItemStack stack, EntityLivingBase player) {
-		return tryUse(stack, player, null);
 	}
 	
 	public Dota2Item setPrice(int price) {

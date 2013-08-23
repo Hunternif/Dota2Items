@@ -3,7 +3,17 @@ package hunternif.mc.dota2items.item;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.client.event.CooldownEndDisplayEvent;
+import hunternif.mc.dota2items.core.EntityStats;
+import hunternif.mc.dota2items.network.UseItemPacket;
 import hunternif.mc.dota2items.util.MCConstants;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,6 +21,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class CooldownItem extends Dota2Item {
 	protected static final String TAG_DURATION = "D2IcdDuration";
@@ -146,19 +159,87 @@ public abstract class CooldownItem extends Dota2Item {
 		}
 	}
 	
-	@Override
-	public Sound canUseItem(ItemStack stack, EntityLivingBase player, Entity target) {
-		Sound failSound = super.canUseItem(stack, player, target);
-		if (failSound == null) {
-			if (player instanceof EntityPlayer && ((EntityPlayer)player).capabilities.isCreativeMode) {
-				return null;
+	public static void playDenyGeneralSound(EntityPlayer player) {
+		if (player.worldObj.isRemote) {
+			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.DENY_GENERAL.getName(), 1.0F, 1.0F);
+		}
+	}
+
+	/**
+	 * Returns the Sound that signifies the particular reason why the player
+	 * cannot use this item.
+	 */
+	public Sound canUseItem(ItemStack stack, EntityPlayer player, Entity target) {
+		EntityStats playerStats = Dota2Items.mechanics.getEntityStats(player);
+		if (!playerStats.canUseItems()) {
+			return Sound.DENY_SILENCE;
+		}
+		if (target != null) {
+			if (!(target instanceof EntityLivingBase)) {
+				return Sound.DENY_GENERAL;
 			}
-			if (isOnCooldown(stack)) {
-				failSound = Sound.DENY_COOLDOWN;
-			} else if (Dota2Items.mechanics.getEntityStats(player).getMana() < this.getManaCost()) {
-				failSound = Sound.DENY_MANA;
+			EntityStats targetStats = Dota2Items.mechanics.getEntityStats((EntityLivingBase)target);
+			if (targetStats.isMagicImmune()) {
+				return Sound.MAGIC_IMMUNE;
 			}
 		}
-		return failSound;
+		if (player instanceof EntityPlayer && ((EntityPlayer)player).capabilities.isCreativeMode) {
+			return null;
+		} else if (isOnCooldown(stack)) {
+			return Sound.DENY_COOLDOWN;
+		} else if (Dota2Items.mechanics.getEntityStats(player).getMana() < this.getManaCost()) {
+			return Sound.DENY_MANA;
+		}
+		return null;
+	}
+	/** See {@link #canUseItem(ItemStack, EntityPlayer, Entity)} */
+	public Sound canUseItem(ItemStack stack, EntityPlayer player) {
+		return canUseItem(stack, player, null);
+	}
+	
+	private Map<EntityPlayer, Set<ItemStack>> clientUsesMap = new ConcurrentHashMap<EntityPlayer, Set<ItemStack>>();
+	/** Only to be called by the server. */
+	public void onClientUsedItem(EntityPlayer player, ItemStack stack) {
+		Set<ItemStack> usesSet = clientUsesMap.get(player);
+		if (usesSet == null) {
+			usesSet = Collections.synchronizedSet(new HashSet<ItemStack>());
+			clientUsesMap.put(player, usesSet);
+		}
+		usesSet.add(stack);
+	}
+	private boolean didClientUse(EntityPlayer player, ItemStack stack) {
+		Set<ItemStack> usesSet = clientUsesMap.get(player);
+		if (usesSet == null) {
+			return false;
+		}
+		return usesSet.contains(stack);
+	}
+	
+	/**
+	 * If the player cannot use this item, a respective sound is played.
+	 * @return whether the player can use this item.
+	 */
+	public boolean tryUse(ItemStack stack, EntityPlayer player, Entity target) {
+		if (!player.worldObj.isRemote) {
+			if (didClientUse(player, stack)) {
+				Set<ItemStack> usesSet = clientUsesMap.get(player);
+				usesSet.remove(stack);
+			} else {
+				return false;
+			}
+		}
+		Sound failSound = canUseItem(stack, player, target);
+		if (player.worldObj.isRemote) {
+			if (failSound == null) {
+				PacketDispatcher.sendPacketToServer(new UseItemPacket().makePacket());
+			} else {
+				Minecraft.getMinecraft().sndManager.playSoundFX(failSound.getName(), 1.0F, 1.0F);
+			}
+		}
+		return failSound == null;
+	}
+	/** See {@link #tryUse(ItemStack, EntityPlayer, Entity)} */
+	public boolean tryUse(ItemStack stack, EntityPlayer player) {
+		return tryUse(stack, player, null);
 	}
 }

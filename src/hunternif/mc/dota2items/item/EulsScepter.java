@@ -9,6 +9,7 @@ import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.network.BuffPacket;
 import hunternif.mc.dota2items.network.EntityMovePacket;
 import hunternif.mc.dota2items.tileentity.TileEntityCyclone;
+import hunternif.mc.dota2items.util.MCConstants;
 
 import java.util.List;
 
@@ -77,7 +78,7 @@ public class EulsScepter extends CooldownItem {
 			entity.lastTickPosZ = entity.prevPosZ = entity.posZ;
 			PacketDispatcher.sendPacketToAllPlayers(new EntityMovePacket(entity).makePacket());
 			
-			long cycloneEndTime = entity.worldObj.getTotalWorldTime() + (long) (TileEntityCyclone.duration * 20f);
+			long cycloneEndTime = entity.worldObj.getTotalWorldTime() + (long) (TileEntityCyclone.duration * MCConstants.TICKS_PER_SECOND);
 			BuffInstance buffInst = new BuffInstance(Buff.inCyclone, entity.entityId, cycloneEndTime, false);
 			EntityStats entityStats = Dota2Items.mechanics.getEntityStats((EntityLivingBase)entity);
 			entityStats.addBuff(buffInst);

@@ -3,6 +3,7 @@ package hunternif.mc.dota2items.entity;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.util.BlockUtil;
 import hunternif.mc.dota2items.util.IntVec3;
+import hunternif.mc.dota2items.util.MCConstants;
 
 import java.util.HashSet;
 import java.util.List;
@@ -17,11 +18,11 @@ import net.minecraft.world.World;
 import cpw.mods.fml.common.FMLLog;
 
 public class ShopkeeperSpawner {
-	private static final int UPDATE_INTERVAL = 5;
+	private static final float UPDATE_INTERVAL = 5;
 	private Set<ChunkCoordinates> shopkeepersSpawned = new HashSet<ChunkCoordinates>();
 	
 	public void updateVillages(World world) {
-		if (!world.isRemote && world.getTotalWorldTime() % (20 * UPDATE_INTERVAL) == 0) {
+		if (!world.isRemote && world.getTotalWorldTime() % (long)(MCConstants.TICKS_PER_SECOND * UPDATE_INTERVAL) == 0) {
 			List<Village> villages = world.villageCollectionObj.getVillageList();
 			for (Village village : villages) {
 				if (!shopkeepersSpawned.contains(village.getCenter())) {

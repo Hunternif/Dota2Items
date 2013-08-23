@@ -2,6 +2,7 @@ package hunternif.mc.dota2items.core;
 
 import hunternif.mc.dota2items.ClientProxy;
 import hunternif.mc.dota2items.Dota2Items;
+import hunternif.mc.dota2items.util.MCConstants;
 
 import java.util.EnumSet;
 
@@ -12,7 +13,7 @@ import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.relauncher.Side;
 
 public class ClientTickHandler implements ITickHandler {
-	public static Timer timer = new Timer(20);
+	public static Timer timer = new Timer(MCConstants.TICKS_PER_SECOND);
 
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {

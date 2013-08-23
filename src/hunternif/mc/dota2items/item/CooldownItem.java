@@ -3,6 +3,7 @@ package hunternif.mc.dota2items.item;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.client.event.CooldownEndDisplayEvent;
+import hunternif.mc.dota2items.util.MCConstants;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -81,6 +82,7 @@ public abstract class CooldownItem extends Dota2Item {
 		return tag != null && tag.getFloat(TAG_COOLDOWN) > 0;
 	}
 	
+	//FIXME: "blank" uses issue is not solved yet! Must send a special packet from client to server.
 	/**
 	 * Starts cooldown on this stack for given duration in seconds.
 	 * Returns false if already on cooldown.<br>
@@ -110,6 +112,7 @@ public abstract class CooldownItem extends Dota2Item {
 	/**
 	 * Starts cooldown of duration getCooldown() on this stack.
 	 * Returns false if already on cooldown.<br>
+	 * <i>To prevent "blank" uses, only call this on the server side!</i>
 	 */
 	public boolean startCooldown(ItemStack itemStack, EntityPlayer player) {
 		return startCooldown(itemStack, getCooldown(), player);
@@ -125,10 +128,8 @@ public abstract class CooldownItem extends Dota2Item {
 		if (isOnCooldown(itemStack) && !world.isRemote) {
 			float cooldown = getRemainingCooldown(itemStack);
 			if (cooldown > 0) {
-				cooldown -= 0.05F;
+				cooldown -= 1f / MCConstants.TICKS_PER_SECOND;
 				setRemainingCooldown(itemStack, cooldown);
-				// -0.05 ensures we get a total decrement of -1 each second,
-				// as there are 20 ticks in each second.
 			}
 		} else if (world.isRemote && slotInInventory >= 0 && slotInInventory < 36) {
 			// For client-side rendering of the off-cooldown effect

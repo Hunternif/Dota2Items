@@ -2,6 +2,7 @@ package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.util.IntVec3;
+import hunternif.mc.dota2items.util.MCConstants;
 import hunternif.mc.dota2items.util.SideHit;
 import hunternif.mc.dota2items.util.TreeUtil;
 import net.minecraft.block.Block;
@@ -9,11 +10,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class Tango extends Dota2Item {
 
-	public static final int duration = 20*16; //16 seconds
+	public static final int duration = MathHelper.ceiling_float_int(MCConstants.TICKS_PER_SECOND * 16f); //16 seconds
 	public static final int amplifier = 0;
 	
 	/** Look for the tree trunk minus this delta on the Y axis from the click point. */

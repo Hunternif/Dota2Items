@@ -17,6 +17,8 @@ public class GuiManaBar extends Gui {
 	private static final ResourceLocation texture = new ResourceLocation(Dota2Items.ID+":textures/gui/mana.png");
 	
 	private static final int HIGHLIGHT_TIME = 10; // [ticks]
+	/** Let's call the 10 discrete mana units on screen "drops". */
+	private static final int HALF_DROPS_COUNT = 20;
 	
 	private Minecraft mc;
 	private int prevMana = 0;
@@ -36,8 +38,7 @@ public class GuiManaBar extends Gui {
 		if (stats.getMaxMana() == 0) {
 			return;
 		}
-		// Let's call the 10 discrete mana units on screen "drops".
-		float halfDrop = (float)stats.getMaxMana() / 20f;
+		float halfDrop = (float)stats.getMaxMana() / (float)HALF_DROPS_COUNT;
 		int mana = MathHelper.floor_float((float)stats.getMana() / halfDrop);
 		long ticksSinceLastChange = mc.thePlayer.ticksExisted - lastChange;
 		boolean highlight = ticksSinceLastChange <= HIGHLIGHT_TIME && ticksSinceLastChange / 3 % 2 == 1;

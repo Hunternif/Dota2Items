@@ -6,6 +6,7 @@ import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.network.EntityStatsSyncPacket;
+import hunternif.mc.dota2items.util.MCConstants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,14 +58,13 @@ public class Mechanics {
 	
 	/** Equals to Base Hero health (with base strength bonuses) over Steve's base health.
 	 * This gives a zombie attack damage of 22.5~52.5. Seems fair to me. */
-	public static final float DOTA_VS_MINECRAFT_DAMAGE = (float)EntityStats.BASE_PLAYER_HP/20f;
+	public static final float DOTA_VS_MINECRAFT_DAMAGE = (float)EntityStats.BASE_PLAYER_HP / MCConstants.MINECRAFT_PLAYER_HP;
 	public static final float GOLD_PER_MOB_HP = 2.5f;
 	public static final float GOLD_LOST_PER_LEVEL = 30f;
-	
 	public static final int FOOD_THRESHOLD_FOR_HEAL = 10;
 	public static final float GOLD_PER_SECOND = 0.25f;
 	
-	private static final int SYNC_STATS_INTERVAL = 10;
+	private static final float SYNC_STATS_INTERVAL = 10;
 	
 	private Map<EntityLivingBase, EntityStats> clientEntityStats = new ConcurrentHashMap<EntityLivingBase, EntityStats>();
 	private Map<EntityLivingBase, EntityStats> serverEntityStats = new ConcurrentHashMap<EntityLivingBase, EntityStats>();
@@ -121,7 +121,8 @@ public class Mechanics {
 			EntityStats stats = entityStats.get(entity);
 			if (stats != null) {
 				long worldTime = entity.worldObj.getTotalWorldTime();
-				boolean attackTimeoutPassed = stats.lastAttackTime + (long)(stats.getAttackTime()*20f) <= worldTime;
+				boolean attackTimeoutPassed = stats.lastAttackTime +
+						(long)(stats.getAttackTime() * MCConstants.TICKS_PER_SECOND) <= worldTime;
 				if (stats.canAttack() && attackTimeoutPassed) {
 					stats.lastAttackTime = worldTime;
 				} else {
@@ -156,7 +157,7 @@ public class Mechanics {
 			boolean trueStrike = false;
 			if (event.source.getEntity() instanceof EntityLivingBase) {
 				EntityStats sourceStats = entityStats.get(event.source.getEntity());
-				trueStrike = sourceStats.isTrueStrike();
+				trueStrike = sourceStats != null && sourceStats.isTrueStrike();
 			}
 			if (targetStats.canEvade() && !trueStrike) {
 				FMLLog.log(Dota2Items.ID, Level.FINE, "evaded");
@@ -168,10 +169,8 @@ public class Mechanics {
 		// Apply attack bonuses to the source player
 		if (event.source.getEntity() instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) event.source.getEntity();
-			EntityStats sourceStats = entityStats.get(player);
-			if (sourceStats != null) {
-				dotaDamage = sourceStats.getDamage(dotaDamage, !event.source.isProjectile());
-			}
+			EntityStats sourceStats = getEntityStats(player);
+			dotaDamage = sourceStats.getDamage(dotaDamage, !event.source.isProjectile());
 			float critMultiplier = sourceStats.getCriticalMultiplier();
 			if (critMultiplier > 1f) {
 				player.onCriticalHit(event.entityLiving);
@@ -365,7 +364,8 @@ public class Mechanics {
 				regenHealthManaAndGold((EntityPlayer)event.entityLiving, stats);
 				// Synchronize stats with all clients every SYNC_STATS_INTERVAL seconds:
 				int time = event.entityLiving.ticksExisted;
-				if (!event.entityLiving.worldObj.isRemote && time - stats.lastSyncTime >= 20 * SYNC_STATS_INTERVAL) {
+				if (!event.entityLiving.worldObj.isRemote && time - stats.lastSyncTime >=
+						(long) (MCConstants.TICKS_PER_SECOND * SYNC_STATS_INTERVAL)) {
 					stats.lastSyncTime = time;
 					PacketDispatcher.sendPacketToPlayer(new EntityStatsSyncPacket(stats).makePacket(), (Player)event.entityLiving);
 				}
@@ -423,7 +423,7 @@ public class Mechanics {
 		if (shouldHeal(entity, stats)) {
 			// func_110138_aP = "getMaxHealth"
 			float halfHeartEquivalent = (float)stats.getMaxHealth() / (float)entity.func_110138_aP();
-			float partialHealth = stats.partialHalfHeart + stats.getHealthRegen() /20f / halfHeartEquivalent;
+			float partialHealth = stats.partialHalfHeart + stats.getHealthRegen() / MCConstants.TICKS_PER_SECOND / halfHeartEquivalent;
 			if (partialHealth >= 1) {
 				int floor = MathHelper.floor_float(partialHealth);
 				entity.heal(floor);
@@ -435,9 +435,9 @@ public class Mechanics {
 		}
 		// func_110143_aJ = "getHealth"
 		if (entity.func_110143_aJ() > 0 && stats.getMana() < stats.getMaxMana()) {
-			stats.addMana(stats.getManaRegen()/20f);
+			stats.addMana(stats.getManaRegen() / MCConstants.TICKS_PER_SECOND);
 		}
-		stats.addGold(GOLD_PER_SECOND/20f);
+		stats.addGold(GOLD_PER_SECOND / MCConstants.TICKS_PER_SECOND);
 	}
 	
 	public static boolean shouldHeal(EntityLivingBase entity, EntityStats stats) {

@@ -4,6 +4,7 @@ import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.entity.IInvulnerableEntity;
 import hunternif.mc.dota2items.entity.IMagicImmuneEntity;
+import hunternif.mc.dota2items.util.MCConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +23,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
 public class EntityStats implements IExtendedEntityProperties {
-	public static final float MINECRAFT_PLAYER_MOVE_SPEED = 0.1f;
 	public static final int MAX_MOVE_SPEED = 522;
 	public static final int MAX_HP_PER_STR = 19;
 	public static final float HP_REGEN_PER_STR = 0.03f;
@@ -87,8 +87,8 @@ public class EntityStats implements IExtendedEntityProperties {
 		entityId = entity.entityId;
 		AttributeInstance attrMaxHealth = entity.func_110148_a(SharedMonsterAttributes.field_111267_a);
 		// When EntityPlayer is Constructing, all his attributes are null
-		float maxHealth = attrMaxHealth == null ? 20f : (float)attrMaxHealth.func_111126_e();
-		baseHealth = MathHelper.floor_float(maxHealth * (float)BASE_PLAYER_HP / 20f);
+		float maxHealth = attrMaxHealth == null ? MCConstants.MINECRAFT_PLAYER_HP : (float)attrMaxHealth.func_111126_e();
+		baseHealth = MathHelper.floor_float(maxHealth * (float)BASE_PLAYER_HP / MCConstants.MINECRAFT_PLAYER_HP);
 		if (entity instanceof EntityPlayer) {
 			baseHealthRegen = 0.25f;
 			baseAttackTime = 1.7f;
@@ -224,7 +224,7 @@ public class EntityStats implements IExtendedEntityProperties {
 	
 	/** @return movement speed calculated for Minecraft. */
 	public float getMovementSpeed() {
-		return (float)getDotaMovementSpeed() * MINECRAFT_PLAYER_MOVE_SPEED / (float) baseMovementSpeed;
+		return (float)getDotaMovementSpeed() * MCConstants.MINECRAFT_PLAYER_MOVE_SPEED / (float) baseMovementSpeed;
 	}
 	public int getDotaMovementSpeed() {
 		int movementSpeed = baseMovementSpeed;

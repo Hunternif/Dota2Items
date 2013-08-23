@@ -9,6 +9,7 @@ import hunternif.mc.dota2items.client.gui.GuiManaBar;
 import hunternif.mc.dota2items.client.gui.IconInText;
 import hunternif.mc.dota2items.client.render.CooldownItemRenderer;
 import hunternif.mc.dota2items.client.render.RenderShopkeeper;
+import hunternif.mc.dota2items.client.render.SwingRenderer;
 import hunternif.mc.dota2items.config.CfgInfo;
 import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.config.DescriptionBuilder;
@@ -61,6 +62,8 @@ public class ClientProxy extends CommonProxy {
 	public static GuiManaBar guiManaBar = new GuiManaBar(Minecraft.getMinecraft());
 	public static GuiHealthAndMana guiHpAndMana = new GuiHealthAndMana(Minecraft.getMinecraft());
 	public static GuiDotaStats guiStats = new GuiDotaStats();
+	
+	public static SwingRenderer swingRenderer = new SwingRenderer();
 	
 	@Override
 	public void registerRenderers() {

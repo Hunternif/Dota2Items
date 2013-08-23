@@ -5,6 +5,7 @@ import hunternif.mc.dota2items.Dota2Items;
 
 import java.util.EnumSet;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.Timer;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
@@ -18,9 +19,17 @@ public class ClientTickHandler implements ITickHandler {
 		if (type.contains(TickType.CLIENT)) {
 			Dota2Items.mechanics.checkAndUpdatePlayerInventories(Side.CLIENT);
 			Dota2Items.mechanics.updateAllEntityStats(Side.CLIENT);
+			ClientProxy.swingRenderer.onTick();
 		}
 		if (type.contains(TickType.RENDER)) {
 			timer.updateTimer();
+			if (Minecraft.getMinecraft().inGameHasFocus) {
+				if (Minecraft.getMinecraft().thePlayer.isSwingInProgress &&
+						!ClientProxy.swingRenderer.isSwinging) {
+					ClientProxy.swingRenderer.startSwinging();
+				}
+				ClientProxy.swingRenderer.onRender((float)tickData[0]);
+			}
 		}
 	}
 

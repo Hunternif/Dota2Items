@@ -51,7 +51,6 @@ public class Mechanics {
 	/** I have no idea how to generate these properly. */
 	private static final UUID uuid = UUID.fromString("92f7a640-0ac7-11e3-8ffd-0800200c9a66");
 	
-	private static final String[] walkSpeedObfFields = {"walkSpeed", "g", "field_75097_g"};
 	private static final String[] timeSinceIgnitedObfFields = {"timeSinceIgnited", "d", "field_70833_d"};
 	
 	private static final String EXT_PROP_STATS = "Dota2ItemsEntityStats";

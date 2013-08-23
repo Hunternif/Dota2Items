@@ -153,7 +153,12 @@ public class Mechanics {
 				return;
 			}
 			// Try evading the attack
-			if (targetStats.canEvade()) {
+			boolean trueStrike = false;
+			if (event.source.getEntity() instanceof EntityLivingBase) {
+				EntityStats sourceStats = entityStats.get(event.source.getEntity());
+				trueStrike = sourceStats.isTrueStrike();
+			}
+			if (targetStats.canEvade() && !trueStrike) {
 				FMLLog.log(Dota2Items.ID, Level.FINE, "evaded");
 				event.setCanceled(true);
 				return;

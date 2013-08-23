@@ -50,6 +50,8 @@ public class Buff {
 	
 	@BuffLineFormat("+{%d%%} Evasion")
 	public int evasionPercent = 0;
+	public boolean trueStrike = false;
+	
 	@BuffLineFormat("[Critical Chance:] {%d%%}")
 	public int critChancePercent = 0;
 	@BuffLineFormat("[Critical Damage:] {%d%%}")

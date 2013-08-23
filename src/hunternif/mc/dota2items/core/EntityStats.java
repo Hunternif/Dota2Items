@@ -402,6 +402,15 @@ public class EntityStats implements IExtendedEntityProperties {
 		}
 		return block;
 	}
+	
+	public boolean isTrueStrike() {
+		for (BuffInstance buffInst : getAppliedBuffs()) {
+			if (buffInst.buff.trueStrike) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {

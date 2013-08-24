@@ -11,7 +11,12 @@ public enum Sound {
 	TREE_FALL("tree_fall"),
 	CYCLONE_START("cyclone_start"),
 	COINS("coins"),
-	BUY("buy");
+	BUY("buy"),
+	ARROW("arrow"),
+	ARROW1("arrow1"),
+	ARROW2("arrow2"),
+	ARROW3("arrow3"),
+	ARROW4("arrow4");
 	
 	private String name;
 	private Sound(String name) {

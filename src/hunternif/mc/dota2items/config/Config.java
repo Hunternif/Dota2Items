@@ -4,6 +4,7 @@ import hunternif.mc.dota2items.block.BlockCycloneContainer;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.inventory.Column;
 import hunternif.mc.dota2items.item.BlinkDagger;
+import hunternif.mc.dota2items.item.Daedalus;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.item.Dota2Logo;
 import hunternif.mc.dota2items.item.EulsScepter;
@@ -229,13 +230,20 @@ public class Config {
 //		dagon
 //		veilOfDiscord
 //		rodOfAtos
-//		AghanimsScepter
+		public static CfgInfo<Dota2Item> aghanimsScepter = new CfgInfo<Dota2Item>(27056, "Aghanim's Scepter")
+				.setWeaponDamage(2).setColumn(Column.CASTER)
+				.setRecipe(pointBooster, ogreClub, bladeOfAlacrity, staffOfWizardry)
+				.setPassiveBuff(new Buff("Aghanim's Scepter").setHealth(200).setMana(150).setStrength(10).setAgility(10).setIntelligence(10));
 //		orchidMalevolence
 //		refresherOrb
 //		scytheOfVyse
 		
 		// Item column: Weapons
-//		crystalys
+		public static CfgInfo<Dota2Item> crystalys = new CfgInfo<Dota2Item>(27057, "Crystalys")
+				.setWeaponDamage(7).setColumn(Column.WEAPONS)
+				.setPrice(500).setRecipe(broadsword, bladesOfAttack)
+				.setPassiveBuff(new Buff("Crystalys").setDamage(30).setCrit(20, 175))
+				.setDescription("Passive: Critical Strike - Grants a chance to deal critical damage on an attack.");
 //		armletOfMordiggian
 //		skullBasher
 //		shadowBlade
@@ -243,7 +251,11 @@ public class Config {
 //		etherealBlade
 //		radiance
 //		monkeyKingBar
-//		daedalus
+		public static CfgInfo<Daedalus> daedalus = new CfgInfo<Dota2Item>(27058, "Daedalus")
+			.setIsFull3D(true).setColumn(Column.WEAPONS)
+			.setPrice(1000).setRecipe(crystalys, demonEdge)
+			.setPassiveBuff(new Buff("Daedalus").setDamage(81).setCrit(25, 240))
+			.setDescription("Passive: Critical Strike - Grants a chance to deal critical damage on an attack.");
 		public static CfgInfo<Dota2Item> butterfly = new CfgInfo<Dota2Item>(27053, "Butterfly")
 				.setWeaponDamage(7).setColumn(Column.WEAPONS)
 				.setRecipe(talismanOfEvasion, quarterstaff, eaglesong)
@@ -255,7 +267,10 @@ public class Config {
 //		abyssalBlade
 		
 		// Item column: Armor
-//		hoodOfDefiance
+		public static CfgInfo<Dota2Item> hoodOfDefiance = new CfgInfo<Dota2Item>(27055, "Hood of Defiance")
+				.setRecipe(ringOfHealth, cloak, ringOfRegen, ringOfRegen).setColumn(Column.ARMOR)
+				.setPassiveBuff(new Buff("Hood of Defiance").setHealthRegen(8).setSpellResistance(30))
+				.setDescription("Multiple instances of spell resistance from items do not stack.");
 //		bladeMail
 		public static CfgInfo<Dota2Item> vanguard = new CfgInfo<Dota2Item>(27052, "Vanguard")
 				.setRecipe(ringOfHealth, vitalityBooster, stoutShield).setColumn(Column.ARMOR)
@@ -285,6 +300,8 @@ public class Config {
 //		mjollnir
 //		eyeOfSkadi
 //		satanic
+		
+		// Last item ID: 27058
 		
 		// Blocks
 		public static CfgInfo<BlockCycloneContainer> cycloneContainer = new CfgInfo<BlockCycloneContainer>(2700, "Cyclone Container");

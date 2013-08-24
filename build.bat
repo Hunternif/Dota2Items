@@ -29,7 +29,7 @@ echo ^> Creating archive
 rem TODO retreive the mod name and version
 "%WINRAR%" a -afzip -r mod.zip ./*
 echo ^> Done
-move mod.zip %MOD_SRC_DIR%
+move mod.zip "%MOD_SRC_DIR%"
 goto end
 
 :noWinRAR

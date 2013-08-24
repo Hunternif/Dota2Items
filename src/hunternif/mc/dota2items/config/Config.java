@@ -4,6 +4,7 @@ import hunternif.mc.dota2items.block.BlockCycloneContainer;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.inventory.Column;
 import hunternif.mc.dota2items.item.BlinkDagger;
+import hunternif.mc.dota2items.item.Clarity;
 import hunternif.mc.dota2items.item.Daedalus;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.item.Dota2Logo;
@@ -56,7 +57,10 @@ public class Config {
 				.setPassiveBuff(new Buff("Point Booster").setHealth(200).setMana(150));
 		
 		// Items column: Consumables ==================================================================
-//		clarity
+		public static CfgInfo<Clarity> clarity = new CfgInfo<Tango>(27059, "Clarity")
+				.setPrice(50).setColumn(Column.CONSUMABLES)
+				.setDescription("Use: Restores mana over time. If the user is attacked, "
+						+ "the effect is lost.\n[Duration:] {30}\n[Mana restored:] {100}");
 		public static CfgInfo<Tango> tango = new CfgInfo<Tango>(27002, "Tango")
 				.setPrice(30).setColumn(Column.CONSUMABLES)
 				.setDescription("Use: Eat Tree - Consume a tree to restore HP over time."
@@ -301,7 +305,7 @@ public class Config {
 //		eyeOfSkadi
 //		satanic
 		
-		// Last item ID: 27058
+		// Last item ID: 27059
 		
 		// Blocks
 		public static CfgInfo<BlockCycloneContainer> cycloneContainer = new CfgInfo<BlockCycloneContainer>(2700, "Cyclone Container");

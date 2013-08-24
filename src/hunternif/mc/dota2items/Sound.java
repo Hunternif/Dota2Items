@@ -16,7 +16,8 @@ public enum Sound {
 	ARROW1("arrow1"),
 	ARROW2("arrow2"),
 	ARROW3("arrow3"),
-	ARROW4("arrow4");
+	ARROW4("arrow4"),
+	CLARITY("clarity");
 	
 	private String name;
 	private Sound(String name) {

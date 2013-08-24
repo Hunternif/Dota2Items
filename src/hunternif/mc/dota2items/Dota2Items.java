@@ -6,6 +6,7 @@ import hunternif.mc.dota2items.config.ConfigLoader;
 import hunternif.mc.dota2items.core.BowHandler;
 import hunternif.mc.dota2items.core.Dota2PlayerTracker;
 import hunternif.mc.dota2items.core.Mechanics;
+import hunternif.mc.dota2items.core.PlayerAttackedHandler;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
 import hunternif.mc.dota2items.entity.ShopkeeperSpawner;
 import hunternif.mc.dota2items.inventory.Dota2CreativeTab;
@@ -78,6 +79,7 @@ public class Dota2Items {
 		proxy.registerRenderers();
 		proxy.registerTickHandlers();
 		MinecraftForge.EVENT_BUS.register(mechanics);
+		MinecraftForge.EVENT_BUS.register(new PlayerAttackedHandler());
 		MinecraftForge.EVENT_BUS.register(new BowHandler());
 		GameRegistry.registerPlayerTracker(playerTracker);
 	}

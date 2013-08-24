@@ -4,6 +4,7 @@ import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.entity.IInvulnerableEntity;
 import hunternif.mc.dota2items.entity.IMagicImmuneEntity;
+import hunternif.mc.dota2items.network.EntityStatsSyncPacket;
 import hunternif.mc.dota2items.util.MCConstants;
 
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 
 public class EntityStats implements IExtendedEntityProperties {
 	public static final int MAX_MOVE_SPEED = 522;
@@ -160,13 +163,14 @@ public class EntityStats implements IExtendedEntityProperties {
 	}
 	public void setMana(float amount) {
 		curMana = amount;
-		clampMana();
 	}
 	public void addMana(float amount) {
 		setMana(curMana + amount);
+		clampMana();
 	}
 	public void removeMana(float amount) {
 		setMana(curMana - amount);
+		clampMana();
 	}
 	
 	public float getManaRegen() {
@@ -445,5 +449,10 @@ public class EntityStats implements IExtendedEntityProperties {
 		int maxMana = getMaxMana();
 		if (curMana < 0) curMana = 0;
 		if (curMana > maxMana) curMana = maxMana;
+	}
+	
+	public void sendSyncPacketToClient(EntityPlayer player) {
+		this.lastSyncTime = player.ticksExisted;
+		PacketDispatcher.sendPacketToPlayer(new EntityStatsSyncPacket(this).makePacket(), (Player)player);
 	}
 }

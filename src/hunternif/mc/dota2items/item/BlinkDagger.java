@@ -13,7 +13,6 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -21,8 +20,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -221,25 +218,5 @@ public class BlinkDagger extends CooldownItem {
 		}
 		
 		return true;
-	}
-	
-	@ForgeSubscribe
-	public void onHurt(LivingHurtEvent event) {
-		// Why is this only called on the server?
-		if (event.entityLiving instanceof EntityPlayer && !event.entity.worldObj.isRemote &&
-				event.source.getEntity() instanceof EntityLivingBase) {
-			EntityPlayer player = (EntityPlayer) event.entityLiving;
-			int invSize = player.inventory.getSizeInventory();
-			for (int i = 0; i < invSize; i++) {
-				ItemStack stack = player.inventory.getStackInSlot(i);
-				if (stack != null && stack.itemID == itemID) {
-					float cdLeft = getRemainingCooldown(stack);
-					if (cdLeft < hurtCooldown) {
-						// This is on the server, so it's ok:
-						startCooldown(stack, hurtCooldown, player);
-					}
-				}
-			}
-		}
 	}
 }

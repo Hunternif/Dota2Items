@@ -3,7 +3,6 @@ package hunternif.mc.dota2items.core;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.network.BuffPacket;
-import hunternif.mc.dota2items.network.EntityStatsSyncPacket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +13,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 
 /** Used to retain Dota 2 Items on death. */
 public class Dota2PlayerTracker implements IPlayerTracker {
@@ -40,7 +38,7 @@ public class Dota2PlayerTracker implements IPlayerTracker {
 				PacketDispatcher.sendPacketToAllPlayers(new BuffPacket(buffInst).makePacket());
 			}
 		}
-		PacketDispatcher.sendPacketToPlayer(new EntityStatsSyncPacket(stats).makePacket(), (Player)player);
+		stats.sendSyncPacketToClient(player);
 	}
 
 	@Override
@@ -61,9 +59,7 @@ public class Dota2PlayerTracker implements IPlayerTracker {
 			retainedItems.remove(player);
 		}
 		EntityStats stats = Dota2Items.mechanics.onPlayerRespawn(player);
-		PacketDispatcher.sendPacketToPlayer(new EntityStatsSyncPacket(stats).makePacket(), (Player)player);
-		
-		//TODO: bug: sometimes on respawn mana is not sync'ed immediately.
+		stats.sendSyncPacketToClient(player);
 	}
 
 }

@@ -68,8 +68,9 @@ public class Buff {
 	private static int lastID = 0;
 	public static final Buff[] buffList = new Buff[1024];
 	
-	public static final Buff tangoActive = new Buff(1, "Tango active").setHealthRegen(115f/16f).setDoesNotStack();
+	public static final Buff tango = new Buff(1, "Tango").setHealthRegen(115f/16f).setDoesNotStack();
 	public static final Buff inCyclone = new Buff(2, "Swept up in Cyclone").setDisableAttack().setDisableItems().setDisableMove().setInvulnerable().setMagicImmune();
+	public static final Buff clarity = new Buff(3, "Clarity").setManaRegen(100f/30f).setDoesNotStack();
 	
 	
 	public Buff(int id, String name) {

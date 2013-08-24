@@ -5,7 +5,6 @@ import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.item.Dota2Item;
-import hunternif.mc.dota2items.network.EntityStatsSyncPacket;
 import hunternif.mc.dota2items.util.MCConstants;
 
 import java.util.ArrayList;
@@ -43,8 +42,6 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 
@@ -174,7 +171,7 @@ public class Mechanics {
 			float critMultiplier = sourceStats.getCriticalMultiplier();
 			if (critMultiplier > 1f) {
 				player.onCriticalHit(event.entityLiving);
-				FMLLog.log(Dota2Items.ID, Level.FINE, "crit");
+				FMLLog.log(Dota2Items.ID, Level.INFO, "crit");
 				dotaDamage *= critMultiplier;
 			}
 			// If the player is the attacker, his target must be given EntityStats:
@@ -366,8 +363,7 @@ public class Mechanics {
 				int time = event.entityLiving.ticksExisted;
 				if (!event.entityLiving.worldObj.isRemote && time - stats.lastSyncTime >=
 						(long) (MCConstants.TICKS_PER_SECOND * SYNC_STATS_INTERVAL)) {
-					stats.lastSyncTime = time;
-					PacketDispatcher.sendPacketToPlayer(new EntityStatsSyncPacket(stats).makePacket(), (Player)event.entityLiving);
+					stats.sendSyncPacketToClient((EntityPlayer)event.entityLiving);
 				}
 			}
 			if (!stats.canMove()) {
@@ -401,7 +397,7 @@ public class Mechanics {
 					//200 + level*9; That would allow to farm lots of gold on your own death.
 					scatterGoldAt(event.entityLiving, goldAmount);
 					stats.removeGold(goldAmount);
-					PacketDispatcher.sendPacketToPlayer(new EntityStatsSyncPacket(stats).makePacket(), (Player)event.entityLiving);
+					stats.sendSyncPacketToClient((EntityPlayer)event.entityLiving);
 					
 				}
 			} else {
@@ -488,7 +484,7 @@ public class Mechanics {
 			EntityStats stats = getEntityStats(event.entityLiving);
 			stats.addGold(stack.stackSize);
 			if (!event.entityLiving.worldObj.isRemote) {
-				PacketDispatcher.sendPacketToPlayer(new EntityStatsSyncPacket(stats).makePacket(), (Player)event.entityLiving);
+				stats.sendSyncPacketToClient((EntityPlayer)event.entityLiving);
 			}
 			event.item.setDead();
 			event.setCanceled(true);

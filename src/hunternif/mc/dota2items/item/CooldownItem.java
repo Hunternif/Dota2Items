@@ -71,10 +71,13 @@ public abstract class CooldownItem extends Dota2Item {
 		else
 			return 0;
 	}
-	protected void setRemainingCooldown(ItemStack itemStack, float value) {
+	public void setRemainingCooldown(ItemStack itemStack, float value) {
 		NBTTagCompound tag = itemStack.getTagCompound();
-		if (tag != null)
-			tag.setFloat(TAG_COOLDOWN, Math.max(0, value));
+		if (tag == null) {
+			tag = new NBTTagCompound();
+			itemStack.setTagCompound(tag);
+		}
+		tag.setFloat(TAG_COOLDOWN, Math.max(0, value));
 	}
 	
 	public boolean isOnCooldown(ItemStack itemStack) {

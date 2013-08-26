@@ -151,7 +151,8 @@ public class GuiShopBuy extends GuiShopBase {
 		for (int i = 0; i < COLUMNS; i++) {
 			if (isMouseOverSlot(columnIcons[i], mouseX, mouseY)) {
 				List<String> hoverStrings = Arrays.asList(columnIcons[i].column.name);
-				drawHoveringText(hoverStrings, mouseX - guiLeft, mouseY - guiTop, fontRenderer);
+				// Draw hovering string using this.fontRenderer:
+				this.func_102021_a(hoverStrings, mouseX - guiLeft, mouseY - guiTop);
 			}
 		}
 		

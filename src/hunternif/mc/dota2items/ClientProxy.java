@@ -110,7 +110,13 @@ public class ClientProxy extends CommonProxy {
 	public void onSound(SoundLoadEvent event) {
         try {
         	for (Sound sound : Sound.values()) {
-        		event.manager.soundPoolSounds.addSound(sound.getName()+".ogg");
+        		if (!sound.isRandom()) {
+        			event.manager.soundPoolSounds.addSound(sound.getName()+".ogg");
+        		} else {
+        			for (int i = 1; i <= sound.randomVariants; i++) {
+        				event.manager.soundPoolSounds.addSound(sound.getName()+i+".ogg");
+        			}
+        		}
         	}
         }
         catch (Exception e) {

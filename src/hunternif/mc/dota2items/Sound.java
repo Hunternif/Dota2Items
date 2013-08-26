@@ -12,17 +12,23 @@ public enum Sound {
 	CYCLONE_START("cyclone_start"),
 	COINS("coins"),
 	BUY("buy"),
-	ARROW("arrow"),
-	ARROW1("arrow1"),
-	ARROW2("arrow2"),
-	ARROW3("arrow3"),
-	ARROW4("arrow4"),
+	ARROW("arrow", 4),
 	CLARITY("clarity");
 	
 	private String name;
+	public int randomVariants = 0;
 	private Sound(String name) {
-		this.name = name;
+		this(name, 0);
 	}
+	private Sound(String name, int randomVariants) {
+		this.name = name;
+		this.randomVariants = randomVariants;
+	}
+	
+	public boolean isRandom() {
+		return randomVariants > 0;
+	}
+	
 	public String toString() {
 		return name;
 	}

@@ -1,6 +1,7 @@
 package hunternif.mc.dota2items.client.gui;
 
 import hunternif.mc.dota2items.Dota2Items;
+import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.Mechanics;
 
@@ -68,6 +69,11 @@ public class GuiDotaStats {
 				// Assume the damage of an arrow at average charge: 6
 				if (mc.thePlayer.inventory.hasItem(Item.arrow.itemID)) {
 					baseDmg = 6;
+				}
+			} else if (item.itemID == Config.daedalus.getID()) {
+				isMelee = false;
+				if (mc.thePlayer.inventory.hasItem(Item.arrow.itemID)) {
+					baseDmg = 10; // maximum arrow damage
 				}
 			}
 		}

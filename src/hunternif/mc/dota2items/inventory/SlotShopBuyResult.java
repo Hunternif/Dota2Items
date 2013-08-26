@@ -18,7 +18,7 @@ public class SlotShopBuyResult extends Slot {
 
 	@Override
 	public boolean canTakeStack(EntityPlayer player) {
-		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
+		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
 		return stats.getGold() >= Dota2Item.getPrice(getStack());
 	}
 	
@@ -29,7 +29,7 @@ public class SlotShopBuyResult extends Slot {
 	
 	@Override
 	public void onPickupFromSlot(EntityPlayer player, ItemStack stack) {
-		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
+		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
 		stats.removeGold( Dota2Item.getPrice(stack) );
 		if (player.worldObj.isRemote) {
 			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.BUY.getName(), 0.8f, 1);

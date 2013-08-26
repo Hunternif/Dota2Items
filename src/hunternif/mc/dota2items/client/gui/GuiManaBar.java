@@ -34,7 +34,7 @@ public class GuiManaBar extends Gui {
 		if (event.isCancelable() || event.type != ElementType.EXPERIENCE || mc.thePlayer.capabilities.isCreativeMode) {
 			return;
 		}
-		EntityStats stats = Dota2Items.mechanics.getEntityStats(mc.thePlayer);
+		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(mc.thePlayer);
 		if (stats.getMaxMana() == 0) {
 			return;
 		}

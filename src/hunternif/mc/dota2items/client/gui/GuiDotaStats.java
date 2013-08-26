@@ -49,7 +49,7 @@ public class GuiDotaStats {
 		tessellator.addVertexWithUV(left, top+HEIGHT, 0, 0, 1);
 		tessellator.draw();
 		
-		EntityStats stats = Dota2Items.mechanics.getEntityStats(mc.thePlayer);
+		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(mc.thePlayer);
 		StringBuilder sb = new StringBuilder();
 		
 		float baseDmg = 1;

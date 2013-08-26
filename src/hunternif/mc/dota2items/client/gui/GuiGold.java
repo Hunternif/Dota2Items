@@ -54,7 +54,7 @@ public class GuiGold extends Gui {
 		} else {
 			return;
 		}
-		EntityStats stats = Dota2Items.mechanics.getEntityStats(mc.thePlayer);
+		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(mc.thePlayer);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		mc.renderEngine.func_110577_a(texture);

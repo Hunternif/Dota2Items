@@ -141,7 +141,7 @@ public class GuiShopBuy extends GuiShopBase {
 		this.fontRenderer.drawString("Price", 114, 139, TITLE_COLOR);
 		this.fontRenderer.drawString("Purchase", 114, 160, TITLE_COLOR);
 		this.fontRenderer.drawString("Inventory", 114, 204, TITLE_COLOR);
-		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
+		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
 		ClientProxy.guiGold.renderGoldText(stats.getGold(), WIDTH - GuiGold.GUI_GOLD_WIDTH, 0);
 		ItemStack resultStack = ((ContainerShopBuy)this.inventorySlots).getSlotResult().getStack();
 		int price = Dota2Item.getPrice(resultStack);

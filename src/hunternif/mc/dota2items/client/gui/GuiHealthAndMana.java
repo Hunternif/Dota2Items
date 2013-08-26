@@ -33,7 +33,7 @@ public class GuiHealthAndMana {
 		//TODO make text positioning configurable; add an option to show Dota-like HP and mana bars.
 		//NOTE I could make a sheet for smaller font size, if it's only 0123456789/+
 		
-		EntityStats stats = Dota2Items.mechanics.getEntityStats(mc.thePlayer);
+		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(mc.thePlayer);
 		int left = width / 2 - 91;
 		int top = height - 38;
 		String hp = stats.getHealth(mc.thePlayer) + "/" + stats.getMaxHealth();

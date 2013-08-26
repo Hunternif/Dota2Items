@@ -48,7 +48,7 @@ public class PlayerAttackedHandler {
 	
 	public static void onPlayerHurt(EntityPlayer player) {
 		boolean shouldSync = false;
-		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
+		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
 		List<BuffInstance> buffs = stats.getAppliedBuffs(); // This list is a copy
 		for (BuffInstance buffInst : buffs) {
 			if (buffInst.buff == Buff.clarity) {

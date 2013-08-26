@@ -22,7 +22,7 @@ public class Clarity extends Dota2Item {
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
 		itemStack.stackSize--;
-		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
+		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
 		long endTime = world.getTotalWorldTime() + (long) (DURATION * MCConstants.TICKS_PER_SECOND);
 		stats.addBuff(new BuffInstance(Buff.clarity, player.entityId, endTime));
 		player.playSound(Sound.CLARITY.getName(), 1, 1);

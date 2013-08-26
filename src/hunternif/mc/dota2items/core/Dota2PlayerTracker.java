@@ -32,7 +32,7 @@ public class Dota2PlayerTracker implements IPlayerTracker {
 				}
 			}
 		}
-		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
+		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
 		for (BuffInstance buffInst : stats.getAppliedBuffs()) {
 			if (!buffInst.isItemPassiveBuff) {
 				PacketDispatcher.sendPacketToAllPlayers(new BuffPacket(buffInst).makePacket());

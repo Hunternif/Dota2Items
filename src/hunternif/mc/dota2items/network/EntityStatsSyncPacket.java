@@ -48,7 +48,7 @@ public class EntityStatsSyncPacket extends CustomPacket {
 		if (side.isClient()) {
 			Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(entityID);
 			if (entity != null && entity instanceof EntityLivingBase) {
-				EntityStats stats = Dota2Items.mechanics.getEntityStats((EntityLivingBase)entity);
+				EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats((EntityLivingBase)entity);
 				stats.partialHalfHeart = partialHalfHeart;
 				stats.setGold(gold);
 				stats.setMana(mana);

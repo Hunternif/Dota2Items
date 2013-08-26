@@ -181,7 +181,7 @@ public class BlinkDagger extends CooldownItem {
 		//------------------------ Successful blink ------------------------
 		
 		if (!player.capabilities.isCreativeMode) {
-			Dota2Items.mechanics.getEntityStats(player).removeMana(getManaCost());
+			Dota2Items.mechanics.getOrCreateEntityStats(player).removeMana(getManaCost());
 		}
 		player.motionX = 0;
 		player.motionY = 0;

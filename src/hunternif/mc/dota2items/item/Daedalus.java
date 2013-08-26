@@ -19,7 +19,7 @@ public class Daedalus extends Dota2Item {
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
+		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
 		long worldTime = world.getTotalWorldTime();
 		boolean attackTimeoutPassed = stats.lastAttackTime + (long)(stats.getAttackTime()*20f) <= worldTime;
 		if (stats.canAttack() && attackTimeoutPassed) {

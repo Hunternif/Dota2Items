@@ -48,7 +48,7 @@ public class GuiShopSell extends GuiShopBase {
 			ItemStack stackOnSale = ((ContainerShopSell)this.inventorySlots).getSellingSlot().getStack();
 			int sellPrice = Dota2Item.getSellPrice(stackOnSale);
 			((ContainerShopSell)this.inventorySlots).putStackInSlot(0, null);
-			EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
+			EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
 			stats.addGold(sellPrice);
 			PacketDispatcher.sendPacketToServer(new ShopSellPacket().makePacket());
 			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.COINS.getName(), 1, 1);
@@ -61,7 +61,7 @@ public class GuiShopSell extends GuiShopBase {
 		//RenderHelper.disableStandardItemLighting();
 		this.fontRenderer.drawString("Sell price", 78, 32, TITLE_COLOR);
 		this.fontRenderer.drawString("Inventory", 8, 73, TITLE_COLOR);
-		EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
+		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
 		ClientProxy.guiGold.renderGoldText(stats.getGold(), WIDTH - GuiGold.GUI_GOLD_WIDTH, 0);
 		ItemStack stackOnSale = ((ContainerShopSell)this.inventorySlots).getSellingSlot().getStack();
 		int sellPrice = Dota2Item.getSellPrice(stackOnSale);

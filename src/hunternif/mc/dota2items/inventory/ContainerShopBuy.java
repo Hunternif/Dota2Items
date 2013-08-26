@@ -63,7 +63,7 @@ public class ContainerShopBuy extends Container {
 				if (stack != null) {
 					Dota2Item item = (Dota2Item) stack.getItem();
 					setRecipeResultItem(item);
-					EntityStats stats = Dota2Items.mechanics.getEntityStats(player);
+					EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
 					if (stats.getGold() >= item.getTotalPrice()) {
 						setResultItem(item);
 					} else {

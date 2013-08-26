@@ -80,7 +80,7 @@ public class EulsScepter extends CooldownItem {
 			
 			long cycloneEndTime = entity.worldObj.getTotalWorldTime() + (long) (TileEntityCyclone.duration * MCConstants.TICKS_PER_SECOND);
 			BuffInstance buffInst = new BuffInstance(Buff.inCyclone, entity.entityId, cycloneEndTime, false);
-			EntityStats entityStats = Dota2Items.mechanics.getEntityStats((EntityLivingBase)entity);
+			EntityStats entityStats = Dota2Items.mechanics.getOrCreateEntityStats((EntityLivingBase)entity);
 			entityStats.addBuff(buffInst);
 			PacketDispatcher.sendPacketToAllPlayers(new BuffPacket(buffInst).makePacket());
 			
@@ -88,7 +88,7 @@ public class EulsScepter extends CooldownItem {
 			startCooldown(stack, player);
 		}
 		if (!player.capabilities.isCreativeMode) {
-			Dota2Items.mechanics.getEntityStats(player).removeMana(getManaCost());
+			Dota2Items.mechanics.getOrCreateEntityStats(player).removeMana(getManaCost());
 		}
 		
 		player.worldObj.playSoundAtEntity(entity, Sound.CYCLONE_START.getName(), 0.7f, 1);

@@ -76,7 +76,7 @@ public class Mechanics {
 	}
 	
 	/** Guaranteed to be non-null. */
-	public EntityStats getEntityStats(EntityLivingBase entity) {
+	public EntityStats getOrCreateEntityStats(EntityLivingBase entity) {
 		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
 		EntityStats stats = entityStats.get(entity);
 		if (stats == null) {
@@ -166,7 +166,7 @@ public class Mechanics {
 		// Apply attack bonuses to the source player
 		if (event.source.getEntity() instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) event.source.getEntity();
-			EntityStats sourceStats = getEntityStats(player);
+			EntityStats sourceStats = getOrCreateEntityStats(player);
 			dotaDamage = sourceStats.getDamage(dotaDamage, !event.source.isProjectile());
 			float critMultiplier = sourceStats.getCriticalMultiplier();
 			if (critMultiplier > 1f) {
@@ -186,9 +186,10 @@ public class Mechanics {
 		if (targetStats != null) {
 			armor = targetStats.getArmor(armor);
 			// Apply damage block:
-			boolean isRanged = event.entityLiving.getCurrentItemOrArmor(0) != null &&
-					event.entityLiving.getCurrentItemOrArmor(0).itemID == Item.bow.itemID;
-			dotaDamage -= targetStats.getDamageBlock(!isRanged);
+			ItemStack targetEquippedItem = event.entityLiving.getCurrentItemOrArmor(0);
+			boolean targetIsRanged = targetEquippedItem != null &&
+					(targetEquippedItem.itemID == Item.bow.itemID || targetEquippedItem.itemID == Config.daedalus.getID());
+			dotaDamage -= targetStats.getDamageBlock(!targetIsRanged);
 			if (dotaDamage < 0) dotaDamage = 0;
 		}
 		
@@ -299,7 +300,7 @@ public class Mechanics {
 			inventoryMap.put(player, currentInventory);
 			updatePlayerInventoryBuffs(player);
 		} else {
-			if (!sameItemsStacks(currentInventory, oldInventory)) {
+			if (!isHotbarWithSameItems(currentInventory, oldInventory)) {
 				inventoryMap.put(player, currentInventory);
 				updatePlayerInventoryBuffs(player);
 			}
@@ -308,7 +309,7 @@ public class Mechanics {
 	
 	private void updatePlayerInventoryBuffs(EntityPlayer player) {
 		FMLLog.log(Dota2Items.ID, Level.FINER, "Updating buffs on player " + player.username);
-		EntityStats stats = getEntityStats(player);
+		EntityStats stats = getOrCreateEntityStats(player);
 		// Remove all passive item Buffs to add them again later:
 		for (BuffInstance buffInst : stats.getAppliedBuffs()) {
 			if (buffInst.isItemPassiveBuff) {
@@ -334,7 +335,7 @@ public class Mechanics {
 		}
 	}
 	
-	private static boolean sameItemsStacks(ItemStack[] bar1, ItemStack[] bar2) {
+	private static boolean isHotbarWithSameItems(ItemStack[] bar1, ItemStack[] bar2) {
 		if (bar1.length != bar2.length) {
 			return false;
 		}
@@ -449,7 +450,7 @@ public class Mechanics {
 	@ForgeSubscribe
 	public void onEntityConstructing(EntityConstructing event) {
 		if (event.entity instanceof EntityPlayer && !event.entity.worldObj.isRemote) {
-			event.entity.registerExtendedProperties(EXT_PROP_STATS, getEntityStats((EntityLivingBase)event.entity));
+			event.entity.registerExtendedProperties(EXT_PROP_STATS, getOrCreateEntityStats((EntityLivingBase)event.entity));
 		}
 	}
 	
@@ -463,7 +464,7 @@ public class Mechanics {
 	EntityStats onPlayerRespawn(EntityPlayer player) {
 		IExtendedEntityProperties props = (player.getExtendedProperties(EXT_PROP_STATS));
 		if (props != null) {
-			EntityStats oldStats = getEntityStats(player);
+			EntityStats oldStats = getOrCreateEntityStats(player);
 			EntityStats newStats = (EntityStats)props;
 			newStats.entityId = oldStats.entityId;
 			newStats.setGold(oldStats.getFloatGold());
@@ -473,7 +474,7 @@ public class Mechanics {
 			newStats.setMana(newStats.getMaxMana());
 			return newStats;
 		}
-		return getEntityStats(player);
+		return getOrCreateEntityStats(player);
 	}
 	
 	@ForgeSubscribe
@@ -481,7 +482,7 @@ public class Mechanics {
 		ItemStack stack = event.item.getEntityItem();
 		if (stack.itemID == Config.goldCoin.getID()) {
 			event.entityLiving.worldObj.playSoundAtEntity(event.entity, Sound.COINS.getName(), 0.8f, 1f);
-			EntityStats stats = getEntityStats(event.entityLiving);
+			EntityStats stats = getOrCreateEntityStats(event.entityLiving);
 			stats.addGold(stack.stackSize);
 			if (!event.entityLiving.worldObj.isRemote) {
 				stats.sendSyncPacketToClient((EntityPlayer)event.entityLiving);

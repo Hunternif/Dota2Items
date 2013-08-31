@@ -31,7 +31,8 @@ public class ShopSellPacket extends CustomPacket {
 				int sellPrice = Dota2Item.getSellPrice(stackOnSale);
 				cont.putStackInSlot(0, null);
 				EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
-				stats.addGold(sellPrice);
+				// Reliable gold:
+				stats.addGold(sellPrice, 0);
 			}
 		} else {
 			throw new ProtocolException("Cannot send this packet to the client!");

@@ -49,7 +49,8 @@ public class GuiShopSell extends GuiShopBase {
 			int sellPrice = Dota2Item.getSellPrice(stackOnSale);
 			((ContainerShopSell)this.inventorySlots).putStackInSlot(0, null);
 			EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
-			stats.addGold(sellPrice);
+			// Reliable gold:
+			stats.addGold(sellPrice, 0);
 			PacketDispatcher.sendPacketToServer(new ShopSellPacket().makePacket());
 			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.COINS.getName(), 1, 1);
 		}

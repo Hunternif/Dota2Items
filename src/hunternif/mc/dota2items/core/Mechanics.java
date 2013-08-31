@@ -1,7 +1,6 @@
 package hunternif.mc.dota2items.core;
 
 import hunternif.mc.dota2items.Dota2Items;
-import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.item.Dota2Item;
@@ -13,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -39,7 +39,6 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -57,6 +56,7 @@ public class Mechanics {
 	 * This gives a zombie attack damage of 22.5~52.5. Seems fair to me. */
 	public static final float DOTA_VS_MINECRAFT_DAMAGE = (float)EntityStats.BASE_PLAYER_HP / MCConstants.MINECRAFT_PLAYER_HP;
 	public static final float GOLD_PER_MOB_HP = 2.5f;
+	public static final float GOLD_AWARDED_PER_LEVEL = 9f;
 	public static final float GOLD_LOST_PER_LEVEL = 30f;
 	public static final int FOOD_THRESHOLD_FOR_HEAL = 10;
 	public static final float GOLD_PER_SECOND = 0.25f;
@@ -64,7 +64,8 @@ public class Mechanics {
 	public static final float AGI_PER_LEVEL = 2;
 	public static final float INT_PER_LEVEL = 2;
 	
-	private static final float SYNC_STATS_INTERVAL = 10;
+	/** In seconds. */
+	public static final float SYNC_STATS_INTERVAL = 10;
 	
 	private Map<EntityLivingBase, EntityStats> clientEntityStats = new ConcurrentHashMap<EntityLivingBase, EntityStats>();
 	private Map<EntityLivingBase, EntityStats> serverEntityStats = new ConcurrentHashMap<EntityLivingBase, EntityStats>();
@@ -181,6 +182,7 @@ public class Mechanics {
 			if (targetStats == null) {
 				targetStats = new EntityStats(event.entityLiving);
 				entityStats.put(event.entityLiving, targetStats);
+				targetStats.addPlayerAttackerID(player.entityId);
 			}
 		}
 		
@@ -359,33 +361,34 @@ public class Mechanics {
 		// All forced movement is to be processed here. (Cyclone, Force Staff etc.)
 		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(event.entityLiving));
 		EntityStats stats = entityStats.get(event.entityLiving);
-		if (stats != null) {
+		if (stats == null) {
+			return;
+		}
+		if (event.entityLiving instanceof EntityPlayer) {
+			// Regenerate health and mana every second:
+			regenHealthManaAndGold((EntityPlayer)event.entityLiving, stats);
+			// Add base attributes per level:
+			addBaseAttributes((EntityPlayer)event.entityLiving, stats);
+			// Synchronize stats with all clients every SYNC_STATS_INTERVAL seconds:
+			int time = event.entityLiving.ticksExisted;
+			if (!event.entityLiving.worldObj.isRemote && time - stats.lastSyncTime >=
+					(long) (MCConstants.TICKS_PER_SECOND * SYNC_STATS_INTERVAL)) {
+				stats.sendSyncPacketToClient((EntityPlayer)event.entityLiving);
+			}
+		}
+		if (!stats.canMove()) {
+			event.setCanceled(true);
+			// Update items in inventory so that cooldown keeps on ticking:
 			if (event.entityLiving instanceof EntityPlayer) {
-				// Regenerate health and mana every second:
-				regenHealthManaAndGold((EntityPlayer)event.entityLiving, stats);
-				// Add base attributes per level:
-				addBaseAttributes((EntityPlayer)event.entityLiving, stats);
-				// Synchronize stats with all clients every SYNC_STATS_INTERVAL seconds:
-				int time = event.entityLiving.ticksExisted;
-				if (!event.entityLiving.worldObj.isRemote && time - stats.lastSyncTime >=
-						(long) (MCConstants.TICKS_PER_SECOND * SYNC_STATS_INTERVAL)) {
-					stats.sendSyncPacketToClient((EntityPlayer)event.entityLiving);
-				}
+				((EntityPlayer)event.entityLiving).inventory.decrementAnimations();
 			}
-			if (!stats.canMove()) {
-				event.setCanceled(true);
-				// Update items in inventory so that cooldown keeps on ticking:
-				if (event.entityLiving instanceof EntityPlayer) {
-					((EntityPlayer)event.entityLiving).inventory.decrementAnimations();
-				}
-			}
-			// Workaround for creepers still exploding while having their attack disabled:
-			if (!stats.canAttack()) {
-				if (event.entityLiving instanceof EntityCreeper) {
-					EntityCreeper creeper = (EntityCreeper) event.entityLiving;
-					Integer timeSinceIgnited = ReflectionHelper.getPrivateValue(EntityCreeper.class, creeper, timeSinceIgnitedObfFields);
-					ReflectionHelper.setPrivateValue(EntityCreeper.class, creeper, timeSinceIgnited.intValue()-1, timeSinceIgnitedObfFields);
-				}
+		}
+		// Workaround for creepers still exploding while having their attack disabled:
+		if (!stats.canAttack()) {
+			if (event.entityLiving instanceof EntityCreeper) {
+				EntityCreeper creeper = (EntityCreeper) event.entityLiving;
+				Integer timeSinceIgnited = ReflectionHelper.getPrivateValue(EntityCreeper.class, creeper, timeSinceIgnitedObfFields);
+				ReflectionHelper.setPrivateValue(EntityCreeper.class, creeper, timeSinceIgnited.intValue()-1, timeSinceIgnitedObfFields);
 			}
 		}
 	}
@@ -394,26 +397,44 @@ public class Mechanics {
 	public void onLivingDeath(LivingDeathEvent event) {
 		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(event.entityLiving));
 		EntityStats stats = entityStats.get(event.entityLiving);
-		if (stats != null) {
-			// Drop gold coins
-			if (event.entityLiving instanceof EntityPlayer) {
+		if (stats == null) {
+			return;
+		}
+		// Drop gold coins:
+		if (event.entityLiving instanceof EntityPlayer) {
+			if (!event.entityLiving.worldObj.isRemote) {
 				int level = ((EntityPlayer)event.entityLiving).experienceLevel + 1;
-				int goldAmount = MathHelper.floor_float(GOLD_LOST_PER_LEVEL*level);
-				if (!event.entityLiving.worldObj.isRemote) {
-					//200 + level*9; That would allow to farm lots of gold on your own death.
-					scatterGoldAt(event.entityLiving, goldAmount);
-					stats.removeGold(goldAmount);
-					stats.sendSyncPacketToClient((EntityPlayer)event.entityLiving);
-					
+				
+				// Deduct unreliable gold from the dead player:
+				stats.deductUnreliableGold(GOLD_LOST_PER_LEVEL * level);
+				stats.sendSyncPacketToClient((EntityPlayer)event.entityLiving);
+				
+				// Award gold to assisting killers:
+				float awardedGold = 200 + GOLD_AWARDED_PER_LEVEL * level;
+				Set<Integer> playerAttackersIDs = stats.getPlayerAttackersIDs();
+				for (int playerID : playerAttackersIDs) {
+					EntityPlayer player = (EntityPlayer) event.entityLiving.worldObj.getEntityByID(playerID);
+					EntityStats playerStats = getOrCreateEntityStats(player);
+					// Award reliable gold. Disregarding killing streak so far.
+					playerStats.addGold(awardedGold / playerAttackersIDs.size(), 0);
+					playerStats.sendSyncPacketToClient(player);
 				}
-			} else {
+				//TODO: award some gold to non-killer players who are just chilling around
+			}
+		} else {
+			if (event.source.getEntity() instanceof EntityPlayer) {
+				EntityPlayer killer = (EntityPlayer)event.source.getEntity();
+				// Gold is dropped from monsters (IMob) and angry wolves:
 				if (!event.entity.worldObj.isRemote && (event.entity instanceof IMob ||
 						(event.entity instanceof EntityWolf && ((EntityWolf)event.entity).isAngry()))) {
 					int goldAmount = MathHelper.floor_float(GOLD_PER_MOB_HP * (float)event.entityLiving.func_110138_aP());
-					scatterGoldAt(event.entity, goldAmount);
+					EntityStats killerStats = getOrCreateEntityStats(killer);
+					// From npc kills - only unreliable gold:
+					killerStats.addGold(0, goldAmount);
+					killerStats.sendSyncPacketToClient(killer);
 				}
-				entityStats.remove(event.entityLiving);
 			}
+			entityStats.remove(event.entityLiving);
 		}
 	}
 	
@@ -439,7 +460,8 @@ public class Mechanics {
 		if (entity.func_110143_aJ() > 0 && stats.getMana() < stats.getMaxMana()) {
 			stats.addMana(stats.getManaRegen() / MCConstants.TICKS_PER_SECOND);
 		}
-		stats.addGold(GOLD_PER_SECOND / MCConstants.TICKS_PER_SECOND);
+		// Unreliable gold:
+		stats.addGold(0, GOLD_PER_SECOND / MCConstants.TICKS_PER_SECOND);
 	}
 	
 	public static boolean shouldHeal(EntityLivingBase entity, EntityStats stats) {
@@ -478,7 +500,7 @@ public class Mechanics {
 			EntityStats oldStats = getOrCreateEntityStats(player);
 			EntityStats newStats = (EntityStats)props;
 			newStats.entityId = oldStats.entityId;
-			newStats.setGold(oldStats.getFloatGold());
+			newStats.setGold(oldStats.getReliableGold(), oldStats.getUnreliableGold());
 			Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(player));
 			entityStats.put(player, newStats);
 			updatePlayerInventoryBuffs(player);
@@ -488,7 +510,7 @@ public class Mechanics {
 		return getOrCreateEntityStats(player);
 	}
 	
-	@ForgeSubscribe
+	/*@ForgeSubscribe
 	public void onPickupGold(EntityItemPickupEvent event) {
 		ItemStack stack = event.item.getEntityItem();
 		if (stack.itemID == Config.goldCoin.getID()) {
@@ -503,7 +525,7 @@ public class Mechanics {
 		}
 	}
 	
-	/** Drops gold coins at given entity in 5 approx. equal portions. */
+	*//** Drops gold coins at given entity in 5 approx. equal portions. *//*
 	private static void scatterGoldAt(Entity entity, int goldAmount) {
 		int portion = MathHelper.ceiling_float_int((float)goldAmount / 5f);
 		while (goldAmount > 0) {
@@ -511,5 +533,5 @@ public class Mechanics {
 			goldAmount -= curPortion;
 			entity.dropItem(Config.goldCoin.getID(), curPortion);
 		}
-	}
+	}*/
 }

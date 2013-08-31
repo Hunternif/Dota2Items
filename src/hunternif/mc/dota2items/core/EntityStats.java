@@ -10,7 +10,9 @@ import hunternif.mc.dota2items.util.MCConstants;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,6 +20,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -43,8 +46,11 @@ public class EntityStats implements IExtendedEntityProperties {
 	
 	private static final String TAG_MANA = "D2IMana";
 	private static final String TAG_PARTIAL_HP = "D2IPartialHp";
-	private static final String TAG_GOLD = "D2IGgold";
+	private static final String TAG_RELIABLE_GOLD = "D2IrelGold";
+	private static final String TAG_UNRELIABLE_GOLD = "D2IunrelGold";
 	private static final String TAG_BUFFS = "D2IBuffs";
+	private static final String TAG_ATTACKER_ID = "D2IAttackerID";
+	private static final String TAG_ATTACKERS = "D2IAttackers";
 	
 	
 	public int entityId;
@@ -68,12 +74,14 @@ public class EntityStats implements IExtendedEntityProperties {
 	private float baseAgility = BASE_PLAYER_AGI;
 	private float baseIntelligence = BASE_PLAYER_INT;
 	
-	// Transient stats:
 	// Health is deferred to Minecraft.
 	private float curMana = 0;
-	private float curGold = 0;
+	private float reliableGold = 0;
+	private float unreliableGold = 0;
 	/** Used to restrict attack interval by AttackTime. */
 	public long lastAttackTime = 0;
+	/** For assist gold. This is only updated on the server. */
+	private Set<Integer> playerAttackersIDs = Collections.synchronizedSet(new HashSet<Integer>());
 	
 	/** When applying damage or heal directly to the entity, the amount of health
 	 * will be truncated due to entity's health being a fixed small integer
@@ -83,7 +91,7 @@ public class EntityStats implements IExtendedEntityProperties {
 	 * instance. */
 	public float partialHalfHeart = 0;
 	
-	private List<BuffInstance> appliedBuffs = new ArrayList<BuffInstance>();
+	private List<BuffInstance> appliedBuffs = Collections.synchronizedList(new ArrayList<BuffInstance>());
 	
 	
 	public EntityStats(EntityLivingBase entity) {
@@ -95,7 +103,7 @@ public class EntityStats implements IExtendedEntityProperties {
 		baseManaRegen = 0.01f;
 		if (entity instanceof EntityPlayer) {
 			baseHealthRegen = 0.25f;
-			baseAttackTime = 1.2f;
+			baseAttackTime = 1.3f;
 			baseMovementSpeed = 300;
 			//baseSpellResistance = 25; Cancelled so that normal Minecraft magic hurts as much as before.
 		} else {
@@ -111,12 +119,15 @@ public class EntityStats implements IExtendedEntityProperties {
 		}
 	}
 	
+	/** Returns a copy. */
 	public List<BuffInstance> getAppliedBuffs() {
-		return new ArrayList<BuffInstance>(appliedBuffs);
+		synchronized (appliedBuffs) {
+			return new ArrayList<BuffInstance>(appliedBuffs);
+		}
 	}
 	public void addBuff(BuffInstance buffInst) {
 		if (!buffInst.buff.stacks) {
-			for (BuffInstance curBuffInst : getAppliedBuffs()) {
+			for (BuffInstance curBuffInst : appliedBuffs) {
 				if (curBuffInst.buff.id == buffInst.buff.id) {
 					return;
 				}
@@ -128,10 +139,25 @@ public class EntityStats implements IExtendedEntityProperties {
 		appliedBuffs.remove(buffInst);
 	}
 	
+	/** Returns a copy. */
+	public Set<Integer> getPlayerAttackersIDs() {
+		synchronized (playerAttackersIDs) {
+			return new HashSet<Integer>(playerAttackersIDs);
+		}
+	}
+	public void addPlayerAttackerID(int id) {
+		playerAttackersIDs.add(Integer.valueOf(id));
+	}
+	public void removePlayerAttackerID(int id) {
+		playerAttackersIDs.remove(Integer.valueOf(id));
+	}
+	
 	public int getMaxHealth() {
 		int health = baseHealth;
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			health += buffInst.buff.health;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				health += buffInst.buff.health;
+			}
 		}
 		return health + MAX_HP_PER_STR*getStrength();
 	}
@@ -142,16 +168,20 @@ public class EntityStats implements IExtendedEntityProperties {
 	}
 	public float getHealthRegen() {
 		float regen = baseHealthRegen;
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			regen += buffInst.buff.healthRegen;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				regen += buffInst.buff.healthRegen;
+			}
 		}
 		return regen + HP_REGEN_PER_STR*(float)getStrength();
 	}
 	
 	public int getMaxMana() {
 		int mana = baseMana;
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			mana += buffInst.buff.mana;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				mana += buffInst.buff.mana;
+			}
 		}
 		return mana + MAX_MANA_PER_INT*getIntelligence();
 	}
@@ -176,12 +206,14 @@ public class EntityStats implements IExtendedEntityProperties {
 	
 	public float getManaRegen() {
 		float regen = baseManaRegen;
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			regen += buffInst.buff.manaRegen;
-		}
-		regen += MANA_REGEN_PER_INT*(float)getIntelligence();
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			regen *= 1f + buffInst.buff.manaRegenPercent/100f;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				regen += buffInst.buff.manaRegen;
+			}
+			regen += MANA_REGEN_PER_INT*(float)getIntelligence();
+			for (BuffInstance buffInst : appliedBuffs) {
+				regen *= 1f + buffInst.buff.manaRegenPercent/100f;
+			}
 		}
 		return regen;
 	}
@@ -189,8 +221,10 @@ public class EntityStats implements IExtendedEntityProperties {
 	/** A percentage. */
 	public int getIncreasedAttackSpeed() {
 		int aspd = 0;
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			aspd += buffInst.buff.attackSpeed;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				aspd += buffInst.buff.attackSpeed;
+			}
 		}
 		aspd += getAgility();
 		if (aspd < MIN_ASPD) aspd = MIN_ASPD;
@@ -207,11 +241,13 @@ public class EntityStats implements IExtendedEntityProperties {
 	
 	public float getDamage(float weaponDamage, boolean melee) {
 		float damage = weaponDamage + this.baseDamage;
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			damage += buffInst.buff.damage;
-		}
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			damage += (float)damage * ((float)(melee ? buffInst.buff.damagePercentMelee : buffInst.buff.damagePercentRanged)) / 100f;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				damage += buffInst.buff.damage;
+			}
+			for (BuffInstance buffInst : appliedBuffs) {
+				damage += (float)damage * ((float)(melee ? buffInst.buff.damagePercentMelee : buffInst.buff.damagePercentRanged)) / 100f;
+			}
 		}
 		//FMLLog.log(Dota2Items.ID, Level.FINE, "Buffed damage from %.2f to %.2f", weaponDamage, damage);
 		return damage;
@@ -219,8 +255,10 @@ public class EntityStats implements IExtendedEntityProperties {
 	
 	public int getArmor(int basicArmor) {
 		int armor = basicArmor + this.baseArmor;
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			armor += buffInst.buff.armor;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				armor += buffInst.buff.armor;
+			}
 		}
 		armor += (float)getAgility() * ARMOR_PER_AGI;
 		//FMLLog.log(Dota2Items.ID, Level.FINE, "Buffed armor from %d to %d", basicArmor, armor);
@@ -234,11 +272,13 @@ public class EntityStats implements IExtendedEntityProperties {
 	public int getDotaMovementSpeed() {
 		int movementSpeed = baseMovementSpeed;
 		List<Buff> appliedMSBuffs = new ArrayList<Buff>();
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			if (!appliedMSBuffs.contains(buffInst.buff)) {
-				movementSpeed += buffInst.buff.movementSpeed;
-				// Movement speed from the same type of Buff doesn't stack
-				appliedMSBuffs.add(buffInst.buff);
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				if (!appliedMSBuffs.contains(buffInst.buff)) {
+					movementSpeed += buffInst.buff.movementSpeed;
+					// Movement speed from the same type of Buff doesn't stack
+					appliedMSBuffs.add(buffInst.buff);
+				}
 			}
 		}
 		if (movementSpeed > MAX_MOVE_SPEED) {
@@ -248,27 +288,33 @@ public class EntityStats implements IExtendedEntityProperties {
 	}
 	
 	public boolean canAttack() {
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			if (buffInst.buff.disableAttack) {
-				return false;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				if (buffInst.buff.disableAttack) {
+					return false;
+				}
 			}
 		}
 		return true;
 	}
 	
 	public boolean canMove() {
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			if (buffInst.buff.disableMove) {
-				return false;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				if (buffInst.buff.disableMove) {
+					return false;
+				}
 			}
 		}
 		return true;
 	}
 	
 	public boolean canUseItems() {
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			if (buffInst.buff.disableItems) {
-				return false;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				if (buffInst.buff.disableItems) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -278,9 +324,11 @@ public class EntityStats implements IExtendedEntityProperties {
 		if (baseMagicImmune) {
 			return true;
 		}
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			if (buffInst.buff.magicImmune) {
-				return true;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				if (buffInst.buff.magicImmune) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -290,9 +338,11 @@ public class EntityStats implements IExtendedEntityProperties {
 		if (baseInvulnerable) {
 			return true;
 		}
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			if (buffInst.buff.invulnerable) {
-				return true;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				if (buffInst.buff.invulnerable) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -300,20 +350,44 @@ public class EntityStats implements IExtendedEntityProperties {
 	
 	//NOTE I may need to implement the Reliable and Unreliable gold someday.
 	public int getGold() {
-		return MathHelper.floor_float(curGold);
+		return MathHelper.floor_float(reliableGold + unreliableGold);
 	}
-	public float getFloatGold() {
-		return curGold;
+	public float getReliableGold() {
+		return reliableGold;
 	}
-	public void setGold(float amount) {
-		if (amount < 0) amount = 0;
-		curGold = amount;
+	public float getUnreliableGold() {
+		return unreliableGold;
 	}
-	public void addGold(float amount) {
-		setGold(curGold + amount);
+	public void setGold(float reliable, float unreliable) {
+		if (reliable < 0) reliable = 0;
+		reliableGold = reliable;
+		if (unreliable < 0) unreliable = 0;
+		unreliableGold = unreliable;
 	}
-	public void removeGold(float amount) {
-		setGold(curGold - amount);
+	public void addGold(float reliable, float unreliable) {
+		setGold(reliableGold + reliable, unreliableGold + unreliable);
+	}
+	/** Returns the remainder that reliable gold couldn't cover. */
+	public float deductReliableGold(float amount) {
+		if (reliableGold >= amount) {
+			reliableGold -= amount;
+			return 0;
+		} else {
+			float remainder = amount - reliableGold;
+			reliableGold = 0;
+			return remainder;
+		}
+	}
+	/** Returns the remainder that unreliable gold couldn't cover. */
+	public float deductUnreliableGold(float amount) {
+		if (unreliableGold >= amount) {
+			unreliableGold -= amount;
+			return 0;
+		} else {
+			float remainder = amount - unreliableGold;
+			unreliableGold = 0;
+			return remainder;
+		}
 	}
 	
 	public int getBaseStrength() {
@@ -328,8 +402,10 @@ public class EntityStats implements IExtendedEntityProperties {
 	}
 	public int getStrength() {
 		float str = baseStrength;
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			str += buffInst.buff.strength;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				str += buffInst.buff.strength;
+			}
 		}
 		return MathHelper.floor_float(str);
 	}
@@ -346,8 +422,10 @@ public class EntityStats implements IExtendedEntityProperties {
 	}
 	public int getAgility() {
 		float agi = baseAgility;
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			agi += buffInst.buff.agility;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				agi += buffInst.buff.agility;
+			}
 		}
 		return MathHelper.floor_float(agi);
 	}
@@ -364,16 +442,20 @@ public class EntityStats implements IExtendedEntityProperties {
 	}
 	public int getIntelligence() {
 		float intel = baseIntelligence;
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			intel += buffInst.buff.intelligence;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				intel += buffInst.buff.intelligence;
+			}
 		}
 		return MathHelper.floor_float(intel);
 	}
 	
 	public boolean canEvade() {
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			if (buffInst.buff.evasionPercent > 0 && Math.random()*100 <= buffInst.buff.evasionPercent) {
-				return true;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				if (buffInst.buff.evasionPercent > 0 && Math.random()*100 <= buffInst.buff.evasionPercent) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -381,9 +463,11 @@ public class EntityStats implements IExtendedEntityProperties {
 	
 	public float getCriticalMultiplier() {
 		List<BuffInstance> critBuffs = new ArrayList<BuffInstance>();
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			if (buffInst.buff.critChancePercent > 0) {
-				critBuffs.add(buffInst);
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				if (buffInst.buff.critChancePercent > 0) {
+					critBuffs.add(buffInst);
+				}
 			}
 		}
 		Collections.sort(critBuffs, critDamageComparator);
@@ -407,12 +491,14 @@ public class EntityStats implements IExtendedEntityProperties {
 	public float getSpellResistance() {
 		float resistance = 0;
 		List<Buff> appliedItems = new ArrayList<Buff>();
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			if (buffInst.buff.spellResistance != 0 && !appliedItems.contains(buffInst.buff)) {
-				if (buffInst.isItemPassiveBuff) {
-					appliedItems.add(buffInst.buff);
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				if (buffInst.buff.spellResistance != 0 && !appliedItems.contains(buffInst.buff)) {
+					if (buffInst.isItemPassiveBuff) {
+						appliedItems.add(buffInst.buff);
+					}
+					resistance += buffInst.buff.spellResistance;
 				}
-				resistance += buffInst.buff.spellResistance;
 			}
 		}
 		return resistance * 0.01f;
@@ -420,9 +506,11 @@ public class EntityStats implements IExtendedEntityProperties {
 	
 	public float getMagicAmplification() {
 		float result = 1f;
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			if (buffInst.buff.magicAmplify != 0) {
-				result *= (float)buffInst.buff.magicAmplify * 0.01f;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				if (buffInst.buff.magicAmplify != 0) {
+					result *= (float)buffInst.buff.magicAmplify * 0.01f;
+				}
 			}
 		}
 		return result;
@@ -430,7 +518,7 @@ public class EntityStats implements IExtendedEntityProperties {
 	
 	public int getDamageBlock(boolean melee) {
 		int block = 0;
-		for (BuffInstance buffInst : getAppliedBuffs()) {
+		for (BuffInstance buffInst : appliedBuffs) {
 			if (buffInst.buff.damageBlockChance > 0 && Math.random()*100 <= buffInst.buff.damageBlockChance) {
 				int curBlock = melee ? buffInst.buff.damageBlockMelee : buffInst.buff.damageBlockRanged;
 				if (curBlock > block) block = curBlock;
@@ -440,9 +528,11 @@ public class EntityStats implements IExtendedEntityProperties {
 	}
 	
 	public boolean isTrueStrike() {
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			if (buffInst.buff.trueStrike) {
-				return true;
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				if (buffInst.buff.trueStrike) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -452,24 +542,40 @@ public class EntityStats implements IExtendedEntityProperties {
 	public void saveNBTData(NBTTagCompound compound) {
 		compound.setFloat(TAG_MANA, getFloatMana());
 		compound.setFloat(TAG_PARTIAL_HP, partialHalfHeart);
-		compound.setInteger(TAG_GOLD, getGold());
+		compound.setFloat(TAG_RELIABLE_GOLD, getReliableGold());
+		compound.setFloat(TAG_UNRELIABLE_GOLD, getUnreliableGold());
 		NBTTagList buffsList = new NBTTagList();
-		for (BuffInstance buffInst : getAppliedBuffs()) {
-			buffsList.appendTag(buffInst.toNBT());
+		synchronized (appliedBuffs) {
+			for (BuffInstance buffInst : appliedBuffs) {
+				buffsList.appendTag(buffInst.toNBT());
+			}
 		}
 		compound.setTag(TAG_BUFFS, buffsList);
+		NBTTagList attackersList = new NBTTagList();
+		synchronized (playerAttackersIDs) {
+			for (Integer playerID : playerAttackersIDs) {
+				attackersList.appendTag(new NBTTagInt(TAG_ATTACKER_ID, playerID.intValue()));
+			}
+		}
+		compound.setTag(TAG_ATTACKERS, attackersList);
 	}
 
 	@Override
 	public void loadNBTData(NBTTagCompound compound) {
 		this.curMana = compound.getFloat(TAG_MANA);
 		this.partialHalfHeart = compound.getFloat(TAG_PARTIAL_HP);
-		this.curGold = compound.getInteger(TAG_GOLD);
+		this.reliableGold = compound.getFloat(TAG_RELIABLE_GOLD);
+		this.unreliableGold = compound.getFloat(TAG_UNRELIABLE_GOLD);
 		NBTTagList buffsList = compound.getTagList(TAG_BUFFS);
 		for (int i = 0; i < buffsList.tagCount(); i++) {
 			NBTTagCompound buffTag = (NBTTagCompound) buffsList.tagAt(i);
 			BuffInstance buffInst = BuffInstance.fromNBT(buffTag, entityId);
 			addBuff(buffInst);
+		}
+		NBTTagList attackersList = compound.getTagList(TAG_ATTACKERS);
+		for (int i = 0; i < attackersList.tagCount(); i++) {
+			NBTTagInt playerID = (NBTTagInt) attackersList.tagAt(i);
+			addPlayerAttackerID(playerID.data);
 		}
 	}
 

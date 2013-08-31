@@ -30,7 +30,8 @@ public class SlotShopBuyResult extends Slot {
 	@Override
 	public void onPickupFromSlot(EntityPlayer player, ItemStack stack) {
 		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
-		stats.removeGold( Dota2Item.getPrice(stack) );
+		// Buying items uses up your unreliable gold first before using your reliable gold:
+		stats.deductReliableGold( stats.deductUnreliableGold( Dota2Item.getPrice(stack) ) );
 		if (player.worldObj.isRemote) {
 			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.BUY.getName(), 0.8f, 1);
 		}

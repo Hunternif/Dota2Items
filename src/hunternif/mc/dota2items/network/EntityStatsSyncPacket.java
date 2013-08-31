@@ -1,7 +1,9 @@
 package hunternif.mc.dota2items.network;
 
 import hunternif.mc.dota2items.Dota2Items;
+import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
+import hunternif.mc.dota2items.core.Mechanics;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,7 +21,8 @@ public class EntityStatsSyncPacket extends CustomPacket {
 	public float baseIntelligence;
 	private float partialHalfHeart;
 	private float mana;
-	private float gold;
+	private float reliableGold;
+	private float unreliableGold;
 	
 	public EntityStatsSyncPacket() {}
 	
@@ -27,7 +30,8 @@ public class EntityStatsSyncPacket extends CustomPacket {
 		entityID = stats.entityId;
 		partialHalfHeart = stats.partialHalfHeart;
 		mana = stats.getFloatMana();
-		gold = stats.getFloatGold();
+		reliableGold = stats.getReliableGold();
+		unreliableGold = stats.getUnreliableGold();
 		baseStrength = stats.getFloatBaseStrength();
 		baseAgility = stats.getFloatBaseAgility();
 		baseIntelligence = stats.getFloatBaseIntelligence();
@@ -38,7 +42,8 @@ public class EntityStatsSyncPacket extends CustomPacket {
 		out.writeInt(entityID);
 		out.writeFloat(partialHalfHeart);
 		out.writeFloat(mana);
-		out.writeFloat(gold);
+		out.writeFloat(reliableGold);
+		out.writeFloat(unreliableGold);
 		out.writeFloat(baseStrength);
 		out.writeFloat(baseAgility);
 		out.writeFloat(baseIntelligence);
@@ -49,7 +54,8 @@ public class EntityStatsSyncPacket extends CustomPacket {
 		entityID = in.readInt();
 		partialHalfHeart = in.readFloat();
 		mana = in.readFloat();
-		gold = in.readFloat();
+		reliableGold = in.readFloat();
+		unreliableGold = in.readFloat();
 		baseStrength = in.readFloat();
 		baseAgility = in.readFloat();
 		baseIntelligence =in.readFloat();
@@ -62,7 +68,11 @@ public class EntityStatsSyncPacket extends CustomPacket {
 			if (entity != null && entity instanceof EntityLivingBase) {
 				EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats((EntityLivingBase)entity);
 				stats.partialHalfHeart = partialHalfHeart;
-				stats.setGold(gold);
+				int oldGold = stats.getGold();
+				stats.setGold(reliableGold, unreliableGold);
+				if (stats.getGold() - oldGold > Mechanics.GOLD_PER_SECOND * Mechanics.SYNC_STATS_INTERVAL) {
+					Minecraft.getMinecraft().sndManager.playSoundFX(Sound.COINS.getName(), 1, 1);
+				}
 				stats.setMana(mana);
 				stats.setBaseStrength(baseStrength);
 				stats.setBaseAgility(baseAgility);

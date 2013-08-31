@@ -3,6 +3,7 @@ package hunternif.mc.dota2items.item;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
+import hunternif.mc.dota2items.util.MCConstants;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,7 +22,8 @@ public class Daedalus extends Dota2Item {
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
 		long worldTime = world.getTotalWorldTime();
-		boolean attackTimeoutPassed = stats.lastAttackTime + (long)(stats.getAttackTime()*20f) <= worldTime;
+		boolean attackTimeoutPassed = stats.lastAttackTime +
+				(long)(stats.getAttackTime() * MCConstants.TICKS_PER_SECOND) <= worldTime;
 		if (stats.canAttack() && attackTimeoutPassed) {
 			//stats.lastAttackTime = worldTime; Will be called in mechanics onLivingAttack
 		} else {

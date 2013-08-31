@@ -348,7 +348,6 @@ public class EntityStats implements IExtendedEntityProperties {
 		return false;
 	}
 	
-	//NOTE I may need to implement the Reliable and Unreliable gold someday.
 	public int getGold() {
 		return MathHelper.floor_float(reliableGold + unreliableGold);
 	}

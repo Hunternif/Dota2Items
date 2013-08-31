@@ -1,6 +1,5 @@
 package hunternif.mc.dota2items.client.model;
 
-import hunternif.mc.dota2items.util.MathUtil;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;

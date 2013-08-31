@@ -1,6 +1,5 @@
 package hunternif.mc.dota2items.network;
 
-import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.PlayerAttackedHandler;
 import net.minecraft.entity.player.EntityPlayer;
 

@@ -5,7 +5,6 @@ import hunternif.mc.dota2items.Dota2Items;
 import java.util.EnumSet;
 
 import net.minecraft.world.World;
-
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.relauncher.Side;

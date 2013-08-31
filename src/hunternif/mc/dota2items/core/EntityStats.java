@@ -51,12 +51,12 @@ public class EntityStats implements IExtendedEntityProperties {
 	/** Measured in ticks the Entity has existed. */
 	public long lastSyncTime;
 	
-	public int baseHealth = BASE_PLAYER_HP;
-	public float baseHealthRegen = 0.25f;
+	public int baseHealth;
+	public float baseHealthRegen;
 	public int baseMana = 0;
-	public float baseManaRegen = 0.01f;
-	public int baseMovementSpeed = 300;
-	public float baseAttackTime = 1.7f;
+	public float baseManaRegen;
+	public int baseMovementSpeed;
+	public float baseAttackTime;
 	public int baseArmor = 0;
 	public int baseDamage = 0;
 	public int baseSpellResistance = 0;
@@ -92,14 +92,15 @@ public class EntityStats implements IExtendedEntityProperties {
 		// When EntityPlayer is Constructing, all his attributes are null
 		float maxHealth = attrMaxHealth == null ? MCConstants.MINECRAFT_PLAYER_HP : (float)attrMaxHealth.func_111126_e();
 		baseHealth = MathHelper.floor_float(maxHealth * (float)BASE_PLAYER_HP / MCConstants.MINECRAFT_PLAYER_HP);
+		baseManaRegen = 0.01f;
 		if (entity instanceof EntityPlayer) {
 			baseHealthRegen = 0.25f;
-			baseAttackTime = 1.7f;
+			baseAttackTime = 1.2f;
 			baseMovementSpeed = 300;
 			//baseSpellResistance = 25; Cancelled so that normal Minecraft magic hurts as much as before.
 		} else {
 			baseHealthRegen = 0.5f;
-			baseAttackTime = 1.0f;
+			baseAttackTime = 0.8f;
 			baseMovementSpeed = 325;
 		}
 		if (entity instanceof IMagicImmuneEntity) {

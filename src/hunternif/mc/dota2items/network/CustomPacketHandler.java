@@ -13,7 +13,6 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
@@ -32,7 +31,7 @@ public class CustomPacketHandler implements IPacketHandler {
 		} catch (ProtocolException e) {
 			if (player instanceof EntityPlayerMP) {
 				((EntityPlayerMP) player).playerNetServerHandler.kickPlayerFromServer("Protocol Exception!");
-				FMLLog.log(Dota2Items.ID, Level.WARNING, e, "Player %s caused a Protocl Exception and was kicked.", ((EntityPlayer)player).username);
+				Dota2Items.logger.log(Level.WARNING, String.format("Player %s caused a Protocl Exception and was kicked.", ((EntityPlayer)player).username), e);
 			}
 		} catch (InstantiationException e) {
 			throw new RuntimeException("Unexpected InstantiationException during Packet construction!", e);

@@ -8,14 +8,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
@@ -40,7 +38,7 @@ public class ConfigLoader {
 				}
 			}
 		} catch(Exception e) {
-			FMLLog.log(Dota2Items.ID, Level.SEVERE, "Failed to load config: " + e.toString());
+			Dota2Items.logger.severe("Failed to load config: " + e.toString());
 		} finally {
 			idConfig.save();
 		}
@@ -80,7 +78,7 @@ public class ConfigLoader {
 							}
 						}
 					}
-					FMLLog.log(Dota2Items.ID, Level.FINE, "Registered item " + info.name);
+					Dota2Items.logger.info("Registered item " + info.name);
 				}
 			}
 			// Parse fields one more time to set their recipes:
@@ -101,10 +99,10 @@ public class ConfigLoader {
 				ItemStack craftResult = new ItemStack((Dota2Item)info.instance, ((Dota2Item)info.instance).getDefaultQuantity());
 				GameRegistry.addShapelessRecipe(craftResult, recipeForCraft.toArray());
 				
-				FMLLog.log(Dota2Items.ID, Level.FINE, "Added recipe for Dota 2 item " + info.name);
+				Dota2Items.logger.info("Added recipe for Dota 2 item " + info.name);
 			}
 		} catch(Exception e) {
-			FMLLog.log(Dota2Items.ID, Level.SEVERE, "Failed to instantiate items: " + e.toString());
+			Dota2Items.logger.severe("Failed to instantiate items: " + e.toString());
 		}
 	}
 }

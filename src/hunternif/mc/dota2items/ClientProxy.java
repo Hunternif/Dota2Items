@@ -20,7 +20,6 @@ import hunternif.mc.dota2items.item.CooldownItem;
 import hunternif.mc.dota2items.item.Dota2Item;
 
 import java.lang.reflect.Field;
-import java.util.logging.Level;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.ReloadableResourceManager;
@@ -33,7 +32,6 @@ import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
@@ -79,7 +77,7 @@ public class ClientProxy extends CommonProxy {
 				}
 			}
 		} catch (Exception e) {
-			FMLLog.log(Dota2Items.ID, Level.WARNING, "Failed to build item description: " + e.toString());
+			Dota2Items.logger.warning("Failed to build item description: " + e.toString());
 		}
 		
 		MinecraftForge.EVENT_BUS.register(cooldownItemRenderer);
@@ -120,7 +118,7 @@ public class ClientProxy extends CommonProxy {
         	}
         }
         catch (Exception e) {
-        	FMLLog.log(Dota2Items.ID, Level.WARNING, "Failed to register one or more sounds.");
+        	Dota2Items.logger.warning("Failed to register one or more sounds.");
         }
     }
 }

@@ -15,7 +15,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -41,7 +40,6 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 
@@ -148,11 +146,11 @@ public class Mechanics {
 		EntityStats targetStats = entityStats.get(event.entityLiving);
 		if (targetStats != null) {
 			if (targetStats.isInvulnerable()) {
-				FMLLog.log(Dota2Items.ID, Level.FINE, "invulnerable");
+				Dota2Items.logger.info("invulnerable");
 				event.setCanceled(true);
 				return;
 			} else if (event.source.isMagicDamage() && targetStats.isMagicImmune()) {
-				FMLLog.log(Dota2Items.ID, Level.FINE, "magic immune");
+				Dota2Items.logger.info("magic immune");
 				event.setCanceled(true);
 				return;
 			}
@@ -163,7 +161,7 @@ public class Mechanics {
 				trueStrike = sourceStats != null && sourceStats.isTrueStrike();
 			}
 			if (targetStats.canEvade() && !trueStrike) {
-				FMLLog.log(Dota2Items.ID, Level.FINE, "evaded");
+				Dota2Items.logger.info("evaded");
 				event.setCanceled(true);
 				return;
 			}
@@ -177,7 +175,7 @@ public class Mechanics {
 			float critMultiplier = sourceStats.getCriticalMultiplier();
 			if (critMultiplier > 1f) {
 				player.onCriticalHit(event.entityLiving);
-				FMLLog.log(Dota2Items.ID, Level.INFO, "crit");
+				Dota2Items.logger.info("crit");
 				dotaDamage *= critMultiplier;
 			}
 			// If the player is the attacker, his target must be given EntityStats:
@@ -235,11 +233,11 @@ public class Mechanics {
 			partialDamage -= (float)partialDamageFloor;
 			targetStats.partialHalfHeart = -partialDamage;
 			if (partialDamageFloor > 0) {
-				FMLLog.log(Dota2Items.ID, Level.INFO, "Applied carry-over damage: %d", partialDamageFloor);
+				Dota2Items.logger.info(String.format("Applied carry-over damage: %d", partialDamageFloor));
 			}
 		}
 		if (event.entityLiving instanceof EntityPlayer || event.source.getEntity() instanceof EntityPlayer) {
-			FMLLog.log(Dota2Items.ID, Level.INFO, "Changed damage from %.2f to %.2f", event.ammount, floatMCDamage);
+			Dota2Items.logger.severe(String.format("Changed damage from %.2f to %.2f", event.ammount, floatMCDamage));
 		}
 		event.ammount = intMCDamage;
 	}
@@ -315,7 +313,7 @@ public class Mechanics {
 	}
 	
 	private void updatePlayerInventoryBuffs(EntityPlayer player) {
-		FMLLog.log(Dota2Items.ID, Level.FINER, "Updating buffs on player " + player.username);
+		Dota2Items.logger.fine("Updating buffs on player " + player.username);
 		EntityStats stats = getOrCreateEntityStats(player);
 		// Remove all passive item Buffs to add them again later:
 		for (BuffInstance buffInst : stats.getAppliedBuffs()) {

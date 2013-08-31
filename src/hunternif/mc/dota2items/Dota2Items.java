@@ -16,6 +16,7 @@ import hunternif.mc.dota2items.tileentity.TileEntityCyclone;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -52,11 +53,14 @@ public class Dota2Items {
 	@Instance(ID)
 	public static Dota2Items instance;
 	
+	public static Logger logger;
+	
 	@SidedProxy(clientSide="hunternif.mc.dota2items.ClientProxy", serverSide="hunternif.mc.dota2items.CommonProxy")
 	public static CommonProxy proxy;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+		logger = event.getModLog();
 		proxy.registerSounds();
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		ConfigLoader.preLoad(config, Config.class);

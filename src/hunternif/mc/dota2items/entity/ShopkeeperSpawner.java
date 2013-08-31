@@ -8,14 +8,12 @@ import hunternif.mc.dota2items.util.MCConstants;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.village.Village;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLLog;
 
 public class ShopkeeperSpawner {
 	private static final float UPDATE_INTERVAL = 5;
@@ -37,7 +35,7 @@ public class ShopkeeperSpawner {
 							EntityShopkeeper shopkeeper = new EntityShopkeeper(world);
 							shopkeeper.setLocationAndAngles(spawn.x, spawn.y, spawn.z, 0, 0);
 							world.spawnEntityInWorld(shopkeeper);
-							FMLLog.log(Dota2Items.ID, Level.INFO, "Spawned a Shopkeeper at (%d, %d, %d)", spawn.x, spawn.y, spawn.z);
+							Dota2Items.logger.info(String.format("Spawned a Shopkeeper at (%d, %d, %d)", spawn.x, spawn.y, spawn.z));
 						} else if (shopkeepersFound.size() > 1) {
 							// Delete redundant shopkeepers:
 							for (int i = 1; i < shopkeepersFound.size(); i++) {
@@ -46,7 +44,7 @@ public class ShopkeeperSpawner {
 						}
 					}
 					if (spawn == null) {
-						FMLLog.log(Dota2Items.ID, Level.WARNING, "Couldn't find space to spawn a Shopkeeper at (%d, %d, %d)", centerX, centerY, centerZ);
+						Dota2Items.logger.warning(String.format("Couldn't find space to spawn a Shopkeeper at (%d, %d, %d)", centerX, centerY, centerZ));
 					}
 				}
 			}

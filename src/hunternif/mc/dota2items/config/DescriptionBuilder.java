@@ -9,12 +9,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.EnumChatFormatting;
-import cpw.mods.fml.common.FMLLog;
 
 public class DescriptionBuilder {
 	/** Example: "+{%s%%} Mana Regeneration" <br>
@@ -57,7 +55,7 @@ public class DescriptionBuilder {
 			lines.addAll(buffDescription(buff));
 		}
 		item.descriptionLines = lines;
-		FMLLog.log(Dota2Items.ID, Level.FINE, "Built description lines for item %s", item.getLocalizedName(null));
+		Dota2Items.logger.info(String.format("Built description lines for item %s", item.getLocalizedName(null)));
 	}
 	
 	public static List<String> buffDescription(Buff buff) {
@@ -76,7 +74,7 @@ public class DescriptionBuilder {
 				}
 			}
 		} catch (Exception e) {
-			FMLLog.log(Dota2Items.ID, Level.WARNING, "Failed to build description for buff %s", buff.name);
+			Dota2Items.logger.warning(String.format("Failed to build description for buff %s", buff.name));
 		}
 		return lines;
 	}

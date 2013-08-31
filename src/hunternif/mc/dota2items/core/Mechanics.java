@@ -31,6 +31,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -117,7 +118,8 @@ public class Mechanics {
 	public void onLivingAttack(LivingAttackEvent event) {
 		// Check if the entity can attack
 		Entity entity = event.source.getEntity();
-		if (entity != null && entity instanceof EntityLivingBase) {
+		if (!(event.source instanceof EntityDamageSourceIndirect) // Actual attack has already been performed
+				&& entity != null && entity instanceof EntityLivingBase) {
 			Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
 			EntityStats stats = entityStats.get(entity);
 			if (stats != null) {

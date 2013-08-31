@@ -25,7 +25,7 @@ public class Daedalus extends Dota2Item {
 		boolean attackTimeoutPassed = stats.lastAttackTime +
 				(long)(stats.getAttackTime() * MCConstants.TICKS_PER_SECOND) <= worldTime;
 		if (stats.canAttack() && attackTimeoutPassed) {
-			//stats.lastAttackTime = worldTime; Will be called in mechanics onLivingAttack
+			stats.lastAttackTime = worldTime;
 		} else {
 			return stack;
 		}

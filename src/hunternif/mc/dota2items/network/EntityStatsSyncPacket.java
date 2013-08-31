@@ -70,7 +70,8 @@ public class EntityStatsSyncPacket extends CustomPacket {
 				stats.partialHalfHeart = partialHalfHeart;
 				int oldGold = stats.getGold();
 				stats.setGold(reliableGold, unreliableGold);
-				if (stats.getGold() - oldGold > Mechanics.GOLD_PER_SECOND * Mechanics.SYNC_STATS_INTERVAL) {
+				if (stats.getGold() - oldGold > Mechanics.GOLD_PER_SECOND * Mechanics.SYNC_STATS_INTERVAL
+						&& stats.lastSyncTime > 0 /* Not the first sync */) {
 					Minecraft.getMinecraft().sndManager.playSoundFX(Sound.COINS.getName(), 1, 1);
 				}
 				stats.setMana(mana);

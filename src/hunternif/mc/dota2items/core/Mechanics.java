@@ -60,6 +60,9 @@ public class Mechanics {
 	public static final float GOLD_LOST_PER_LEVEL = 30f;
 	public static final int FOOD_THRESHOLD_FOR_HEAL = 10;
 	public static final float GOLD_PER_SECOND = 0.25f;
+	public static final float STR_PER_LEVEL = 2;
+	public static final float AGI_PER_LEVEL = 2;
+	public static final float INT_PER_LEVEL = 2;
 	
 	private static final float SYNC_STATS_INTERVAL = 10;
 	
@@ -360,6 +363,8 @@ public class Mechanics {
 			if (event.entityLiving instanceof EntityPlayer) {
 				// Regenerate health and mana every second:
 				regenHealthManaAndGold((EntityPlayer)event.entityLiving, stats);
+				// Add base attributes per level:
+				addBaseAttributes((EntityPlayer)event.entityLiving, stats);
 				// Synchronize stats with all clients every SYNC_STATS_INTERVAL seconds:
 				int time = event.entityLiving.ticksExisted;
 				if (!event.entityLiving.worldObj.isRemote && time - stats.lastSyncTime >=
@@ -445,6 +450,12 @@ public class Mechanics {
 			shouldHeal &= ((EntityPlayer)entity).getFoodStats().getFoodLevel() >= FOOD_THRESHOLD_FOR_HEAL;
 		}
 		return shouldHeal;
+	}
+	
+	private static void addBaseAttributes(EntityPlayer player, EntityStats stats) {
+		stats.setBaseStrength(EntityStats.BASE_PLAYER_STR + player.experienceLevel * STR_PER_LEVEL);
+		stats.setBaseAgility(EntityStats.BASE_PLAYER_AGI + player.experienceLevel * AGI_PER_LEVEL);
+		stats.setBaseIntelligence(EntityStats.BASE_PLAYER_INT + player.experienceLevel * INT_PER_LEVEL);
 	}
 	
 	@ForgeSubscribe

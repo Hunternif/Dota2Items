@@ -14,6 +14,9 @@ import cpw.mods.fml.relauncher.Side;
 
 public class EntityStatsSyncPacket extends CustomPacket {
 	private int entityID;
+	public float baseStrength;
+	public float baseAgility;
+	public float baseIntelligence;
 	private float partialHalfHeart;
 	private float mana;
 	private float gold;
@@ -25,6 +28,9 @@ public class EntityStatsSyncPacket extends CustomPacket {
 		partialHalfHeart = stats.partialHalfHeart;
 		mana = stats.getFloatMana();
 		gold = stats.getFloatGold();
+		baseStrength = stats.getFloatBaseStrength();
+		baseAgility = stats.getFloatBaseAgility();
+		baseIntelligence = stats.getFloatBaseIntelligence();
 	}
 	
 	@Override
@@ -33,6 +39,9 @@ public class EntityStatsSyncPacket extends CustomPacket {
 		out.writeFloat(partialHalfHeart);
 		out.writeFloat(mana);
 		out.writeFloat(gold);
+		out.writeFloat(baseStrength);
+		out.writeFloat(baseAgility);
+		out.writeFloat(baseIntelligence);
 	}
 
 	@Override
@@ -41,6 +50,9 @@ public class EntityStatsSyncPacket extends CustomPacket {
 		partialHalfHeart = in.readFloat();
 		mana = in.readFloat();
 		gold = in.readFloat();
+		baseStrength = in.readFloat();
+		baseAgility = in.readFloat();
+		baseIntelligence =in.readFloat();
 	}
 
 	@Override
@@ -52,6 +64,9 @@ public class EntityStatsSyncPacket extends CustomPacket {
 				stats.partialHalfHeart = partialHalfHeart;
 				stats.setGold(gold);
 				stats.setMana(mana);
+				stats.setBaseStrength(baseStrength);
+				stats.setBaseAgility(baseAgility);
+				stats.setBaseIntelligence(baseIntelligence);
 				stats.lastSyncTime = entity.ticksExisted;
 			}
 		} else {

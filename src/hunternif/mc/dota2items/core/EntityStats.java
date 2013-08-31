@@ -64,9 +64,9 @@ public class EntityStats implements IExtendedEntityProperties {
 	public boolean baseInvulnerable = false;
 	public boolean baseMagicImmune = false;
 	
-	public int baseStrength = BASE_PLAYER_STR;
-	public int baseAgility = BASE_PLAYER_AGI;
-	public int baseIntelligence = BASE_PLAYER_INT;
+	private float baseStrength = BASE_PLAYER_STR;
+	private float baseAgility = BASE_PLAYER_AGI;
+	private float baseIntelligence = BASE_PLAYER_INT;
 	
 	// Transient stats:
 	// Health is deferred to Minecraft.
@@ -306,9 +306,8 @@ public class EntityStats implements IExtendedEntityProperties {
 		return curGold;
 	}
 	public void setGold(float amount) {
-		float newGold = amount;
-		if (newGold < 0) newGold = 0;
-		curGold = newGold;
+		if (amount < 0) amount = 0;
+		curGold = amount;
 	}
 	public void addGold(float amount) {
 		setGold(curGold + amount);
@@ -317,26 +316,58 @@ public class EntityStats implements IExtendedEntityProperties {
 		setGold(curGold - amount);
 	}
 	
+	public int getBaseStrength() {
+		return MathHelper.floor_float(baseStrength);
+	}
+	public float getFloatBaseStrength() {
+		return baseStrength;
+	}
+	public void setBaseStrength(float value) {
+		if (value < 0) value = 0;
+		baseStrength = value;
+	}
 	public int getStrength() {
-		int str = baseStrength;
+		float str = baseStrength;
 		for (BuffInstance buffInst : getAppliedBuffs()) {
 			str += buffInst.buff.strength;
 		}
-		return str;
+		return MathHelper.floor_float(str);
+	}
+	
+	public int getBaseAgility() {
+		return MathHelper.floor_float(baseAgility);
+	}
+	public float getFloatBaseAgility() {
+		return baseAgility;
+	}
+	public void setBaseAgility(float value) {
+		if (value < 0) value = 0;
+		baseAgility = value;
 	}
 	public int getAgility() {
-		int agi = baseAgility;
+		float agi = baseAgility;
 		for (BuffInstance buffInst : getAppliedBuffs()) {
 			agi += buffInst.buff.agility;
 		}
-		return agi;
+		return MathHelper.floor_float(agi);
+	}
+	
+	public int getBaseIntelligence() {
+		return MathHelper.floor_float(baseIntelligence);
+	}
+	public float getFloatBaseIntelligence() {
+		return baseIntelligence;
+	}
+	public void setBaseIntelligence(float value) {
+		if (value < 0) value = 0;
+		baseIntelligence = value;
 	}
 	public int getIntelligence() {
-		int intel = baseIntelligence;
+		float intel = baseIntelligence;
 		for (BuffInstance buffInst : getAppliedBuffs()) {
 			intel += buffInst.buff.intelligence;
 		}
-		return intel;
+		return MathHelper.floor_float(intel);
 	}
 	
 	public boolean canEvade() {

@@ -97,22 +97,22 @@ public class GuiDotaStats {
 		mc.fontRenderer.drawString(ms, left + 45 - strlen/2, top + 44, COLOR_REGULAR);
 		
 		sb = new StringBuilder();
-		baseValue = stats.baseStrength;
-		bonus = stats.getStrength();
+		baseValue = stats.getBaseStrength();
+		bonus = stats.getStrength() - baseValue;
 		formatStat(sb, baseValue, bonus);
 		strlen = mc.fontRenderer.getStringWidth(sb.toString());
 		mc.fontRenderer.drawString(sb.toString(), left + 93 - strlen/2, top + 11, COLOR_REGULAR);
 		
 		sb = new StringBuilder();
-		baseValue = stats.baseAgility;
-		bonus = stats.getAgility();
+		baseValue = stats.getBaseAgility();
+		bonus = stats.getAgility() - baseValue;
 		formatStat(sb, baseValue, bonus);
 		strlen = mc.fontRenderer.getStringWidth(sb.toString());
 		mc.fontRenderer.drawString(sb.toString(), left + 93 - strlen/2, top + 27, COLOR_REGULAR);
 		
 		sb = new StringBuilder();
-		baseValue = stats.baseIntelligence;
-		bonus = stats.getIntelligence();
+		baseValue = stats.getBaseIntelligence();
+		bonus = stats.getIntelligence() - baseValue;
 		formatStat(sb, baseValue, bonus);
 		strlen = mc.fontRenderer.getStringWidth(sb.toString());
 		mc.fontRenderer.drawString(sb.toString(), left + 93 - strlen/2, top + 44, COLOR_REGULAR);

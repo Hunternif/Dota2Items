@@ -55,7 +55,7 @@ public class DescriptionBuilder {
 			lines.addAll(buffDescription(buff));
 		}
 		item.descriptionLines = lines;
-		Dota2Items.logger.info(String.format("Built description lines for item %s", item.getLocalizedName(null)));
+		Dota2Items.logger.info("Built description lines for item " + config.name);
 	}
 	
 	public static List<String> buffDescription(Buff buff) {
@@ -74,7 +74,7 @@ public class DescriptionBuilder {
 				}
 			}
 		} catch (Exception e) {
-			Dota2Items.logger.warning(String.format("Failed to build description for buff %s", buff.name));
+			Dota2Items.logger.warning("Failed to build description for buff " + buff.name);
 		}
 		return lines;
 	}

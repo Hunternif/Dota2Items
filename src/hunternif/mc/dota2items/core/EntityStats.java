@@ -18,6 +18,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeInstance;
+import net.minecraft.entity.boss.IBossDisplayData;
+import net.minecraft.entity.monster.EntityGolem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
@@ -110,6 +112,9 @@ public class EntityStats implements IExtendedEntityProperties {
 			baseHealthRegen = 0.5f;
 			baseAttackTime = 0.8f;
 			baseMovementSpeed = 325;
+		}
+		if (entity instanceof EntityGolem && entity instanceof IBossDisplayData) {
+			baseMagicImmune = true;
 		}
 		if (entity instanceof IMagicImmuneEntity) {
 			baseMagicImmune = true;

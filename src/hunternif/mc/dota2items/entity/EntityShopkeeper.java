@@ -25,18 +25,18 @@ public class EntityShopkeeper extends EntityCreature implements INpc, IInvulnera
 		super(world);
 		this.setSize(0.6F, 1.8F);
 		this.getNavigator().setAvoidsWater(true);
-		this.tasks.addTask(1, new EntityAIMoveTowardsRestriction(this, 0.25F));
-		this.tasks.addTask(2, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));
-		this.tasks.addTask(3, new EntityAIWander(this, 0.25F));
-		this.tasks.addTask(4, new EntityAIWatchClosest(this, EntityLivingBase.class, 8.0F));
+		this.tasks.addTask(1, new EntityAIMoveTowardsRestriction(this, 0.4));
+		this.tasks.addTask(2, new EntityAIWatchClosest2(this, EntityPlayer.class, 3, 1));
+		this.tasks.addTask(3, new EntityAIWander(this, 0.4));
+		this.tasks.addTask(4, new EntityAIWatchClosest(this, EntityLivingBase.class, 8));
 	}
 	
 	/** Presumably sets movement speed. */
-	@Override
+	/*@Override
 	protected void func_110147_ax() {
 		super.func_110147_ax();
-		this.func_110148_a(SharedMonsterAttributes.field_111263_d).func_111128_a(0.1);
-	}
+		this.func_110148_a(SharedMonsterAttributes.field_111263_d).func_111128_a(0.25);
+	}*/
 	
 	@Override
 	public boolean isEntityInvulnerable() {

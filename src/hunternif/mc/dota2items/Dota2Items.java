@@ -73,7 +73,11 @@ public class Dota2Items {
 		
 		GameRegistry.registerTileEntity(TileEntityCyclone.class, "Cyclone");
 		
-		EntityRegistry.registerModEntity(EntityShopkeeper.class, "Dota2Shopkeeper", EntityRegistry.findGlobalUniqueEntityId(), instance, 80, 3, true);
+		int shopkeeperId = EntityRegistry.findGlobalUniqueEntityId();
+		EntityRegistry.registerGlobalEntityID(EntityShopkeeper.class, "Dota2Shopkeeper", shopkeeperId, 0x52724e, 0xc8aa64);
+		EntityRegistry.registerModEntity(EntityShopkeeper.class, "Dota2Shopkeeper", shopkeeperId, instance, 80, 3, true);
+		LanguageRegistry.instance().addStringLocalization("entity.Dota2Shopkeeper.name", "en_US", "Dota 2 Shopkeeper");
+		
 		NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());
 		
 		proxy.registerRenderers();

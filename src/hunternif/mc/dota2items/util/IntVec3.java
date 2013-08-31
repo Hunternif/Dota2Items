@@ -1,5 +1,6 @@
 package hunternif.mc.dota2items.util;
 
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.util.Vec3Pool;
@@ -19,6 +20,12 @@ public class IntVec3 {
 		x = MathHelper.floor_double(vec3.xCoord);
 		y = MathHelper.floor_double(vec3.yCoord);
 		z = MathHelper.floor_double(vec3.zCoord);
+	}
+	
+	public IntVec3(ChunkCoordinates coords) {
+		x = coords.posX;
+		y = coords.posY;
+		z = coords.posZ;
 	}
 	
 	@Override

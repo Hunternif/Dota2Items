@@ -8,11 +8,11 @@ import hunternif.mc.dota2items.core.Dota2PlayerTracker;
 import hunternif.mc.dota2items.core.Mechanics;
 import hunternif.mc.dota2items.core.PlayerAttackedHandler;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
-import hunternif.mc.dota2items.entity.ShopkeeperSpawner;
 import hunternif.mc.dota2items.inventory.Dota2CreativeTab;
 import hunternif.mc.dota2items.inventory.InventoryShop;
 import hunternif.mc.dota2items.network.CustomPacketHandler;
 import hunternif.mc.dota2items.tileentity.TileEntityCyclone;
+import hunternif.mc.dota2items.world.ShopSpawner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid=Dota2Items.ID, name=Dota2Items.NAME, version=Dota2Items.VERSION)
+@Mod(modid=Dota2Items.ID, name=Dota2Items.NAME, version=Dota2Items.VERSION, dependencies="required-after:libschematic@[1.0,)")
 @NetworkMod(clientSideRequired=true, serverSideRequired=true, packetHandler=CustomPacketHandler.class, channels={Dota2Items.CHANNEL})
 public class Dota2Items {
 	public static final String ID = "Dota2Items";
@@ -48,7 +48,7 @@ public class Dota2Items {
 	
 	public static final Dota2PlayerTracker playerTracker = new Dota2PlayerTracker();
 	public static final Mechanics mechanics = new Mechanics();
-	public static final ShopkeeperSpawner shopkeeperSpawner = new ShopkeeperSpawner();
+	public static final ShopSpawner shopSpawner = new ShopSpawner();
 	
 	@Instance(ID)
 	public static Dota2Items instance;
@@ -82,11 +82,14 @@ public class Dota2Items {
 		EntityRegistry.registerModEntity(EntityShopkeeper.class, "Dota2Shopkeeper", shopkeeperId, instance, 80, 3, true);
 		LanguageRegistry.instance().addStringLocalization("entity.Dota2Shopkeeper.name", "en_US", "Dota 2 Shopkeeper");
 		
+		shopSpawner.init();
+		
 		NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());
 		
 		proxy.registerRenderers();
 		proxy.registerTickHandlers();
 		MinecraftForge.EVENT_BUS.register(mechanics);
+		MinecraftForge.EVENT_BUS.register(shopSpawner);
 		MinecraftForge.EVENT_BUS.register(new PlayerAttackedHandler());
 		MinecraftForge.EVENT_BUS.register(new BowHandler());
 		GameRegistry.registerPlayerTracker(playerTracker);

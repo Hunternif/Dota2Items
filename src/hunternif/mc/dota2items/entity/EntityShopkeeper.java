@@ -24,9 +24,9 @@ public class EntityShopkeeper extends EntityCreature implements INpc, IInvulnera
 		super(world);
 		this.setSize(0.6F, 1.8F);
 		this.getNavigator().setAvoidsWater(true);
-		this.tasks.addTask(1, new EntityAIMoveTowardsRestriction(this, 0.4));
+		//this.tasks.addTask(1, new EntityAIMoveTowardsRestriction(this, 0.4));
 		this.tasks.addTask(2, new EntityAIWatchClosest2(this, EntityPlayer.class, 3, 1));
-		this.tasks.addTask(3, new EntityAIWander(this, 0.4));
+		//this.tasks.addTask(3, new EntityAIWander(this, 0.4));
 		this.tasks.addTask(4, new EntityAIWatchClosest(this, EntityLivingBase.class, 8));
 	}
 	

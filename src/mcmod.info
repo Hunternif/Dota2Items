@@ -9,9 +9,9 @@
   "url": "http://www.minecraftforum.net/topic/1665500-147forgewip-dota-2-items-mod-v023",
   "updateUrl": "",
   "authors": ["Hunternif"],
-  "credits": "Made by Hunternif, made possible by the MCP Team, Forge Team, Valve&IceFrog",
+  "credits": "Made by Hunternif, shop tent by Aelous. Made possible by the MCP Team, Forge Team, Valve&IceFrog",
   "parent": "",
   "screenshots": [],
-  "dependencies": []
+  "dependencies": ["libschematic"]
 }
 ]

@@ -1,10 +1,27 @@
 package hunternif.mc.dota2items.util;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import net.minecraft.block.material.Material;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 
 public final class BlockUtil {
+	
+	public static final Set<Material> groundMaterials = new HashSet<Material>();
+	static {
+		groundMaterials.add(Material.grass);
+		groundMaterials.add(Material.ground);
+		groundMaterials.add(Material.sand);
+		groundMaterials.add(Material.rock);
+		groundMaterials.add(Material.clay);
+		groundMaterials.add(Material.ice);
+	}
+	
 	//          0
 	//         00
 	//        ... <lookAbove> blocks up
@@ -57,7 +74,7 @@ public final class BlockUtil {
 		return true;
 	}
 	
-	public static IntVec3 findSurface(World world, int x, int y, int z) {
+	public static IntVec3 findSurfaceUpward(World world, int x, int y, int z) {
 		while (!world.isAirBlock(x, y, z) && y < world.getHeight()) {
 			y++;
 		}
@@ -67,10 +84,32 @@ public final class BlockUtil {
 		return new IntVec3(x, y, z);
 	}
 	
+	/** Finds first block below which is considered ground material. */
+	public static IntVec3 findSurfaceDownward(World world, int x, int y, int z) {
+		while (y > 0) {
+			Material material = world.getBlockMaterial(x, y, z);
+			if (groundMaterials.contains(material)) {
+				break;
+			} else {
+				y--;
+			}
+		}
+		if (y == 0) {
+			return null;
+		}
+		return new IntVec3(x, y + 1, z);
+	}
+	
 	public static boolean isSolid(World world, Vec3 vec) {
 		int x = MathHelper.floor_double(vec.xCoord);
 		int y = MathHelper.floor_double(vec.yCoord);
 		int z = MathHelper.floor_double(vec.zCoord);
 		return world.getBlockMaterial(x, y, z).isSolid();
+	}
+	
+	public static boolean areCoordinatesWithinChunk(Chunk chunk, ChunkCoordinates coords) {
+		int dx = (coords.posX >> 4) - chunk.xPosition;
+		int dz = (coords.posZ >> 4) - chunk.zPosition;
+		return dx == 0 && dz == 0;
 	}
 }

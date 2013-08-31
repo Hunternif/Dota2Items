@@ -89,8 +89,8 @@ public class ShopSpawner {
 		}
 	}
 	
-	private static final int VILLAGE_DISTANCE = 64;
-	/** Villages centers sometimes change coordinates for no reason,
+	private static final int VILLAGE_DISTANCE_THRESHOLD = 64;
+	/** Village centers sometimes change coordinates for no reason,
 	 * so gotta approximate the match.
 	 */
 	private boolean isVillageVisited(ChunkCoordinates coords) {
@@ -98,7 +98,7 @@ public class ShopSpawner {
 			int dx = Math.abs(visitedCoords.posX - coords.posX);
 			int dy = Math.abs(visitedCoords.posY - coords.posY);
 			int dz = Math.abs(visitedCoords.posZ - coords.posZ);
-			if (dx < VILLAGE_DISTANCE && dy < VILLAGE_DISTANCE && dz < VILLAGE_DISTANCE) {
+			if (dx < VILLAGE_DISTANCE_THRESHOLD && dy < VILLAGE_DISTANCE_THRESHOLD && dz < VILLAGE_DISTANCE_THRESHOLD) {
 				return true;
 			}
 		}

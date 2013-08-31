@@ -279,8 +279,15 @@ public class EntityStats implements IExtendedEntityProperties {
 		List<Buff> appliedMSBuffs = new ArrayList<Buff>();
 		synchronized (appliedBuffs) {
 			for (BuffInstance buffInst : appliedBuffs) {
-				if (!appliedMSBuffs.contains(buffInst.buff)) {
+				if (!appliedMSBuffs.contains(buffInst.buff) && buffInst.buff.movementSpeed > 0) {
 					movementSpeed += buffInst.buff.movementSpeed;
+					// Movement speed from the same type of Buff doesn't stack
+					appliedMSBuffs.add(buffInst.buff);
+				}
+			}
+			for (BuffInstance buffInst : appliedBuffs) {
+				if (!appliedMSBuffs.contains(buffInst.buff) && buffInst.buff.movementSpeedPercent > 0) {
+					movementSpeed += MathHelper.floor_float((float)movementSpeed * (float)buffInst.buff.movementSpeedPercent / 100f);
 					// Movement speed from the same type of Buff doesn't stack
 					appliedMSBuffs.add(buffInst.buff);
 				}

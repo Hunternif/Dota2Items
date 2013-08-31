@@ -299,7 +299,11 @@ public class Config {
 //		helmOfTheDominator
 //		maskOfMadness
 //		sange
-//		yasha
+		public static CfgInfo<Dota2Item> yasha = new CfgInfo<Dota2Item>(27061, "Yasha")
+				.setWeaponDamage(7).setColumn(Column.ARTIFACTS)
+				.setPrice(600).setRecipe(bladeOfAlacrity, bandOfElvenskin)
+				.setPassiveBuff(new Buff("Yasha").setAgility(16).setAttackSpeed(15).setMovementSpeedPercent(10))
+				.setDescription("Percentage based movement speed bonuses from multiple items do not stack.");
 //		maelstrom
 //		diffusalBlade
 //		desolator
@@ -309,7 +313,7 @@ public class Config {
 //		eyeOfSkadi
 //		satanic
 		
-		// Last item ID: 27060
+		// Last item ID: 27061
 		
 		// Blocks
 		public static CfgInfo<BlockCycloneContainer> cycloneContainer = new CfgInfo<BlockCycloneContainer>(2700, "Cyclone Container");

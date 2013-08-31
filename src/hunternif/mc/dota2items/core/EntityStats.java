@@ -113,7 +113,7 @@ public class EntityStats implements IExtendedEntityProperties {
 			baseAttackTime = 0.8f;
 			baseMovementSpeed = 325;
 		}
-		if (entity instanceof EntityGolem && entity instanceof IBossDisplayData) {
+		if (entity instanceof EntityGolem || entity instanceof IBossDisplayData) {
 			baseMagicImmune = true;
 		}
 		if (entity instanceof IMagicImmuneEntity) {

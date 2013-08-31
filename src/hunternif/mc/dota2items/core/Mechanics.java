@@ -237,7 +237,7 @@ public class Mechanics {
 			}
 		}
 		if (event.entityLiving instanceof EntityPlayer || event.source.getEntity() instanceof EntityPlayer) {
-			Dota2Items.logger.severe(String.format("Changed damage from %.2f to %.2f", event.ammount, floatMCDamage));
+			Dota2Items.logger.info(String.format("Changed damage from %.2f to %.2f", event.ammount, floatMCDamage));
 		}
 		event.ammount = intMCDamage;
 	}

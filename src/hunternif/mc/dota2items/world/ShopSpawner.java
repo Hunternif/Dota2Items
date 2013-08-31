@@ -83,7 +83,7 @@ public class ShopSpawner {
 			SchematicFactory factory = new SchematicFactory().loadSchematic(shopSchematic);
 			factory.produce(pasteToWorld);
 			EntityShopkeeper shopkeeper = new EntityShopkeeper(world);
-			shopkeeper.setLocationAndAngles(2.5 + coords.x, coords.y, 6.5 + coords.z, 0, 0);
+			shopkeeper.setLocationAndAngles(4.5 + coords.x, coords.y, 6.5 + coords.z, 0, 0);
 			world.spawnEntityInWorld(shopkeeper);
 			Dota2Items.logger.info("Spawned shop at (" + coords.x + ", " + coords.y + ", " + coords.z + ")");
 		}

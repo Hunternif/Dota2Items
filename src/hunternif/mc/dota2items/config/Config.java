@@ -10,6 +10,7 @@ import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.item.Dota2Logo;
 import hunternif.mc.dota2items.item.EulsScepter;
 import hunternif.mc.dota2items.item.GoldCoin;
+import hunternif.mc.dota2items.item.HandOfMidas;
 import hunternif.mc.dota2items.item.ItemRecipe;
 import hunternif.mc.dota2items.item.QuellingBlade;
 import hunternif.mc.dota2items.item.Tango;
@@ -205,7 +206,10 @@ public class Config {
 		public static CfgInfo<Dota2Item> perseverance = new CfgInfo<Dota2Item>(27050, "Perseverance")
 				.setRecipe(ringOfHealth, voidStone).setColumn(Column.COMMON)
 				.setPassiveBuff(new Buff("Perseverance").setHealthRegen(5).setManaRegenPercent(125).setDamage(10));
-//		handOfMidas
+		public static CfgInfo<HandOfMidas> handOfMidas = new CfgInfo<HandOfMidas>(27060, "Hand of Midas")
+			.setPrice(1400).setRecipe(glovesOfHaste).setColumn(Column.COMMON)
+			.setPassiveBuff(new Buff("Hand of Midas").setAttackSpeed(30))
+			.setDescription("Active: Transmute - Kills a non-hero target for 190 gold and 2.5x experience.");
 //		bootsOfTravel
 		
 		// Item column: Support =======================================================================
@@ -305,7 +309,7 @@ public class Config {
 //		eyeOfSkadi
 //		satanic
 		
-		// Last item ID: 27059
+		// Last item ID: 27060
 		
 		// Blocks
 		public static CfgInfo<BlockCycloneContainer> cycloneContainer = new CfgInfo<BlockCycloneContainer>(2700, "Cyclone Container");

@@ -64,7 +64,7 @@ public class Config {
 						+ "the effect is lost.\n[Duration:] {30}\n[Mana restored:] {100}");
 		public static CfgInfo<Tango> tango = new CfgInfo<Tango>(27002, "Tango")
 				.setPrice(30).setColumn(Column.CONSUMABLES)
-				.setDescription("Use: Eat Tree - Consume a tree to restore HP over time."
+				.setDescription("Use: Eat Tree - Consume a tree to restore HP over time. "
 						+ "Comes with 3 charges.\n[Duration:] {16}\n[Health restored:] {115}");
 //		healingSalve,
 //		smokeOfDeceit,

@@ -27,7 +27,7 @@ xcopy "%MOD_SRC_DIR%\src\mcmod.info" /y "%FORGE_HOME%\mcp\reobf\minecraft\"
 xcopy "%MOD_SRC_DIR%\src\*.png" /y "%FORGE_HOME%\mcp\reobf\minecraft\"
 echo ^> Creating archive
 rem TODO retreive the mod name and version
-"%WINRAR%" a -afzip -r mod.zip ./*
+"%WINRAR%" a -afzip -r mod.zip ./assets ./hunternif ./*.info ./*.png
 echo ^> Done
 move mod.zip "%MOD_SRC_DIR%"
 goto end

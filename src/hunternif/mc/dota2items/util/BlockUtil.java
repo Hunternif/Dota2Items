@@ -1,8 +1,11 @@
 package hunternif.mc.dota2items.util;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
@@ -20,6 +23,18 @@ public final class BlockUtil {
 		groundMaterials.add(Material.rock);
 		groundMaterials.add(Material.clay);
 		groundMaterials.add(Material.ice);
+		groundMaterials.add(Material.water);
+	}
+	
+	public static final Map<Material, Block> surfaceToGroundMap = new HashMap<Material, Block>();
+	static {
+		surfaceToGroundMap.put(Material.grass, Block.dirt);
+		surfaceToGroundMap.put(Material.ground, Block.dirt);
+		surfaceToGroundMap.put(Material.sand, Block.sand);
+		surfaceToGroundMap.put(Material.clay, Block.sand);
+		surfaceToGroundMap.put(Material.rock, Block.stone);
+		surfaceToGroundMap.put(Material.water, Block.fence); // Stilt house
+		surfaceToGroundMap.put(Material.ice, Block.ice);
 	}
 	
 	//          0
@@ -111,5 +126,27 @@ public final class BlockUtil {
 		int dx = (coords.posX >> 4) - chunk.xPosition;
 		int dz = (coords.posZ >> 4) - chunk.zPosition;
 		return dx == 0 && dz == 0;
+	}
+	
+	public static void elevateGroundTo(World world, int x, int y, int z) {
+		int summit = y;
+		Material material = null;
+		Block block = null;
+		while (y > 0) {
+			material = world.getBlockMaterial(x, y, z);
+			block = surfaceToGroundMap.get(material);
+			if (block != null) {
+				break;
+			} else {
+				y--;
+			}
+		}
+		if (y == 0 || block == null) {
+			return;
+		}
+		while (y < summit) {
+			y++;
+			world.setBlock(x, y, z, block.blockID);
+		}
 	}
 }

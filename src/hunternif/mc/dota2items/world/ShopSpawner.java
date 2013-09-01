@@ -73,12 +73,19 @@ public class ShopSpawner {
 		}
 	}
 	
-	private void spawnShop(World world, int x, int z) {
+	public void spawnShop(World world, int x, int z) {
 		PasteToWorld pasteToWorld = new PasteToWorld(world);
 		IntVec3 coords = BlockUtil.findSurfaceDownward(world, x - 40 - shopSchematic.getWidth(), world.getHeight(), z - shopSchematic.getLength());
 		if (coords == null) {
 			Dota2Items.logger.warning("Couldn't find surface to spawn shop at (x:" + x + ", z:" + z + ")");
 		} else {
+			for (x = coords.x; x <= coords.x + shopSchematic.getWidth(); x++) {
+				for (z = coords.z; z <= coords.z + shopSchematic.getLength(); z++) {
+					if (!world.getBlockMaterial(x, coords.y - 1, z).isSolid()) {
+						BlockUtil.elevateGroundTo(world, x, coords.y - 1, z);
+					}
+				}
+			}
 			pasteToWorld.setWorldVec(new SchVector(coords.x, coords.y, coords.z));
 			SchematicFactory factory = new SchematicFactory().loadSchematic(shopSchematic);
 			factory.produce(pasteToWorld);

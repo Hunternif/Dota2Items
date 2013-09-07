@@ -137,8 +137,6 @@ public class GuiDotaStats {
 		if (lastUpdateTick != mc.thePlayer.ticksExisted) {
 			lastUpdateTick = mc.thePlayer.ticksExisted;
 			updateBuffIcons(stats);
-		} else {
-			System.out.println("lol");
 		}
 		for (GuiBuff buffIcon : buffIcons) {
 			buffIcon.render();

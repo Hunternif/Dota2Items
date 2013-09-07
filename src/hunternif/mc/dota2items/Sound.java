@@ -14,7 +14,8 @@ public enum Sound {
 	BUY("buy"),
 	ARROW("arrow", 4),
 	CLARITY("clarity"),
-	HAND_OF_MIDAS("handofmidas");
+	HAND_OF_MIDAS("handofmidas"),
+	TANGO("tango");
 	
 	private String name;
 	public int randomVariants = 0;

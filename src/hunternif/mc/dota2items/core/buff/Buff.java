@@ -1,7 +1,9 @@
 package hunternif.mc.dota2items.core.buff;
 
+import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.config.DescriptionBuilder.BuffLineFormat;
 import hunternif.mc.dota2items.item.Dota2Item;
+import net.minecraft.util.ResourceLocation;
 
 public class Buff {
 	public final String name;
@@ -66,13 +68,16 @@ public class Buff {
 	
 	public boolean stacks = true;
 	
+	public boolean isDisplayed = true; //TODO set false
+	public ResourceLocation iconTexture;
+	
 	
 	private static int lastID = 0;
 	public static final Buff[] buffList = new Buff[1024];
 	
-	public static final Buff tango = new Buff(1, "Tango").setHealthRegen(115f/16f).setDoesNotStack();
-	public static final Buff inCyclone = new Buff(2, "Swept up in Cyclone").setDisableAttack().setDisableItems().setDisableMove().setInvulnerable().setMagicImmune();
-	public static final Buff clarity = new Buff(3, "Clarity").setManaRegen(100f/30f).setDoesNotStack();
+	public static final Buff tango = new Buff(1, "Tango").setHealthRegen(115f/16f).setDoesNotStack().setIsDisplayed().setIconTexture("items/tango.png");
+	public static final Buff inCyclone = new Buff(2, "Swept up in Cyclone").setDisableAttack().setDisableItems().setDisableMove().setInvulnerable().setMagicImmune().setIsDisplayed();
+	public static final Buff clarity = new Buff(3, "Clarity").setManaRegen(100f/30f).setDoesNotStack().setIsDisplayed().setIconTexture("items/clarity.png");
 	
 	
 	public Buff(int id, String name) {
@@ -193,6 +198,15 @@ public class Buff {
 	
 	public Buff setDoesNotStack() {
 		stacks = false;
+		return this;
+	}
+	
+	public Buff setIsDisplayed() {
+		isDisplayed = true;
+		return this;
+	}
+	public Buff setIconTexture(String texture) {
+		iconTexture = new ResourceLocation(Dota2Items.ID+":textures/" + texture);
 		return this;
 	}
 	

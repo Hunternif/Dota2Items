@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 
 public class Clarity extends Dota2Item {
 	
-	private static final float DURATION = 30f;
+	public static final float duration = 30f;
 	
 	public Clarity(int id) {
 		super(id);
@@ -23,8 +23,9 @@ public class Clarity extends Dota2Item {
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
 		itemStack.stackSize--;
 		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
-		long endTime = world.getTotalWorldTime() + (long) (DURATION * MCConstants.TICKS_PER_SECOND);
-		stats.addBuff(new BuffInstance(Buff.clarity, player.entityId, endTime));
+		long startTime = world.getTotalWorldTime();
+		long endTime = startTime + (long) (duration * MCConstants.TICKS_PER_SECOND);
+		stats.addBuff(new BuffInstance(Buff.clarity, player.entityId, startTime, endTime, true));
 		player.playSound(Sound.CLARITY.getName(), 1, 1);
 		return itemStack;
 	}

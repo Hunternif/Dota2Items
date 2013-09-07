@@ -57,7 +57,7 @@ public class Mechanics {
 	public static final float GOLD_PER_MOB_HP = 2.5f;
 	public static final float GOLD_AWARDED_PER_LEVEL = 9f;
 	public static final float GOLD_LOST_PER_LEVEL = 30f;
-	public static final int FOOD_THRESHOLD_FOR_HEAL = 10;
+	public static final int FOOD_THRESHOLD_FOR_HEAL = 0;
 	public static final float GOLD_PER_SECOND = 0.25f;
 	public static final float STR_PER_LEVEL = 2;
 	public static final float AGI_PER_LEVEL = 2;
@@ -114,6 +114,7 @@ public class Mechanics {
 	
 	@ForgeSubscribe
 	public void onLivingAttack(LivingAttackEvent event) {
+		//BUG in MC: when the player is hurt, this event is posted twice!
 		// Check if the entity can attack
 		Entity entity = event.source.getEntity();
 		if (!(event.source instanceof EntityDamageSourceIndirect) // Actual attack has already been performed
@@ -122,6 +123,10 @@ public class Mechanics {
 			EntityStats stats = entityStats.get(entity);
 			if (stats != null) {
 				long worldTime = entity.worldObj.getTotalWorldTime();
+				if (stats.lastAttackTime == worldTime) {
+					//See the bug notice above
+					return;
+				}
 				boolean attackTimeoutPassed = stats.lastAttackTime +
 						(long)(stats.getAttackTime() * MCConstants.TICKS_PER_SECOND) <= worldTime;
 				if (stats.canAttack() && attackTimeoutPassed) {
@@ -249,7 +254,7 @@ public class Mechanics {
 			EntityStats stats = entry.getValue();
 			stats.clampMana();
 			for (BuffInstance buffInst : stats.getAppliedBuffs()) {
-				if (!buffInst.isItemPassiveBuff && entity.worldObj.getTotalWorldTime() > buffInst.endTime) {
+				if (!buffInst.isPermanent() && entity.worldObj.getTotalWorldTime() > buffInst.endTime) {
 					stats.removeBuff(buffInst);
 				}
 			}
@@ -317,7 +322,7 @@ public class Mechanics {
 		EntityStats stats = getOrCreateEntityStats(player);
 		// Remove all passive item Buffs to add them again later:
 		for (BuffInstance buffInst : stats.getAppliedBuffs()) {
-			if (buffInst.isItemPassiveBuff) {
+			if (buffInst.isItemPassiveBuff()) {
 				stats.removeBuff(buffInst);
 			}
 		}

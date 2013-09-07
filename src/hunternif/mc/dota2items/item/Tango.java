@@ -1,6 +1,10 @@
 package hunternif.mc.dota2items.item;
 
+import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
+import hunternif.mc.dota2items.core.EntityStats;
+import hunternif.mc.dota2items.core.buff.Buff;
+import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.util.IntVec3;
 import hunternif.mc.dota2items.util.MCConstants;
 import hunternif.mc.dota2items.util.SideHit;
@@ -8,15 +12,10 @@ import hunternif.mc.dota2items.util.TreeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class Tango extends Dota2Item {
-
-	public static final int duration = MathHelper.ceiling_float_int(MCConstants.TICKS_PER_SECOND * 16f); //16 seconds
-	public static final int amplifier = 0;
+	public static final float duration = 16f;
 	
 	/** Look for the tree trunk minus this delta on the Y axis from the click point. */
 	public static final int trunkSearchDeltaY = 3;
@@ -71,28 +70,24 @@ public class Tango extends Dota2Item {
 		}
 		if (block != Block.wood && block != Block.leaves) {
 			return false;
-		} else if (block == Block.wood) {
-			// Supposedly hit the trunk
-			int trunkBaseY = TreeUtil.getTreeTrunkBaseY(world, x, y, z);
-			if (trunkBaseY > 0) {
-				// Yep, found a tree
-				TreeUtil.removeTree(world, new IntVec3(x, trunkBaseY, z), true);
-				itemStack.stackSize --;
-				world.playSoundEffect(x, trunkBaseY, z, Sound.TREE_FALL.getName(), 1.0f, 1.0f);
-				player.addPotionEffect(new PotionEffect(Potion.regeneration.id, duration, amplifier));
-				return true;
+		} else if (block == Block.wood || block == Block.leaves) {
+			IntVec3 trunkBase = null;
+			if (block == Block.wood) {
+				// Supposedly hit the trunk
+				trunkBase = new IntVec3(x, TreeUtil.getTreeTrunkBaseY(world, x, y, z), z);
 			} else {
-				return false;
+				// Hit some leaves. Looking for the closest tree trunk around
+				trunkBase = TreeUtil.findTreeTrunkInBox(world, x, y, z, trunkSearchDeltaY, trunkSearchRadius);
 			}
-		} else if (block == Block.leaves) {
-			// Hit some leaves. Looking for the closest tree trunk around
-			IntVec3 trunkBase = TreeUtil.findTreeTrunkInBox(world, x, y, z, trunkSearchDeltaY, trunkSearchRadius);
-			if (trunkBase != null) {
+			if (trunkBase != null && trunkBase.y > 0) {
 				// Yep, found a tree
 				TreeUtil.removeTree(world, trunkBase, true);
 				itemStack.stackSize --;
-				world.playSoundEffect(trunkBase.x, trunkBase.y, trunkBase.z, Sound.TREE_FALL.getName(), 1.0f, 1.0f);
-				player.addPotionEffect(new PotionEffect(Potion.regeneration.id, duration, amplifier));
+				EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
+				long startTime = world.getTotalWorldTime();
+				long endTime = startTime + (long) (duration * MCConstants.TICKS_PER_SECOND);
+				stats.addBuff(new BuffInstance(Buff.tango, player.entityId, startTime, endTime, true));
+				player.playSound(Sound.TANGO.getName(), 1, 1);
 				return true;
 			} else {
 				return false;

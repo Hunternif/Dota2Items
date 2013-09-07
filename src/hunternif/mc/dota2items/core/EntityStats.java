@@ -505,7 +505,7 @@ public class EntityStats implements IExtendedEntityProperties {
 		synchronized (appliedBuffs) {
 			for (BuffInstance buffInst : appliedBuffs) {
 				if (buffInst.buff.spellResistance != 0 && !appliedItems.contains(buffInst.buff)) {
-					if (buffInst.isItemPassiveBuff) {
+					if (buffInst.isItemPassiveBuff()) {
 						appliedItems.add(buffInst.buff);
 					}
 					resistance += buffInst.buff.spellResistance;

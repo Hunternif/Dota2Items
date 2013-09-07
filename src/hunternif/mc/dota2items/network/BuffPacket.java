@@ -17,32 +17,36 @@ import cpw.mods.fml.relauncher.Side;
 public class BuffPacket extends CustomPacket {
 	private int buffID;
 	private int entityID;
+	private long startTime;
 	private long endTime;
-	private boolean isItemPassiveBuff;
+	private boolean isFriendly;
 	
 	public BuffPacket() {}
 	
 	public BuffPacket(BuffInstance inst) {
 		buffID = inst.buff.id;
 		entityID = inst.entityID;
+		startTime = inst.startTime;
 		endTime = inst.endTime;
-		isItemPassiveBuff = inst.isItemPassiveBuff;
+		isFriendly = inst.isFriendly;
 	}
 
 	@Override
 	public void write(ByteArrayDataOutput out) {
 		out.writeInt(buffID);
 		out.writeInt(entityID);
+		out.writeLong(startTime);
 		out.writeLong(endTime);
-		out.writeBoolean(isItemPassiveBuff);
+		out.writeBoolean(isFriendly);
 	}
 
 	@Override
 	public void read(ByteArrayDataInput in) throws ProtocolException {
 		buffID = in.readInt();
 		entityID = in.readInt();
+		startTime = in.readLong();
 		endTime = in.readLong();
-		isItemPassiveBuff = in.readBoolean();
+		isFriendly = in.readBoolean();
 	}
 
 	@Override
@@ -51,7 +55,7 @@ public class BuffPacket extends CustomPacket {
 			Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(entityID);
 			if (entity != null && entity instanceof EntityLivingBase) {
 				EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats((EntityLivingBase)entity);
-				BuffInstance buffInst = new BuffInstance(Buff.buffList[buffID], entityID, endTime, isItemPassiveBuff);
+				BuffInstance buffInst = new BuffInstance(Buff.buffList[buffID], entityID, startTime, endTime, isFriendly);
 				stats.addBuff(buffInst);
 			}
 		} else {

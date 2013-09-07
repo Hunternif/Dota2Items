@@ -27,7 +27,7 @@ public class EntityStatsSyncPacket extends CustomPacket {
 	public EntityStatsSyncPacket() {}
 	
 	public EntityStatsSyncPacket(EntityStats stats) {
-		entityID = stats.entityId;
+		entityID = stats.entity.entityId;
 		partialHalfHeart = stats.partialHalfHeart;
 		mana = stats.getFloatMana();
 		reliableGold = stats.getReliableGold();

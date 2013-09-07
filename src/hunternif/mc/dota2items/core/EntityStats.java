@@ -45,6 +45,7 @@ public class EntityStats implements IExtendedEntityProperties {
 	public static final int BASE_PLAYER_AGI = 0;
 	public static final int BASE_PLAYER_INT = 0;
 	public static final int BASE_PLAYER_TOTAL_HP = BASE_PLAYER_HP + BASE_PLAYER_STR*MAX_HP_PER_STR;
+	public static final int BASE_PLAYER_MOVE_SPEED = 300;
 	
 	private static final String TAG_MANA = "D2IMana";
 	private static final String TAG_PARTIAL_HP = "D2IPartialHp";
@@ -55,7 +56,7 @@ public class EntityStats implements IExtendedEntityProperties {
 	private static final String TAG_ATTACKERS = "D2IAttackers";
 	
 	
-	public int entityId;
+	public EntityLivingBase entity;
 	/** Measured in ticks the Entity has existed. */
 	public long lastSyncTime;
 	
@@ -97,21 +98,24 @@ public class EntityStats implements IExtendedEntityProperties {
 	
 	
 	public EntityStats(EntityLivingBase entity) {
-		entityId = entity.entityId;
+		this.entity = entity;
 		AttributeInstance attrMaxHealth = entity.func_110148_a(SharedMonsterAttributes.field_111267_a);
 		// When EntityPlayer is Constructing, all his attributes are null
 		float maxHealth = attrMaxHealth == null ? MCConstants.MINECRAFT_PLAYER_HP : (float)attrMaxHealth.func_111126_e();
 		baseHealth = MathHelper.floor_float(maxHealth * (float)BASE_PLAYER_HP / MCConstants.MINECRAFT_PLAYER_HP);
-		baseManaRegen = 0.01f;
 		if (entity instanceof EntityPlayer) {
+			baseManaRegen = 0.01f;
 			baseHealthRegen = 0.25f;
 			baseAttackTime = 1.3f;
-			baseMovementSpeed = 300;
+			baseMovementSpeed = BASE_PLAYER_MOVE_SPEED;
 			//baseSpellResistance = 25; Cancelled so that normal Minecraft magic hurts as much as before.
 		} else {
+			baseManaRegen = 0.75f;
 			baseHealthRegen = 0.5f;
 			baseAttackTime = 0.8f;
-			baseMovementSpeed = 325;
+			AttributeInstance attrMoveSpeed = entity.func_110148_a(SharedMonsterAttributes.field_111263_d);
+			double baseMoveSpeed = attrMoveSpeed.func_111125_b();
+			baseMovementSpeed = MathHelper.floor_double((double)BASE_PLAYER_MOVE_SPEED * baseMoveSpeed / MCConstants.MINECRAFT_PLAYER_MOVE_SPEED);
 		}
 		if (entity instanceof EntityGolem || entity instanceof IBossDisplayData) {
 			baseMagicImmune = true;
@@ -272,7 +276,7 @@ public class EntityStats implements IExtendedEntityProperties {
 	
 	/** @return movement speed calculated for Minecraft. */
 	public float getMovementSpeed() {
-		return (float)getDotaMovementSpeed() * MCConstants.MINECRAFT_PLAYER_MOVE_SPEED / (float) baseMovementSpeed;
+		return (float)getDotaMovementSpeed() * MCConstants.MINECRAFT_PLAYER_MOVE_SPEED / (float) BASE_PLAYER_MOVE_SPEED;
 	}
 	public int getDotaMovementSpeed() {
 		int movementSpeed = baseMovementSpeed;
@@ -293,9 +297,9 @@ public class EntityStats implements IExtendedEntityProperties {
 				}
 			}
 		}
-		if (movementSpeed > MAX_MOVE_SPEED) {
+		/*if (movementSpeed > MAX_MOVE_SPEED) {
 			movementSpeed = MAX_MOVE_SPEED;
-		}
+		}*/
 		return movementSpeed;
 	}
 	
@@ -580,7 +584,7 @@ public class EntityStats implements IExtendedEntityProperties {
 		NBTTagList buffsList = compound.getTagList(TAG_BUFFS);
 		for (int i = 0; i < buffsList.tagCount(); i++) {
 			NBTTagCompound buffTag = (NBTTagCompound) buffsList.tagAt(i);
-			BuffInstance buffInst = BuffInstance.fromNBT(buffTag, entityId);
+			BuffInstance buffInst = BuffInstance.fromNBT(buffTag, entity.entityId);
 			addBuff(buffInst);
 		}
 		NBTTagList attackersList = compound.getTagList(TAG_ATTACKERS);

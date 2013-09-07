@@ -504,7 +504,7 @@ public class Mechanics {
 		if (props != null) {
 			EntityStats oldStats = getOrCreateEntityStats(player);
 			EntityStats newStats = (EntityStats)props;
-			newStats.entityId = oldStats.entityId;
+			newStats.entity = player;
 			newStats.setGold(oldStats.getReliableGold(), oldStats.getUnreliableGold());
 			Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(player));
 			entityStats.put(player, newStats);

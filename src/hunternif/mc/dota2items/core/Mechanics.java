@@ -1,6 +1,7 @@
 package hunternif.mc.dota2items.core;
 
 import hunternif.mc.dota2items.Dota2Items;
+import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.item.Dota2Item;
@@ -182,6 +183,7 @@ public class Mechanics {
 				player.onCriticalHit(event.entityLiving);
 				Dota2Items.logger.info("crit");
 				dotaDamage *= critMultiplier;
+				player.worldObj.playSoundAtEntity(player, Sound.CRIT.getName(), 1, 1);
 			}
 			// If the player is the attacker, his target must be given EntityStats:
 			if (targetStats == null) {

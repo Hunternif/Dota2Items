@@ -66,6 +66,9 @@ public class Buff {
 	@BuffLineFormat("[Bonus Magic Damage:] {%d%%}")
 	public int magicAmplify = 0;
 	
+	@BuffLineFormat("[Lifesteal:] {%d%%")
+	public int lifesteal = 0;
+	
 	public boolean stacks = true;
 	
 	public boolean isDisplayed = false;
@@ -234,6 +237,11 @@ public class Buff {
 		damageBlockMelee = melee;
 		damageBlockRanged = ranged;
 		damageBlockChance = chancePercent;
+		return this;
+	}
+	
+	public Buff setLifesteal(int percent) {
+		this.lifesteal = percent;
 		return this;
 	}
 	

@@ -150,6 +150,7 @@ public class Mechanics {
 		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(event.entity));
 		// Check if the target entity is invulnerable or if damage is magical and target is magic immune
 		EntityStats targetStats = entityStats.get(event.entityLiving);
+		EntityStats sourceStats = null;
 		if (targetStats != null) {
 			if (targetStats.isInvulnerable()) {
 				Dota2Items.logger.info("invulnerable");
@@ -163,7 +164,7 @@ public class Mechanics {
 			// Try evading the attack
 			boolean trueStrike = false;
 			if (event.source.getEntity() instanceof EntityLivingBase) {
-				EntityStats sourceStats = entityStats.get(event.source.getEntity());
+				sourceStats = entityStats.get(event.source.getEntity());
 				trueStrike = sourceStats != null && sourceStats.isTrueStrike();
 			}
 			if (targetStats.canEvade() && !trueStrike) {
@@ -176,7 +177,7 @@ public class Mechanics {
 		// Apply attack bonuses to the source player
 		if (event.source.getEntity() instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) event.source.getEntity();
-			EntityStats sourceStats = getOrCreateEntityStats(player);
+			sourceStats = getOrCreateEntityStats(player);
 			dotaDamage = sourceStats.getDamage(dotaDamage, !event.source.isProjectile());
 			float critMultiplier = sourceStats.getCriticalMultiplier();
 			if (critMultiplier > 1f) {
@@ -196,7 +197,7 @@ public class Mechanics {
 		// Apply armor bonuses to the player being hurt
 		int armor = 0;
 		if (targetStats != null) {
-			armor = targetStats.getArmor(armor);
+			armor = targetStats.getArmor();
 			// Apply damage block:
 			ItemStack targetEquippedItem = event.entityLiving.getCurrentItemOrArmor(0);
 			boolean targetIsRanged = targetEquippedItem != null &&
@@ -221,9 +222,19 @@ public class Mechanics {
 				armorMultiplier = 2f - (float) Math.pow(0.94, (double) -armor);
 			}
 			dotaDamage *= armorMultiplier;
+			
+			// Apply lifesteal:
+			if (sourceStats != null) {
+				//TODO add lifesteal particle effect
+				//TODO implement Unique Attack Modifiers
+				float lifeStolen = dotaDamage * sourceStats.getLifestealMultiplier();
+				sourceStats.heal(lifeStolen);
+			}
 		}
 		
-		// Account for the fact that Stats may give bonus health.
+		//--------------- Recalculate Dota damage to Minecraft -----------------
+		
+		// If target has bonus health, decrease damage accrodringly:
 		float bonusHealthMultiplier = 1f;
 		if (targetStats != null) {
 			bonusHealthMultiplier = (float)targetStats.baseHealth / (float)targetStats.getMaxHealth();
@@ -234,14 +245,7 @@ public class Mechanics {
 		int intMCDamage = MathHelper.floor_float(floatMCDamage);
 		// Store or apply the partial damage, that doesn't constitute enough to deplete 1 half-heart.
 		if (targetStats != null) {
-			float partialDamage = floatMCDamage - (float)intMCDamage - targetStats.partialHalfHeart;
-			int partialDamageFloor = MathHelper.floor_float(partialDamage);
-			intMCDamage += partialDamageFloor;
-			partialDamage -= (float)partialDamageFloor;
-			targetStats.partialHalfHeart = -partialDamage;
-			if (partialDamageFloor > 0) {
-				Dota2Items.logger.info(String.format("Applied carry-over damage: %d", partialDamageFloor));
-			}
+			intMCDamage = targetStats.getDamageFloor(floatMCDamage);
 		}
 		if (event.entityLiving instanceof EntityPlayer || event.source.getEntity() instanceof EntityPlayer) {
 			Dota2Items.logger.info(String.format("Changed damage from %.2f to %.2f", event.ammount, floatMCDamage));
@@ -451,17 +455,7 @@ public class Mechanics {
 	
 	private static void regenHealthManaAndGold(EntityLivingBase entity, EntityStats stats) {
 		if (shouldHeal(entity, stats)) {
-			// func_110138_aP = "getMaxHealth"
-			float halfHeartEquivalent = (float)stats.getMaxHealth() / (float)entity.func_110138_aP();
-			float partialHealth = stats.partialHalfHeart + stats.getHealthRegen() / MCConstants.TICKS_PER_SECOND / halfHeartEquivalent;
-			if (partialHealth >= 1) {
-				int floor = MathHelper.floor_float(partialHealth);
-				entity.heal(floor);
-				partialHealth -= (float) floor;
-			}
-			stats.partialHalfHeart = partialHealth;
-		} else if (stats.partialHalfHeart > 0) {
-			stats.partialHalfHeart = 0;
+			stats.heal(stats.getHealthRegen() / MCConstants.TICKS_PER_SECOND);
 		}
 		// func_110143_aJ = "getHealth"
 		if (entity.func_110143_aJ() > 0 && stats.getMana() < stats.getMaxMana()) {

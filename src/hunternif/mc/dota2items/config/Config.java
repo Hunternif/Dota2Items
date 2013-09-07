@@ -173,7 +173,9 @@ public class Config {
 			.setPassiveBuff(new Buff("Cloak").setSpellResistance(15))
 			.setDescription("Multiple instances of spell resistance from items do not stack.");
 //		gemOfTrueSight
-//		morbidMask
+		public static CfgInfo<Dota2Item> morbidMask = new CfgInfo<Dota2Item>(27062, "Morbid Mask")
+				.setPrice(900).setColumn(Column.ARCANE)
+				.setPassiveBuff(new Buff("Morbid Mask").setLifesteal(15));
 //		ghostScepter
 		public static CfgInfo<Dota2Item> talismanOfEvasion = new CfgInfo<Dota2Item>(27035, "Talisman of Evasion")
 				.setPrice(1800).setColumn(Column.ARCANE)
@@ -313,7 +315,7 @@ public class Config {
 //		eyeOfSkadi
 //		satanic
 		
-		// Last item ID: 27061
+		// Last item ID: 27062
 		
 		// Blocks
 		public static CfgInfo<BlockCycloneContainer> cycloneContainer = new CfgInfo<BlockCycloneContainer>(2700, "Cyclone Container");

@@ -1,5 +1,6 @@
 package hunternif.mc.dota2items.core;
 
+import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.entity.IInvulnerableEntity;
@@ -177,6 +178,36 @@ public class EntityStats implements IExtendedEntityProperties {
 		return regen + HP_REGEN_PER_STR*(float)getStrength();
 	}
 	
+	public void heal(float dotaHealthAmount) {
+		// func_110138_aP = "getMaxHealth"
+		float halfHeartEquivalent = (float)getMaxHealth() / (float)entity.func_110138_aP();
+		float partialHealth = partialHalfHeart + dotaHealthAmount / halfHeartEquivalent;
+		if (partialHealth >= 1) {
+			int floor = MathHelper.floor_float(partialHealth);
+			entity.heal(floor);
+			partialHealth -= (float) floor;
+			if (entity.func_110143_aJ() == entity.func_110138_aP()) {
+				// At full health
+				partialHealth = 0;
+			}
+		}
+		partialHalfHeart = partialHealth;
+	}
+	
+	/** Store or apply the partial damage, that doesn't constitute enough to deplete 1 half-heart. */
+	public int getDamageFloor(float floatMCDamage) {
+		int intMCDamage = MathHelper.floor_float(floatMCDamage);
+		float partialDamage = floatMCDamage - (float)intMCDamage - partialHalfHeart;
+		int partialDamageFloor = MathHelper.floor_float(partialDamage);
+		intMCDamage += partialDamageFloor;
+		partialDamage -= (float)partialDamageFloor;
+		partialHalfHeart = -partialDamage;
+		if (partialDamageFloor > 0) {
+			Dota2Items.logger.info(String.format("Applied carry-over damage: %d", partialDamageFloor));
+		}
+		return intMCDamage;
+	}
+	
 	public int getMaxMana() {
 		int mana = baseMana;
 		for (BuffInstance buffInst : appliedBuffs) {
@@ -245,8 +276,8 @@ public class EntityStats implements IExtendedEntityProperties {
 		return damage;
 	}
 	
-	public int getArmor(int basicArmor) {
-		int armor = basicArmor + this.baseArmor;
+	public int getArmor() {
+		int armor = this.baseArmor;
 		for (BuffInstance buffInst : appliedBuffs) {
 			armor += buffInst.buff.armor;
 		}
@@ -462,7 +493,7 @@ public class EntityStats implements IExtendedEntityProperties {
 	private static CritDamageComparator critDamageComparator = new CritDamageComparator();
 	
 	public float getSpellResistance() {
-		float resistance = 0;
+		float resistance = baseSpellResistance;
 		List<Buff> appliedItems = new ArrayList<Buff>();
 		for (BuffInstance buffInst : appliedBuffs) {
 			if (buffInst.buff.spellResistance != 0 && !appliedItems.contains(buffInst.buff)) {
@@ -505,6 +536,14 @@ public class EntityStats implements IExtendedEntityProperties {
 		return false;
 	}
 
+	public float getLifestealMultiplier() {
+		float percent = 0;
+		for (BuffInstance buffInst : appliedBuffs) {
+			percent += buffInst.buff.lifesteal;
+		}
+		return percent / 100f;
+	}
+	
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {
 		compound.setFloat(TAG_MANA, getFloatMana());

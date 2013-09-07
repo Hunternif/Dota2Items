@@ -5,7 +5,6 @@ import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.Mechanics;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
-import hunternif.mc.dota2items.util.MathUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,8 +101,8 @@ public class GuiDotaStats {
 		mc.fontRenderer.drawString(sb.toString(), left + 32 - strlen/2, top + 8, COLOR_REGULAR);
 		
 		sb = new StringBuilder();
-		baseValue = stats.baseArmor;
-		bonus = stats.getArmor(baseValue);
+		baseValue = stats.baseArmor + MathHelper.floor_float((float)stats.getAgility()*EntityStats.ARMOR_PER_AGI);
+		bonus = stats.getArmor() - baseValue;
 		formatStat(sb, baseValue, bonus);
 		strlen = mc.fontRenderer.getStringWidth(sb.toString());
 		mc.fontRenderer.drawString(sb.toString(), left + 18 - strlen/2, top + 44, COLOR_REGULAR);

@@ -1,9 +1,12 @@
 package hunternif.mc.dota2items.client.gui;
 
+import hunternif.mc.dota2items.Dota2Items;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Tessellator;
@@ -49,18 +52,23 @@ public class FontRendererWithIcons extends FontRenderer {
 						iconInText.icon = icon;
 						iconInText.posX = i;
 						iconsFound.add(iconInText);
+						i += icon.key.length() - 1;
 					}
 				}
 			}
 		}
 		Collections.sort(iconsFound, iconInTextComparator);
 		int posX = 0;
-		for (IconInTextPos iconInText : iconsFound) {
-			String lastTextChunk = text.substring(posX, iconInText.posX);
-			posX = iconInText.posX + iconInText.icon.key.length();
-			x = super.drawString(lastTextChunk, x, y, color, dropShadow);
-			renderIcon(iconInText.icon, x, y);
-			x += iconInText.icon.width + iconInText.icon.kerning;
+		try {
+			for (IconInTextPos iconInText : iconsFound) {
+				String lastTextChunk = text.substring(posX, iconInText.posX);
+				posX = iconInText.posX + iconInText.icon.key.length();
+				x = super.drawString(lastTextChunk, x, y, color, dropShadow);
+				renderIcon(iconInText.icon, x, y);
+				x += iconInText.icon.width + iconInText.icon.kerning;
+			}
+		} catch (Exception e) {
+			Dota2Items.logger.log(Level.SEVERE, "Error rendering text: " + text, e);
 		}
 		if (posX < text.length()) {
 			String veryLastTextChunk = text.substring(posX);

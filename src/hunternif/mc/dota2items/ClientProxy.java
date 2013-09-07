@@ -59,7 +59,7 @@ public class ClientProxy extends CommonProxy {
 	public static GuiGold guiGold = new GuiGold();
 	public static GuiManaBar guiManaBar = new GuiManaBar(Minecraft.getMinecraft());
 	public static GuiHealthAndMana guiHpAndMana = new GuiHealthAndMana(Minecraft.getMinecraft());
-	public static GuiDotaStats guiStats = new GuiDotaStats();
+	public static GuiDotaStats guiStats = new GuiDotaStats(Minecraft.getMinecraft());
 	
 	public static SwingRenderer swingRenderer = new SwingRenderer();
 	

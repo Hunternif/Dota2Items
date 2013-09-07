@@ -26,7 +26,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlinkDagger extends CooldownItem {
 
-	public static final double maxDistance = 30;
+	public static final double maxDistance = 50;
 	public static final float hurtCooldown = 3;
 	public static final float usualCooldown = 14;
 	

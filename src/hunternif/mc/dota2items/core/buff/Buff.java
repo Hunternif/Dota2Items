@@ -68,7 +68,7 @@ public class Buff {
 	
 	public boolean stacks = true;
 	
-	public boolean isDisplayed = true; //TODO set false
+	public boolean isDisplayed = false;
 	public ResourceLocation iconTexture;
 	
 	

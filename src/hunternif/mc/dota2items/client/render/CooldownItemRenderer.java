@@ -1,6 +1,7 @@
 package hunternif.mc.dota2items.client.render;
 
 import hunternif.mc.dota2items.client.event.CooldownEndDisplayEvent;
+import hunternif.mc.dota2items.client.gui.RenderHelper;
 import hunternif.mc.dota2items.core.ClientTickHandler;
 import hunternif.mc.dota2items.item.CooldownItem;
 import hunternif.mc.dota2items.util.MathUtil;
@@ -104,41 +105,8 @@ public class CooldownItemRenderer implements IItemRenderer {
 			return;
 		}
 		
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDepthMask(false);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		Tessellator tessellator = Tessellator.instance;
-		tessellator.startDrawing(GL11.GL_TRIANGLE_FAN);
-		tessellator.setColorRGBA(0, 0, 0, 128);
-		
 		float angle = item.getRemainingCooldown(itemStack) / item.getCooldown(itemStack) * MathUtil._2_PI;
-		tessellator.addVertex(8D, 8D, 0.0D); // Center
-		tessellator.addVertex(8D, 0D, 0.0D); // Top point
-		// Top left corner
-		if (angle >= MathUtil.PI_1_4) tessellator.addVertex(0D, 0D, 0.0D);
-		// Bottom left corner
-		if (angle >= MathUtil.PI_3_4) tessellator.addVertex(0D, 16D, 0.0D);
-		// Bottom right corner
-		if (angle >= MathUtil.PI_5_4) tessellator.addVertex(16D, 16D, 0.0D);
-		// Top right MathUtil.corner
-		if (angle >= MathUtil.PI_7_4) tessellator.addVertex(16D, 0D, 0.0D);
-		// From this point on, calculate current hand position
-		if (angle > MathUtil.PI_7_4)
-			tessellator.addVertex(8D*(1F - MathUtil.tan(angle)), 0D, 0.0D);
-		else if (angle > MathUtil.PI_5_4)
-			tessellator.addVertex(16D, 8D*(1F + MathUtil.cot(angle)), 0.0D);
-		else if (angle > MathUtil.PI_3_4)
-			tessellator.addVertex(8D*(1F + MathUtil.tan(angle)), 16D, 0.0D);
-		else if (angle > MathUtil.PI_1_4)
-			tessellator.addVertex(0D, 8D*(1F - MathUtil.cot(angle)), 0.0D);
-		else
-			tessellator.addVertex(8D*(1F - MathUtil.tan(angle)), 0D, 0.0D);
-		
-		tessellator.draw();
-		GL11.glDepthMask(true);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		RenderHelper.drawShadowClock(angle, 0, 0, 16, 16, 0.5f);
 		
 		// Add remaining cooldown text
 		String text = String.valueOf(MathHelper.ceiling_float_int(item.getRemainingCooldown(itemStack)));

@@ -80,7 +80,8 @@ public class EulsScepter extends CooldownItem {
 			
 			long startTime = entity.worldObj.getTotalWorldTime();
 			long cycloneEndTime = startTime + (long) (TileEntityCyclone.duration * MCConstants.TICKS_PER_SECOND);
-			BuffInstance buffInst = new BuffInstance(Buff.inCyclone, entity.entityId, startTime, cycloneEndTime, false);
+			boolean usingOnSelf = player == entity;
+			BuffInstance buffInst = new BuffInstance(Buff.inCyclone, entity.entityId, startTime, cycloneEndTime, usingOnSelf);
 			EntityStats entityStats = Dota2Items.mechanics.getOrCreateEntityStats((EntityLivingBase)entity);
 			entityStats.addBuff(buffInst);
 			PacketDispatcher.sendPacketToAllPlayers(new BuffPacket(buffInst).makePacket());

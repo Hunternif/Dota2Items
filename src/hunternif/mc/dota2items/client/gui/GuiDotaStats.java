@@ -4,7 +4,12 @@ import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.Mechanics;
+import hunternif.mc.dota2items.core.buff.BuffInstance;
+import hunternif.mc.dota2items.util.MathUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import net.minecraft.client.Minecraft;
@@ -18,6 +23,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.HashMultimap;
@@ -29,9 +35,19 @@ public class GuiDotaStats {
 	public static final int HEIGHT = 60;
 	private static final int COLOR_REGULAR = 0xffffff;
 	private static final int COLOR_BONUS = 0x26B117;
+	public static final int BUFF_SPACING = 2;
+	
+	private Minecraft mc;
+	private static final int UPDATE_BUFFS_INTERVAL = 20;
+	
+	private long lastUpdateTick = 0;
+	private List<GuiBuff> buffIcons = new ArrayList<GuiBuff>();
+	
+	public GuiDotaStats(Minecraft mc) {
+		this.mc = mc;
+	}
 	
 	public void render() {
-		Minecraft mc = Minecraft.getMinecraft();
 		// Show stats when the inventory is open:
 		if (!(mc.currentScreen instanceof GuiContainer)) {
 			return;
@@ -116,6 +132,27 @@ public class GuiDotaStats {
 		formatStat(sb, baseValue, bonus);
 		strlen = mc.fontRenderer.getStringWidth(sb.toString());
 		mc.fontRenderer.drawString(sb.toString(), left + 93 - strlen/2, top + 44, COLOR_REGULAR);
+		
+		// Render active buffs and debuffs:
+		if (lastUpdateTick != mc.thePlayer.ticksExisted) {
+			lastUpdateTick = mc.thePlayer.ticksExisted;
+			updateBuffIcons(stats);
+		} else {
+			System.out.println("lol");
+		}
+		for (GuiBuff buffIcon : buffIcons) {
+			buffIcon.render();
+		}
+		// Draw hovering text description of the buff:
+		int mouseX = Mouse.getEventX() * mc.currentScreen.width / mc.displayWidth;
+		int mouseY = mc.currentScreen.height - Mouse.getEventY() * mc.currentScreen.height / mc.displayHeight - 1;
+		for (GuiBuff buffIcon : buffIcons) {
+			if (buffIcon.isMouseOver(mouseX, mouseY)) {
+				List<String> hoverStrings = Arrays.asList(buffIcon.buffInst.buff.name);
+				RenderHelper.drawHoveringText(hoverStrings, mouseX, mouseY, mc.fontRenderer);
+				break;
+			}
+		}
 	}
 	
 	private static void formatStat(StringBuilder sb, int baseValue, int bonus) {
@@ -130,6 +167,22 @@ public class GuiDotaStats {
 			sb.append(EnumChatFormatting.GREEN.toString()).append("+").append(bonus);
 		} else if (bonus < 0) {
 			sb.append(EnumChatFormatting.RED.toString()).append(bonus);
+		}
+	}
+	
+	private void updateBuffIcons(EntityStats stats) {
+		buffIcons.clear();
+		int buffX = BUFF_SPACING;
+		int buffY = mc.currentScreen.height - HEIGHT - GuiBuff.BUFF_FRAME_SIZE - BUFF_SPACING;
+		for (BuffInstance buffInst : stats.getAppliedBuffs()) {
+			if (buffInst.buff.isDisplayed) {
+				buffIcons.add(new GuiBuff(buffInst, buffX, buffY));
+				buffX += GuiBuff.BUFF_FRAME_SIZE + BUFF_SPACING;
+				if (buffX > WIDTH - GuiBuff.BUFF_FRAME_SIZE) {
+					buffX = BUFF_SPACING;
+					buffY -= GuiBuff.BUFF_FRAME_SIZE + BUFF_SPACING;
+				}
+			}
 		}
 	}
 }

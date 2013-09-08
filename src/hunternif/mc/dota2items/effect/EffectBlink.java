@@ -6,6 +6,7 @@ import java.util.Random;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -45,7 +46,7 @@ public class EffectBlink extends Effect {
 			double x = (Double) inst.data[0];
 			double y = (Double) inst.data[1];
 			double z = (Double) inst.data[2];
-			ParticleBlink particle = new ParticleBlink(world, x + rX, y + rY, z + rZ, velX, velY, velZ);
+			EntityFX particle = new ParticleBlink(world, x + rX, y + rY, z + rZ, velX, velY, velZ);
 			effectRenderer.addEffect(particle);
 		}
 	}

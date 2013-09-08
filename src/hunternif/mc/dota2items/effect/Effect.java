@@ -7,9 +7,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class Effect {
-	public static final Effect[] effectList = new Effect[2];
+	public static final Effect[] effectList = new Effect[128];
 	public static final Effect blink = new EffectBlink(0);
 	public static final Effect cyclone = new EffectCyclone(1);
+	public static final Effect lifesteal = new EffectLifesteal(2);
 	
 	public final int id;
 	

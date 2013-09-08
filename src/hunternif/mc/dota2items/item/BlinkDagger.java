@@ -209,8 +209,8 @@ public class BlinkDagger extends CooldownItem {
 			// Send effect packets to other players
 			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 			if (server != null) {
-				server.getConfigurationManager().sendToAllNearExcept(player, srcX, srcY, srcZ, 30D, player.dimension, new EffectPacket(srcEffect).makePacket());
-				server.getConfigurationManager().sendToAllNearExcept(player, destX, destY, destZ, 30D, player.dimension, new EffectPacket(destEffect).makePacket());
+				server.getConfigurationManager().sendToAllNearExcept(player, srcX, srcY, srcZ, 256, player.dimension, new EffectPacket(srcEffect).makePacket());
+				server.getConfigurationManager().sendToAllNearExcept(player, destX, destY, destZ, 256, player.dimension, new EffectPacket(destEffect).makePacket());
 			}
 		} else {
 			// Client side. Render blink effect.

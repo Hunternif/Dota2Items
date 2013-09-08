@@ -4,7 +4,10 @@ import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
+import hunternif.mc.dota2items.effect.Effect;
+import hunternif.mc.dota2items.effect.EffectInstance;
 import hunternif.mc.dota2items.item.Dota2Item;
+import hunternif.mc.dota2items.network.EffectPacket;
 import hunternif.mc.dota2items.util.MCConstants;
 
 import java.util.ArrayList;
@@ -41,6 +44,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 
@@ -225,10 +229,18 @@ public class Mechanics {
 			
 			// Apply lifesteal:
 			if (sourceStats != null) {
-				//TODO add lifesteal particle effect
 				//TODO implement Unique Attack Modifiers
 				float lifeStolen = dotaDamage * sourceStats.getLifestealMultiplier();
 				sourceStats.heal(lifeStolen);
+				Entity entity = event.source.getEntity();
+				EffectInstance effect = new EffectInstance(Effect.lifesteal, entity.posX, entity.posY+1, entity.posZ);
+				// Send effect packets to other players
+				MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+				if (server != null) {
+					server.getConfigurationManager().sendToAllNear(
+							entity.posX, entity.posY, entity.posZ, 256, entity.dimension,
+							new EffectPacket(effect).makePacket());
+				}
 			}
 		}
 		

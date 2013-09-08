@@ -31,6 +31,7 @@ public class ParticleLifesteal extends Dota2Particle {
 			setAlphaF(ageFraq*5f);
 		}
 		if (ageFraq > 0.5f) {
+			this.particleTextureIndexX = 7;
 			setAlphaF(1f - (ageFraq - 0.5f) * 2f);
 		}
 		

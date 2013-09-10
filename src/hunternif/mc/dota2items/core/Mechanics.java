@@ -155,6 +155,9 @@ public class Mechanics {
 		// Check if the target entity is invulnerable or if damage is magical and target is magic immune
 		EntityStats targetStats = entityStats.get(event.entityLiving);
 		EntityStats sourceStats = null;
+		if (event.source.getEntity() instanceof EntityLivingBase) {
+			sourceStats = entityStats.get(event.source.getEntity());
+		}
 		if (targetStats != null) {
 			if (targetStats.isInvulnerable()) {
 				Dota2Items.logger.info("invulnerable");
@@ -166,11 +169,7 @@ public class Mechanics {
 				return;
 			}
 			// Try evading the attack
-			boolean trueStrike = false;
-			if (event.source.getEntity() instanceof EntityLivingBase) {
-				sourceStats = entityStats.get(event.source.getEntity());
-				trueStrike = sourceStats != null && sourceStats.isTrueStrike();
-			}
+			boolean trueStrike = sourceStats != null && sourceStats.isTrueStrike();
 			if (targetStats.canEvade() && !trueStrike) {
 				Dota2Items.logger.info("evaded");
 				event.setCanceled(true);
@@ -178,23 +177,23 @@ public class Mechanics {
 			}
 		}
 		
-		// Apply attack bonuses to the source player
-		if (event.source.getEntity() instanceof EntityPlayer) {
-			EntityPlayer player = (EntityPlayer) event.source.getEntity();
-			sourceStats = getOrCreateEntityStats(player);
+		// Apply attack bonuses to the attacker
+		if (sourceStats != null) {
 			dotaDamage = sourceStats.getDamage(dotaDamage, !event.source.isProjectile());
 			float critMultiplier = sourceStats.getCriticalMultiplier();
 			if (critMultiplier > 1f) {
-				player.onCriticalHit(event.entityLiving);
+				if (sourceStats.entity instanceof EntityPlayer) {
+					((EntityPlayer)sourceStats.entity).onCriticalHit(event.entityLiving);
+				}
 				Dota2Items.logger.info("crit");
 				dotaDamage *= critMultiplier;
-				player.worldObj.playSoundAtEntity(player, Sound.CRIT.getName(), 1, 1);
+				sourceStats.entity.worldObj.playSoundAtEntity(sourceStats.entity, Sound.CRIT.getName(), 1, 1);
 			}
 			// If the player is the attacker, his target must be given EntityStats:
-			if (targetStats == null) {
+			if (targetStats == null && sourceStats.entity instanceof EntityPlayer) {
 				targetStats = new EntityStats(event.entityLiving);
 				entityStats.put(event.entityLiving, targetStats);
-				targetStats.addPlayerAttackerID(player.entityId);
+				targetStats.addPlayerAttackerID(sourceStats.entity.entityId);
 			}
 		}
 		

@@ -13,6 +13,7 @@ import hunternif.mc.dota2items.item.GoldCoin;
 import hunternif.mc.dota2items.item.HandOfMidas;
 import hunternif.mc.dota2items.item.ItemRecipe;
 import hunternif.mc.dota2items.item.QuellingBlade;
+import hunternif.mc.dota2items.item.Salve;
 import hunternif.mc.dota2items.item.Tango;
 
 public class Config {
@@ -66,7 +67,10 @@ public class Config {
 				.setPrice(30).setColumn(Column.CONSUMABLES)
 				.setDescription("Use: Eat Tree - Consume a tree to restore HP over time. "
 						+ "Comes with 3 charges.\n[Duration:] {16}\n[Health restored:] {115}");
-//		healingSalve,
+		public static CfgInfo<Salve> healingSalve = new CfgInfo<Salve>(27063, "Healing Salve")
+			.setPrice(100).setColumn(Column.CONSUMABLES)
+			.setDescription("Use: Regenerate - Restores HP over time. If the user is attacked, "
+					+ "the effect is lost.\n[Duration:] {10}\n[Health restored:] {400}");
 //		smokeOfDeceit,
 //		townPortal,
 //		dustOfAppearance,
@@ -315,7 +319,7 @@ public class Config {
 //		eyeOfSkadi
 //		satanic
 		
-		// Last item ID: 27062
+		// Last item ID: 27063
 		
 		// Blocks
 		public static CfgInfo<BlockCycloneContainer> cycloneContainer = new CfgInfo<BlockCycloneContainer>(2700, "Cyclone Container");

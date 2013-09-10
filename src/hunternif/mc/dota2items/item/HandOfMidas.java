@@ -22,7 +22,7 @@ public class HandOfMidas extends CooldownItem {
 			return false;
 		}
 		entity.setDead();
-		player.playSound(Sound.HAND_OF_MIDAS.getName(), 1, 1);
+		player.playSound(Sound.HAND_OF_MIDAS.getName(), 0.7f, 1);
 		startCooldown(stack, player);
 		
 		// Drop 2.5 * regular experience

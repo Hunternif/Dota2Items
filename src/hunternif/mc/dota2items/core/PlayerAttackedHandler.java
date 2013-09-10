@@ -51,7 +51,7 @@ public class PlayerAttackedHandler {
 		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
 		List<BuffInstance> buffs = stats.getAppliedBuffs(); // This list is a copy
 		for (BuffInstance buffInst : buffs) {
-			if (buffInst.buff == Buff.clarity) {
+			if (buffInst.buff == Buff.clarity || buffInst.buff == Buff.salve) {
 				stats.removeBuff(buffInst);
 				shouldSync = true;
 			}

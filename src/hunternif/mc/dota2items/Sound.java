@@ -16,7 +16,8 @@ public enum Sound {
 	CLARITY("clarity"),
 	HAND_OF_MIDAS("handofmidas"),
 	TANGO("tango"),
-	CRIT("crit", 4);
+	CRIT("crit", 4),
+	SALVE("healing_salve");
 	
 	private String name;
 	public int randomVariants = 0;

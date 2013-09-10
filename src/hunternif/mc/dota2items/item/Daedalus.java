@@ -53,7 +53,7 @@ public class Daedalus extends Dota2Item {
 			}
 
 			//stack.damageItem(1, player); Dota 2 Items are not damaged.
-			world.playSoundAtEntity(player, Sound.ARROW.getName(), 1, 1);
+			world.playSoundAtEntity(player, Sound.ARROW.getName(), 0.8f, 1);
 
 			if (infiniteArrows) {
 				entityarrow.canBePickedUp = 2;

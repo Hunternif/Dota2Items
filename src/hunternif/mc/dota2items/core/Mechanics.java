@@ -202,12 +202,6 @@ public class Mechanics {
 		int armor = 0;
 		if (targetStats != null) {
 			armor = targetStats.getArmor();
-			// Apply damage block:
-			ItemStack targetEquippedItem = event.entityLiving.getCurrentItemOrArmor(0);
-			boolean targetIsRanged = targetEquippedItem != null &&
-					(targetEquippedItem.itemID == Item.bow.itemID || targetEquippedItem.itemID == Config.daedalus.getID());
-			dotaDamage -= targetStats.getDamageBlock(!targetIsRanged);
-			if (dotaDamage < 0) dotaDamage = 0;
 		}
 		
 		if (event.source.isMagicDamage()) {
@@ -217,6 +211,12 @@ public class Mechanics {
 				//TODO test spell resistance and magic amplification.
 			}
 		} else {// Armor only applies to non-magical damage
+			// Apply damage block:
+			ItemStack targetEquippedItem = event.entityLiving.getCurrentItemOrArmor(0);
+			boolean targetIsRanged = targetEquippedItem != null &&
+					(targetEquippedItem.itemID == Item.bow.itemID || targetEquippedItem.itemID == Config.daedalus.getID());
+			dotaDamage -= targetStats.getDamageBlock(!targetIsRanged);
+			if (dotaDamage < 0) dotaDamage = 0;
 			// The formula was taken from Dota 2 Wiki
 			float armorMultiplier = 1f;
 			if (armor > 0) {

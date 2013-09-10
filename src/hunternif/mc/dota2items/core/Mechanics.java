@@ -198,12 +198,6 @@ public class Mechanics {
 			}
 		}
 		
-		// Apply armor bonuses to the player being hurt
-		int armor = 0;
-		if (targetStats != null) {
-			armor = targetStats.getArmor();
-		}
-		
 		if (event.source.isMagicDamage()) {
 			if (targetStats != null) {
 				dotaDamage *= 1f - targetStats.getSpellResistance();
@@ -211,21 +205,27 @@ public class Mechanics {
 				//TODO test spell resistance and magic amplification.
 			}
 		} else {// Armor only applies to non-magical damage
-			// Apply damage block:
-			ItemStack targetEquippedItem = event.entityLiving.getCurrentItemOrArmor(0);
-			boolean targetIsRanged = targetEquippedItem != null &&
-					(targetEquippedItem.itemID == Item.bow.itemID || targetEquippedItem.itemID == Config.daedalus.getID());
-			dotaDamage -= targetStats.getDamageBlock(!targetIsRanged);
-			if (dotaDamage < 0) dotaDamage = 0;
-			// The formula was taken from Dota 2 Wiki
-			float armorMultiplier = 1f;
-			if (armor > 0) {
-				armorMultiplier = 1f - ((0.06f * (float)armor) / (1 + 0.06f * (float)armor));
-			} else if (armor < 0) {
-				armor = Math.max(-20, armor);
-				armorMultiplier = 2f - (float) Math.pow(0.94, (double) -armor);
+			if (targetStats != null) {
+				// Apply damage block:
+				ItemStack targetEquippedItem = event.entityLiving.getCurrentItemOrArmor(0);
+				boolean targetIsRanged = targetEquippedItem != null &&
+						(targetEquippedItem.itemID == Item.bow.itemID || targetEquippedItem.itemID == Config.daedalus.getID());
+				dotaDamage -= targetStats.getDamageBlock(!targetIsRanged);
+				if (dotaDamage < 0) dotaDamage = 0;
+				
+				// Apply armor bonuses to the entity being hurt
+				int armor = 0;
+				armor = targetStats.getArmor();
+				// The formula was taken from Dota 2 Wiki
+				float armorMultiplier = 1f;
+				if (armor > 0) {
+					armorMultiplier = 1f - ((0.06f * (float)armor) / (1 + 0.06f * (float)armor));
+				} else if (armor < 0) {
+					armor = Math.max(-20, armor);
+					armorMultiplier = 2f - (float) Math.pow(0.94, (double) -armor);
+				}
+				dotaDamage *= armorMultiplier;
 			}
-			dotaDamage *= armorMultiplier;
 			
 			// Apply lifesteal:
 			if (sourceStats != null) {

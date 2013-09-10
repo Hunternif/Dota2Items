@@ -231,15 +231,17 @@ public class Mechanics {
 			if (sourceStats != null) {
 				//TODO implement Unique Attack Modifiers
 				float lifeStolen = dotaDamage * sourceStats.getLifestealMultiplier();
-				sourceStats.heal(lifeStolen);
-				Entity entity = event.source.getEntity();
-				EffectInstance effect = new EffectInstance(Effect.lifesteal, entity.posX, entity.posY+1, entity.posZ);
-				// Send effect packets to other players
-				MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-				if (server != null) {
-					server.getConfigurationManager().sendToAllNear(
-							entity.posX, entity.posY, entity.posZ, 256, entity.dimension,
-							new EffectPacket(effect).makePacket());
+				if (lifeStolen > 0) {
+					sourceStats.heal(lifeStolen);
+					Entity entity = event.source.getEntity();
+					EffectInstance effect = new EffectInstance(Effect.lifesteal, entity.posX, entity.posY+1, entity.posZ);
+					// Send effect packets to other players
+					MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+					if (server != null) {
+						server.getConfigurationManager().sendToAllNear(
+								entity.posX, entity.posY, entity.posZ, 256, entity.dimension,
+								new EffectPacket(effect).makePacket());
+					}
 				}
 			}
 		}

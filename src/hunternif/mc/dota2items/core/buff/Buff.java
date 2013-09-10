@@ -87,6 +87,7 @@ public class Buff {
 	public static final Buff inCyclone = new Buff(2, "Swept up in Cyclone").setDisableAttack().setDisableItems().setDisableMove().setInvulnerable().setMagicImmune().setIsDisplayed();
 	public static final Buff clarity = new Buff(3, "Clarity").setManaRegen(100f/30f).setDoesNotStack().setIsDisplayed().setIconTexture("items/clarity.png");
 	public static final Buff salve = new Buff(4, "Regenerate").setHealthRegen(400f/10f).setDoesNotStack().setIsDisplayed().setIconTexture("items/healingSalve.png");
+	public static final Buff phase = new Buff(5, "Phase").setMovementSpeedPercent(16).setDoesNotStack().setIsDisplayed().setIconTexture("items/phaseBoots.png");
 	
 	
 	public Buff(int id, String name) {

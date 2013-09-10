@@ -12,6 +12,7 @@ import hunternif.mc.dota2items.item.EulsScepter;
 import hunternif.mc.dota2items.item.GoldCoin;
 import hunternif.mc.dota2items.item.HandOfMidas;
 import hunternif.mc.dota2items.item.ItemRecipe;
+import hunternif.mc.dota2items.item.PhaseBoots;
 import hunternif.mc.dota2items.item.QuellingBlade;
 import hunternif.mc.dota2items.item.Salve;
 import hunternif.mc.dota2items.item.Tango;
@@ -207,7 +208,12 @@ public class Config {
 				.setPassiveBuff(new Buff("Bracer").setStrength(6).setAgility(3).setIntelligence(3).setDamage(3));
 //		poorMansShield
 //		soulRing
-//		phaseBoots
+		public static CfgInfo<PhaseBoots> phaseBoots = new CfgInfo<PhaseBoots>(27065, "Phase Boots")
+			.setRecipe(bootsOfSpeed, bladesOfAttack, bladesOfAttack).setColumn(Column.COMMON)
+			.setPassiveBuff(new Buff("Phase Boots").setDamage(24).setMovementSpeed(55))
+			.setDescription("Active: Phase - Gives increased movement speed and lets you move " +
+					"through units. Phase is cancelled upon using another item or ability.\n" +
+					"[Phase duration:] {4}\n[Phase move boost:] {16%}");
 //		powerTreads
 		public static CfgInfo<Dota2Item> oblivionStaff = new CfgInfo<Dota2Item>(27051, "Oblivion Staff")
 				.setWeaponDamage(2).setColumn(Column.COMMON)
@@ -323,7 +329,7 @@ public class Config {
 //		eyeOfSkadi
 //		satanic
 		
-		// Last item ID: 27064
+		// Last item ID: 27065
 		
 		// Blocks
 		public static CfgInfo<BlockCycloneContainer> cycloneContainer = new CfgInfo<BlockCycloneContainer>(2700, "Cyclone Container");

@@ -17,7 +17,8 @@ public enum Sound {
 	HAND_OF_MIDAS("handofmidas"),
 	TANGO("tango"),
 	CRIT("crit", 4),
-	SALVE("healing_salve");
+	SALVE("healing_salve"),
+	PHASE_BOOTS("phase_boots");
 	
 	private String name;
 	public int randomVariants = 0;

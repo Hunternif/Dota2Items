@@ -179,6 +179,7 @@ public class Mechanics {
 		
 		// Apply attack bonuses to the attacker
 		if (sourceStats != null) {
+			dotaDamage += sourceStats.getBonusDamage();
 			dotaDamage = sourceStats.getDamage(dotaDamage, !event.source.isProjectile());
 			float critMultiplier = sourceStats.getCriticalMultiplier();
 			if (critMultiplier > 1f) {

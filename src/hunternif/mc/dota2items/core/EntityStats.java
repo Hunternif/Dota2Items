@@ -276,6 +276,18 @@ public class EntityStats implements IExtendedEntityProperties {
 		return damage;
 	}
 	
+	/** Result is random! */
+	public float getBonusDamage() {
+		float damage = 0;
+		for (BuffInstance buffInst : appliedBuffs) {
+			if (Math.random()*100 <= buffInst.buff.bonusDamageChance) {
+				damage += buffInst.buff.bonusDamage;
+			}
+		}
+		Dota2Items.logger.info(String.format("Bonus damage: %.1f", damage));
+		return damage;
+	}
+	
 	public int getArmor() {
 		int armor = this.baseArmor;
 		for (BuffInstance buffInst : appliedBuffs) {
@@ -467,6 +479,7 @@ public class EntityStats implements IExtendedEntityProperties {
 		return false;
 	}
 	
+	/** Result is random! */
 	public float getCriticalMultiplier() {
 		List<BuffInstance> critBuffs = new ArrayList<BuffInstance>();
 		for (BuffInstance buffInst : appliedBuffs) {

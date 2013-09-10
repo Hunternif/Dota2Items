@@ -37,6 +37,11 @@ public class Buff {
 	public int damage = 0;
 	public int damagePercentMelee = 0;
 	public int damagePercentRanged = 0;
+	
+	@BuffLineFormat("[Pierce damage:] {%d}")
+	public int bonusDamage = 0;
+	@BuffLineFormat("[Chance to Pierce:] {%d%%}")
+	public int bonusDamageChance = 0;
 
 	@BuffLineFormat("[Melee Block:] {%d}")
 	public int damageBlockMelee = 0;
@@ -182,6 +187,12 @@ public class Buff {
 	public Buff setDamagePercent(int melee, int ranged) {
 		damagePercentMelee = melee;
 		damagePercentRanged = ranged;
+		return this;
+	}
+	
+	public Buff setBonusDamage(int damage, int chance) {
+		bonusDamage = damage;
+		bonusDamageChance = chance;
 		return this;
 	}
 	

@@ -150,7 +150,11 @@ public class Config {
 		public static CfgInfo<Dota2Item> claymore = new CfgInfo<Dota2Item>(27028, "Claymore")
 				.setPrice(1400).setWeaponDamage(7).setColumn(Column.ARMAMENTS)
 				.setPassiveBuff(new Buff("Claymore").setDamage(21));
-//		javelin
+		public static CfgInfo<Dota2Item> javelin = new CfgInfo<Dota2Item>(27064, "Javelin")
+				.setPrice(1500).setWeaponDamage(6).setColumn(Column.ARMAMENTS)
+				.setPassiveBuff(new Buff("Javelin").setDamage(21).setBonusDamage(40, 20))
+				.setDescription("Passive: Pierce - Grants a chance to deal bonus damage.\n"
+				+ "[Chance to Pierce:] {20%}\n[Pierce Damage:] {40}");
 		public static CfgInfo<Dota2Item> platemail = new CfgInfo<Dota2Item>(27029, "Platemail")
 				.setPrice(1400).setColumn(Column.ARMAMENTS)
 				.setPassiveBuff(new Buff("Platemail").setArmor(10));
@@ -319,7 +323,7 @@ public class Config {
 //		eyeOfSkadi
 //		satanic
 		
-		// Last item ID: 27063
+		// Last item ID: 27064
 		
 		// Blocks
 		public static CfgInfo<BlockCycloneContainer> cycloneContainer = new CfgInfo<BlockCycloneContainer>(2700, "Cyclone Container");

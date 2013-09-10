@@ -5,6 +5,7 @@ import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.util.MCConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.MathHelper;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 public class SwingRenderer {
@@ -43,10 +44,14 @@ public class SwingRenderer {
 			if (dSwing < 0) {
 				dSwing++; // Why?
 			}
-			float currentSwingProgress = prevSwingProgress + dSwing * partialTickTime;
+			float currentSwingProgress = (float)swingCurve(prevSwingProgress + dSwing * partialTickTime);
 			EntityLivingBase player = Minecraft.getMinecraft().thePlayer;
 			ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, player, currentSwingProgress, swingProgressObfFields);
 		}
+	}
+	
+	public double swingCurve(double x) {
+		return x + 0.5*(Math.exp(-Math.pow(2*x-1, 2)) - Math.exp(-1));
 	}
 	
 	public void startSwinging() {

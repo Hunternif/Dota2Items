@@ -1,5 +1,10 @@
 package hunternif.mc.dota2items.effect;
 
+import hunternif.mc.dota2items.network.EffectPacket;
+import net.minecraft.entity.Entity;
+import net.minecraft.server.MinecraftServer;
+import cpw.mods.fml.common.FMLCommonHandler;
+
 public class EffectInstance {
 	public final int effectID;
 	public Object[] data;
@@ -18,5 +23,15 @@ public class EffectInstance {
 	
 	public void perform() {
 		getEffect().perform(this);
+	}
+	
+	/** Send effect packets to other players in an area of 512*512 blocks. */
+	public static void notifyPlayersAround(EffectInstance effect, Entity entity) {
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+		if (server != null) {
+			server.getConfigurationManager().sendToAllNear(
+					entity.posX, entity.posY, entity.posZ, 256, entity.dimension,
+					new EffectPacket(effect).makePacket());
+		}
 	}
 }

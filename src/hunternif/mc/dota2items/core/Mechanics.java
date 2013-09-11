@@ -7,7 +7,6 @@ import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.effect.Effect;
 import hunternif.mc.dota2items.effect.EffectInstance;
 import hunternif.mc.dota2items.item.Dota2Item;
-import hunternif.mc.dota2items.network.EffectPacket;
 import hunternif.mc.dota2items.util.MCConstants;
 
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.IExtendedEntityProperties;
@@ -42,7 +40,6 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 
@@ -144,17 +141,7 @@ public class Mechanics {
 				}
 			}
 		}
-	}
-	
-	@ForgeSubscribe
-	public void onLivingHurt(LivingHurtEvent event) {
-		float dotaDamage = event.ammount * DOTA_VS_MINECRAFT_DAMAGE;
-		if (dotaDamage == Float.POSITIVE_INFINITY) {
-			// This much damage can only come from a "kill" command, so disregard all calculations:
-			return;
-		}
 		
-		// Check if the target entity is invulnerable or if damage is magical and target is magic immune
 		EntityStats targetStats = getEntityStats(event.entityLiving);
 		EntityStats sourceStats = null;
 		if (event.source.getEntity() instanceof EntityLivingBase) {
@@ -170,13 +157,28 @@ public class Mechanics {
 				event.setCanceled(true);
 				return;
 			}
-			// Try evading the attack
+			// Try evading the attack:
 			boolean trueStrike = sourceStats != null && sourceStats.isTrueStrike();
 			if (targetStats.canEvade() && !trueStrike) {
 				Dota2Items.logger.info("evaded");
 				event.setCanceled(true);
-				return;
 			}
+		}
+	}
+	
+	@ForgeSubscribe
+	public void onLivingHurt(LivingHurtEvent event) {
+		float dotaDamage = event.ammount * DOTA_VS_MINECRAFT_DAMAGE;
+		if (dotaDamage == Float.POSITIVE_INFINITY) {
+			// This much damage can only come from a "kill" command, so disregard all calculations:
+			return;
+		}
+		
+		// Check if the target entity is invulnerable or if damage is magical and target is magic immune
+		EntityStats targetStats = getEntityStats(event.entityLiving);
+		EntityStats sourceStats = null;
+		if (event.source.getEntity() instanceof EntityLivingBase) {
+			sourceStats = getEntityStats(event.source.getEntity());
 		}
 		
 		// Apply attack bonuses to the attacker
@@ -238,13 +240,7 @@ public class Mechanics {
 					sourceStats.heal(lifeStolen);
 					Entity entity = event.source.getEntity();
 					EffectInstance effect = new EffectInstance(Effect.lifesteal, entity.posX, entity.posY+1, entity.posZ);
-					// Send effect packets to other players
-					MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-					if (server != null) {
-						server.getConfigurationManager().sendToAllNear(
-								entity.posX, entity.posY, entity.posZ, 256, entity.dimension,
-								new EffectPacket(effect).makePacket());
-					}
+					EffectInstance.notifyPlayersAround(effect, entity);
 				}
 			}
 		}

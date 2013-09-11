@@ -8,8 +8,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class Dota2Particle extends EntityFX {
-	private static final ResourceLocation dota2itemsParticles = new ResourceLocation(Dota2Items.ID+":textures/particles.png");
-	private static final ResourceLocation minecraftParticles = new ResourceLocation("textures/particle/particles.png");
+	protected static final ResourceLocation dota2itemsParticles = new ResourceLocation(Dota2Items.ID+":textures/particles.png");
+	protected static final ResourceLocation minecraftParticles = new ResourceLocation("textures/particle/particles.png");
 	private static float ICON_U_WIDTH = 1f/16f;
 
 	protected Dota2Particle(World world, double x, double y, double z) {

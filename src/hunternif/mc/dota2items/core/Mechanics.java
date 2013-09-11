@@ -94,6 +94,12 @@ public class Mechanics {
 		return stats;
 	}
 	
+	/** Can be null. */
+	public EntityStats getEntityStats(Entity entity) {
+		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
+		return entityStats.get(entity);
+	}
+	
 	
 	@ForgeSubscribe
 	public void onPlayerDrops(PlayerDropsEvent event) {
@@ -124,8 +130,7 @@ public class Mechanics {
 		Entity entity = event.source.getEntity();
 		if (!(event.source instanceof EntityDamageSourceIndirect) // Actual attack has already been performed
 				&& entity != null && entity instanceof EntityLivingBase) {
-			Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
-			EntityStats stats = entityStats.get(entity);
+			EntityStats stats = getEntityStats(entity);
 			if (stats != null) {
 				long worldTime = entity.worldObj.getTotalWorldTime();
 				if (stats.lastAttackTime == worldTime) {
@@ -151,12 +156,11 @@ public class Mechanics {
 			return;
 		}
 		
-		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(event.entity));
 		// Check if the target entity is invulnerable or if damage is magical and target is magic immune
-		EntityStats targetStats = entityStats.get(event.entityLiving);
+		EntityStats targetStats = getEntityStats(event.entityLiving);
 		EntityStats sourceStats = null;
 		if (event.source.getEntity() instanceof EntityLivingBase) {
-			sourceStats = entityStats.get(event.source.getEntity());
+			sourceStats = getEntityStats(event.source.getEntity());
 		}
 		if (targetStats != null) {
 			if (targetStats.isInvulnerable()) {
@@ -192,8 +196,7 @@ public class Mechanics {
 			}
 			// If the player is the attacker, his target must be given EntityStats:
 			if (targetStats == null && sourceStats.entity instanceof EntityPlayer) {
-				targetStats = new EntityStats(event.entityLiving);
-				entityStats.put(event.entityLiving, targetStats);
+				targetStats = getOrCreateEntityStats(event.entityLiving);
 				targetStats.addPlayerAttackerID(sourceStats.entity.entityId);
 			}
 		}
@@ -384,8 +387,7 @@ public class Mechanics {
 	@ForgeSubscribe
 	public void onLivingUpdate(LivingUpdateEvent event) {
 		// All forced movement is to be processed here. (Cyclone, Force Staff etc.)
-		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(event.entityLiving));
-		EntityStats stats = entityStats.get(event.entityLiving);
+		EntityStats stats = getEntityStats(event.entityLiving);
 		if (stats == null) {
 			return;
 		}

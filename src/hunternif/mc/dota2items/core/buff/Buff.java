@@ -261,6 +261,12 @@ public class Buff {
 		damageBlockChance = chancePercent;
 		return this;
 	}
+	public int getDamageBlock(boolean melee, boolean isHero) {
+		if (damageBlockChance > 0 && Math.random()*100 <= damageBlockChance) {
+			return melee ? damageBlockMelee : damageBlockRanged;
+		}
+		return 0;
+	}
 	
 	public Buff setLifesteal(int percent) {
 		this.lifesteal = percent;

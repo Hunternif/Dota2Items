@@ -2,6 +2,7 @@ package hunternif.mc.dota2items.config;
 
 import hunternif.mc.dota2items.block.BlockCycloneContainer;
 import hunternif.mc.dota2items.core.buff.Buff;
+import hunternif.mc.dota2items.core.buff.BuffPoorMansShield;
 import hunternif.mc.dota2items.inventory.Column;
 import hunternif.mc.dota2items.item.ArcaneBoots;
 import hunternif.mc.dota2items.item.BlinkDagger;
@@ -208,7 +209,12 @@ public class Config {
 		public static CfgInfo<Dota2Item> bracer = new CfgInfo<Dota2Item>(27038, "Bracer")
 				.setPrice(190).setRecipe(gauntletsOfStrength, circlet).setColumn(Column.COMMON)
 				.setPassiveBuff(new Buff("Bracer").setStrength(6).setAgility(3).setIntelligence(3).setDamage(3));
-//		poorMansShield
+		public static CfgInfo<Dota2Item> poorMansShield = new CfgInfo<Dota2Item>(27068, "Poor Man's Shield")
+				.setRecipe(stoutShield, slippersOfAgility, slippersOfAgility).setColumn(Column.COMMON)
+				.setPassiveBuff(new BuffPoorMansShield("Poor Man's Shield"))
+				.setDescription("Passive: Damage Block - Blocks physical attack damage, " +
+				"depending on the type of hero you are. Poor Man's Shield will always block " +
+				"attacks from enemy Heroes, but has a chance to block damage from creeps.");
 //		soulRing
 		public static CfgInfo<PhaseBoots> phaseBoots = new CfgInfo<PhaseBoots>(27065, "Phase Boots")
 			.setRecipe(bootsOfSpeed, bladesOfAttack, bladesOfAttack).setColumn(Column.COMMON)
@@ -340,7 +346,7 @@ public class Config {
 //		eyeOfSkadi
 //		satanic
 		
-		// Last item ID: 27067
+		// Last item ID: 27068
 		
 		// Blocks
 		public static CfgInfo<BlockCycloneContainer> cycloneContainer = new CfgInfo<BlockCycloneContainer>(2700, "Cyclone Container");

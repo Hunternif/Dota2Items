@@ -211,7 +211,8 @@ public class Mechanics {
 				ItemStack targetEquippedItem = event.entityLiving.getCurrentItemOrArmor(0);
 				boolean targetIsRanged = targetEquippedItem != null &&
 						(targetEquippedItem.itemID == Item.bow.itemID || targetEquippedItem.itemID == Config.daedalus.getID());
-				dotaDamage -= targetStats.getDamageBlock(!targetIsRanged);
+				boolean isHero = event.source.getEntity() instanceof EntityPlayer;
+				dotaDamage -= targetStats.getDamageBlock(!targetIsRanged, isHero);
 				if (dotaDamage < 0) dotaDamage = 0;
 				
 				// Apply armor bonuses to the entity being hurt

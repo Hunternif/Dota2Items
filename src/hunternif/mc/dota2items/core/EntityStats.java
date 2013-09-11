@@ -542,13 +542,14 @@ public class EntityStats implements IExtendedEntityProperties {
 		return result;
 	}
 	
-	public int getDamageBlock(boolean melee) {
+	public int getDamageBlock(boolean melee, boolean isHero) {
 		int block = 0;
 		for (BuffInstance buffInst : appliedBuffs) {
-			if (buffInst.buff.damageBlockChance > 0 && Math.random()*100 <= buffInst.buff.damageBlockChance) {
-				int curBlock = melee ? buffInst.buff.damageBlockMelee : buffInst.buff.damageBlockRanged;
-				if (curBlock > block) block = curBlock;
-			}
+			int curBlock = buffInst.buff.getDamageBlock(melee, isHero);
+			if (curBlock > block) block = curBlock;
+		}
+		if (block > 0) {
+			Dota2Items.logger.info(String.format("Blocked %d damage", block));
 		}
 		return block;
 	}

@@ -35,13 +35,16 @@ public class ArcaneBoots extends CooldownItem {
 		double y = Math.floor(player.posY);
 		double z = Math.floor(player.posZ);
 		AxisAlignedBB area = AxisAlignedBB.getBoundingBox(x, y, z, x+1, y+1, z+1);
-		area.expand(radius, radius, radius);
+		area = area.expand(radius, radius, radius);
 		List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class, area);
 		if (list != null && !list.isEmpty()) {
 			for (EntityLivingBase entity : list) {
 				EntityStats stats = Dota2Items.mechanics.getEntityStats(entity);
 				if (stats != null) {
 					stats.addMana(manaRestored);
+					if (stats.entity instanceof EntityPlayer) {
+						stats.sendSyncPacketToClient((EntityPlayer)stats.entity);
+					}
 				}
 			}
 		}

@@ -3,6 +3,7 @@ package hunternif.mc.dota2items.config;
 import hunternif.mc.dota2items.block.BlockCycloneContainer;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.inventory.Column;
+import hunternif.mc.dota2items.item.ArcaneBoots;
 import hunternif.mc.dota2items.item.BlinkDagger;
 import hunternif.mc.dota2items.item.Clarity;
 import hunternif.mc.dota2items.item.Daedalus;
@@ -173,7 +174,7 @@ public class Config {
 				.setPassiveBuff(new Buff("Ring of Regen").setHealthRegen(2));
 		public static CfgInfo<Dota2Item> bootsOfSpeed = new CfgInfo<Dota2Item>(27006, "Boots of Speed")
 				.setPrice(450).setColumn(Column.ARCANE)
-				.setPassiveBuff(new Buff("Boots of Speed").setMovementSpeed(50));
+				.setPassiveBuff(new Buff("Boots of Speed").setMovementSpeed(50, true));
 		public static CfgInfo<Dota2Item> glovesOfHaste = new CfgInfo<Dota2Item>(27033, "Gloves of Haste")
 				.setPrice(500).setColumn(Column.ARCANE)
 				.setPassiveBuff(new Buff("Gloves of Haste").setAttackSpeed(15));
@@ -210,7 +211,7 @@ public class Config {
 //		soulRing
 		public static CfgInfo<PhaseBoots> phaseBoots = new CfgInfo<PhaseBoots>(27065, "Phase Boots")
 			.setRecipe(bootsOfSpeed, bladesOfAttack, bladesOfAttack).setColumn(Column.COMMON)
-			.setPassiveBuff(new Buff("Phase Boots").setDamage(24).setMovementSpeed(55))
+			.setPassiveBuff(new Buff("Phase Boots").setDamage(24).setMovementSpeed(55, true))
 			.setDescription("Active: Phase - Gives increased movement speed and lets you move " +
 					"through units. Phase is cancelled upon using another item or ability.\n" +
 					"[Phase duration:] {4}\n[Phase move boost:] {16%}");
@@ -236,7 +237,11 @@ public class Config {
 //		ringOfAquila
 //		tranquilBoots
 //		medallionOfCourage
-//		arcaneBoots
+		public static CfgInfo<ArcaneBoots> arcaneBoots = new CfgInfo<ArcaneBoots>(27066, "Arcane Boots")
+				.setRecipe(bootsOfSpeed, energyBooster).setColumn(Column.SUPPORT)
+				.setPassiveBuff(new Buff("Arcane Boots").setMana(250).setMovementSpeed(60, true))
+				.setDescription("Active: Replenish Mana - Restores mana in an area around the player.\n" +
+						"[Mana restored:] {135}\n[Radius:] {6} [blocks]");
 //		drumOfEndurance
 //		vladmirsOffering
 //		mekansm
@@ -247,7 +252,7 @@ public class Config {
 //		necronomicon
 		public static CfgInfo<EulsScepter> eulsScepter = new CfgInfo<EulsScepter>(27004, "Eul's Scepter of Divinity")
 				.setPrice(600).setWeaponDamage(2).setColumn(Column.CASTER)
-				.setPassiveBuff( new Buff("Eul's Scepter of Divinity").setMovementSpeed(30).setIntelligence(10).setManaRegenPercent(150) )
+				.setPassiveBuff( new Buff("Eul's Scepter of Divinity").setMovementSpeed(30, false).setIntelligence(10).setManaRegenPercent(150) )
 				.setRecipe(staffOfWizardry, sagesMask, voidStone)
 				.setDescription("Active: Cyclone - Target unit is swept up in a cyclone for 2.5 seconds, " +
 				"and is invulnerable.\nFlat movement speed bonuses from multiple Eul's Scepters do not stack.");
@@ -329,7 +334,7 @@ public class Config {
 //		eyeOfSkadi
 //		satanic
 		
-		// Last item ID: 27065
+		// Last item ID: 27066
 		
 		// Blocks
 		public static CfgInfo<BlockCycloneContainer> cycloneContainer = new CfgInfo<BlockCycloneContainer>(2700, "Cyclone Container");

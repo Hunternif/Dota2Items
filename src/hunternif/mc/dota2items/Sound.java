@@ -18,7 +18,8 @@ public enum Sound {
 	TANGO("tango"),
 	CRIT("crit", 4),
 	SALVE("healing_salve"),
-	PHASE_BOOTS("phase_boots");
+	PHASE_BOOTS("phase_boots"),
+	ARCANE_BOOTS("arcane_boots");
 	
 	private String name;
 	public int randomVariants = 0;

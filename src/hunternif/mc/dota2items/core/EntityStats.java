@@ -272,6 +272,7 @@ public class EntityStats implements IExtendedEntityProperties {
 		}
 		for (BuffInstance buffInst : appliedBuffs) {
 			damage += (float)damage * ((float)(melee ? buffInst.buff.damagePercentMelee : buffInst.buff.damagePercentRanged)) / 100f;
+			break; // Because percentage-based movement speed from multiple items does not stack.
 		}
 		return damage;
 	}
@@ -304,11 +305,17 @@ public class EntityStats implements IExtendedEntityProperties {
 	public int getDotaMovementSpeed() {
 		int movementSpeed = baseMovementSpeed;
 		List<Buff> appliedMSBuffs = new ArrayList<Buff>();
+		boolean bootsApplied = false;
 		for (BuffInstance buffInst : appliedBuffs) {
 			if (!appliedMSBuffs.contains(buffInst.buff) && buffInst.buff.movementSpeed > 0) {
 				movementSpeed += buffInst.buff.movementSpeed;
 				// Movement speed from the same type of Buff doesn't stack
 				appliedMSBuffs.add(buffInst.buff);
+			}
+			// Flat movement speed bonuses from multiple pairs of boots do not stack.
+			if (buffInst.buff.bootsMovementSpeed > 0 && !bootsApplied) {
+				movementSpeed += buffInst.buff.bootsMovementSpeed;
+				bootsApplied = true;
 			}
 		}
 		for (BuffInstance buffInst : appliedBuffs) {

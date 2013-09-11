@@ -27,6 +27,8 @@ public class Buff {
 	public int manaRegenPercent = 0;
 	@BuffLineFormat("+{%d} Movement Speed")
 	public int movementSpeed = 0;
+	@BuffLineFormat("+{%d} Movement Speed")
+	public int bootsMovementSpeed = 0;
 	@BuffLineFormat("+{%d%%} Movement Speed")
 	public int movementSpeedPercent = 0;
 	@BuffLineFormat("+{%d} Attack Speed")
@@ -161,8 +163,12 @@ public class Buff {
 		return this;
 	}
 	
-	public Buff setMovementSpeed(int value) {
-		movementSpeed = value;
+	public Buff setMovementSpeed(int value, boolean isBoots) {
+		if (isBoots) {
+			bootsMovementSpeed = value;
+		} else {
+			movementSpeed = value;
+		}
 		return this;
 	}
 	

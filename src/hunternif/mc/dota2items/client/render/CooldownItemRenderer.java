@@ -1,10 +1,12 @@
 package hunternif.mc.dota2items.client.render;
 
+import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.client.event.CooldownEndDisplayEvent;
-import hunternif.mc.dota2items.client.gui.RenderHelper;
 import hunternif.mc.dota2items.core.ClientTickHandler;
+import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.item.CooldownItem;
 import hunternif.mc.dota2items.util.MathUtil;
+import hunternif.mc.dota2items.util.RenderHelper;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,12 +64,17 @@ public class CooldownItemRenderer implements IItemRenderer {
 	public void renderItem(ItemRenderType type, ItemStack itemStack, Object... data) {
 		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 		
+		// handleRenderType should ensure that the item is a CooldownItem
+		CooldownItem item = (CooldownItem) itemStack.getItem();
+		EntityStats playerStats = Dota2Items.mechanics.getOrCreateEntityStats(Minecraft.getMinecraft().thePlayer);
+		if (playerStats.getMana() < item.getManaCost()) {
+			GL11.glColor4f(0.6f, 0.7f, 1f, 1f);
+		}
+		
 		// Render item texture
 		Icon icon = itemStack.getIconIndex();
 		renderItem.renderIcon(0, 0, icon, 16, 16);
 		
-		// handleRenderType should ensure that the item is an AbstractCooldownItem
-		CooldownItem item = (CooldownItem) itemStack.getItem();
 		if (!item.isOnCooldown(itemStack)) {
 			Integer animationsToGo = animationsToGoOffCooldown.get(itemStack);
 			if (animationsToGo != null) {

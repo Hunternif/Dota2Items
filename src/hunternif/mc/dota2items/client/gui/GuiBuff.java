@@ -3,6 +3,7 @@ package hunternif.mc.dota2items.client.gui;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.util.MathUtil;
+import hunternif.mc.dota2items.util.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 

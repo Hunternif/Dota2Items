@@ -1,6 +1,5 @@
-package hunternif.mc.dota2items.client.gui;
+package hunternif.mc.dota2items.util;
 
-import hunternif.mc.dota2items.util.MathUtil;
 
 import java.util.Iterator;
 import java.util.List;

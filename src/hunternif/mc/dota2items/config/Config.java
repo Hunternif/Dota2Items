@@ -13,6 +13,7 @@ import hunternif.mc.dota2items.item.EulsScepter;
 import hunternif.mc.dota2items.item.GoldCoin;
 import hunternif.mc.dota2items.item.HandOfMidas;
 import hunternif.mc.dota2items.item.ItemRecipe;
+import hunternif.mc.dota2items.item.MaskOfMadness;
 import hunternif.mc.dota2items.item.PhaseBoots;
 import hunternif.mc.dota2items.item.QuellingBlade;
 import hunternif.mc.dota2items.item.Salve;
@@ -318,7 +319,12 @@ public class Config {
 		
 		// Item column: Artifacts
 //		helmOfTheDominator
-//		maskOfMadness
+		public static CfgInfo<MaskOfMadness> maskOfMadness = new CfgInfo<MaskOfMadness>(27067, "Mask of Madness")
+				.setPrice(1000).setRecipe(morbidMask).setColumn(Column.ARTIFACTS)
+				.setPassiveBuff(new Buff("Mask of Madness").setLifesteal(17))
+				.setDescription("Active: Berserk - Gives 100 attack speed and 30% movement speed " +
+						"but causes you to take extra 30% damage. Lasts 12 seconds.\nPassive: " +
+						"Lifesteal - Grants lifesteal on attacks.");
 //		sange
 		public static CfgInfo<Dota2Item> yasha = new CfgInfo<Dota2Item>(27061, "Yasha")
 				.setWeaponDamage(7).setColumn(Column.ARTIFACTS)
@@ -334,7 +340,7 @@ public class Config {
 //		eyeOfSkadi
 //		satanic
 		
-		// Last item ID: 27066
+		// Last item ID: 27067
 		
 		// Blocks
 		public static CfgInfo<BlockCycloneContainer> cycloneContainer = new CfgInfo<BlockCycloneContainer>(2700, "Cyclone Container");

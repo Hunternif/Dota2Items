@@ -70,8 +70,9 @@ public class Buff {
 	
 	@BuffLineFormat("+{%d%%} Spell resistance")
 	public int spellResistance = 0;
-	@BuffLineFormat("[Bonus Magic Damage:] {%d%%}")
-	public int magicAmplify = 0;
+	
+	public int amplifyMagic = 0;
+	public int amplifyDamage = 0;
 	
 	@BuffLineFormat("[Lifesteal:] {%d%%")
 	public int lifesteal = 0;
@@ -90,6 +91,7 @@ public class Buff {
 	public static final Buff clarity = new Buff(3, "Clarity").setManaRegen(100f/30f).setDoesNotStack().setIsDisplayed().setIconTexture("items/clarity.png");
 	public static final Buff salve = new Buff(4, "Regenerate").setHealthRegen(400f/10f).setDoesNotStack().setIsDisplayed().setIconTexture("items/healingSalve.png");
 	public static final Buff phase = new Buff(5, "Phase").setMovementSpeedPercent(16).setDoesNotStack().setIsDisplayed().setIconTexture("items/phaseBoots.png");
+	public static final Buff berserk = new Buff(6, "Berserk").setMovementSpeedPercent(30).setAttackSpeed(100).setAmplifyDamage(30, 0).setIsDisplayed().setIconTexture("items/maskOfMadness.png");
 	
 	
 	public Buff(int id, String name) {
@@ -247,8 +249,9 @@ public class Buff {
 		spellResistance = value;
 		return this;
 	}
-	public Buff setMagicAmplify(int value) {
-		magicAmplify = value;
+	public Buff setAmplifyDamage(int physical, int magical) {
+		amplifyDamage = physical;
+		amplifyMagic = magical;
 		return this;
 	}
 	

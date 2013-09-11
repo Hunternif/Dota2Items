@@ -204,7 +204,7 @@ public class Mechanics {
 		if (event.source.isMagicDamage()) {
 			if (targetStats != null) {
 				dotaDamage *= 1f - targetStats.getSpellResistance();
-				dotaDamage *= targetStats.getMagicAmplification();
+				dotaDamage *= targetStats.getAmplifyDamage(true);
 				//TODO test spell resistance and magic amplification.
 			}
 		} else {// Armor only applies to non-magical damage
@@ -228,6 +228,7 @@ public class Mechanics {
 					armorMultiplier = 2f - (float) Math.pow(0.94, (double) -armor);
 				}
 				dotaDamage *= armorMultiplier;
+				dotaDamage *= targetStats.getAmplifyDamage(false);
 			}
 			
 			// Apply lifesteal:

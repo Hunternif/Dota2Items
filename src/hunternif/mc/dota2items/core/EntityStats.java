@@ -137,6 +137,10 @@ public class EntityStats implements IExtendedEntityProperties {
 		if (!buffInst.buff.stacks) {
 			for (BuffInstance curBuffInst : appliedBuffs) {
 				if (curBuffInst.buff.id == buffInst.buff.id) {
+					if (buffInst.endTime > curBuffInst.endTime) {
+						curBuffInst.startTime = buffInst.startTime;
+						curBuffInst.endTime = buffInst.endTime;
+					}
 					return;
 				}
 			}
@@ -526,11 +530,13 @@ public class EntityStats implements IExtendedEntityProperties {
 		return resistance * 0.01f;
 	}
 	
-	public float getMagicAmplification() {
+	public float getAmplifyDamage(boolean isMagic) {
 		float result = 1f;
 		for (BuffInstance buffInst : appliedBuffs) {
-			if (buffInst.buff.magicAmplify != 0) {
-				result *= (float)buffInst.buff.magicAmplify * 0.01f;
+			if (isMagic && buffInst.buff.amplifyMagic != 0) {
+				result += result * (float)buffInst.buff.amplifyMagic * 0.01f;
+			} else if (!isMagic && buffInst.buff.amplifyDamage != 0) {
+				result += result * (float)buffInst.buff.amplifyDamage * 0.01f;
 			}
 		}
 		return result;

@@ -14,7 +14,6 @@ import hunternif.mc.dota2items.config.CfgInfo;
 import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.config.DescriptionBuilder;
 import hunternif.mc.dota2items.core.ClientTickHandler;
-import hunternif.mc.dota2items.core.ServerTickHandler;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
 import hunternif.mc.dota2items.item.CooldownItem;
 import hunternif.mc.dota2items.item.Dota2Item;
@@ -100,7 +99,6 @@ public class ClientProxy extends CommonProxy {
 	
 	@Override
 	public void registerTickHandlers() {
-		TickRegistry.registerTickHandler(new ServerTickHandler(), Side.SERVER);
 		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
 	}
 	

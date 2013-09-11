@@ -15,12 +15,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -271,21 +269,6 @@ public class Mechanics {
 		event.ammount = intMCDamage;
 	}
 	
-	public void updateAllEntityStats(Side side) {
-		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(side);
-		for (Entry<EntityLivingBase, EntityStats> entry : entityStats.entrySet()) {
-			EntityLivingBase entity = entry.getKey();
-			EntityStats stats = entry.getValue();
-			stats.clampMana();
-			for (BuffInstance buffInst : stats.getAppliedBuffs()) {
-				if (!buffInst.isPermanent() && entity.worldObj.getTotalWorldTime() > buffInst.endTime) {
-					stats.removeBuff(buffInst);
-				}
-			}
-			updateMoveSpeed(entity, stats);
-		}
-	}
-	
 	private void updateMoveSpeed(EntityLivingBase entity, EntityStats stats) {
 		AttributeInstance moveSpeedAttribute = entity.func_110148_a(SharedMonsterAttributes.field_111263_d);
 		double newMoveSpeed = stats.getMovementSpeed();
@@ -305,21 +288,6 @@ public class Mechanics {
 		}
 	}
 	
-	public void checkAndUpdatePlayerInventories(Side side) {
-		List<EntityPlayer> players;
-		if (side.isClient()) {
-			players = new ArrayList<EntityPlayer>();
-			if (Minecraft.getMinecraft().thePlayer != null) {
-				players.add(Minecraft.getMinecraft().thePlayer);
-			}
-		} else {
-			players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
-		}
-		Map<EntityPlayer, ItemStack[]> inventoryMap = getInventoryMap(side);
-		for (EntityPlayer player : players) {
-			checkAndUpdatePlayerInventory(player);
-		}
-	}
 	private void checkAndUpdatePlayerInventory(EntityPlayer player) {
 		Side side = getSide(player);
 		Map<EntityPlayer, ItemStack[]> inventoryMap = getInventoryMap(side);
@@ -393,6 +361,7 @@ public class Mechanics {
 			return;
 		}
 		if (event.entityLiving instanceof EntityPlayer) {
+			checkAndUpdatePlayerInventory((EntityPlayer)event.entityLiving);
 			// Regenerate health and mana every second:
 			regenHealthManaAndGold((EntityPlayer)event.entityLiving, stats);
 			// Add base attributes per level:
@@ -404,6 +373,13 @@ public class Mechanics {
 				stats.sendSyncPacketToClient((EntityPlayer)event.entityLiving);
 			}
 		}
+		stats.clampMana();
+		for (BuffInstance buffInst : stats.getAppliedBuffs()) {
+			if (!buffInst.isPermanent() && event.entity.worldObj.getTotalWorldTime() > buffInst.endTime) {
+				stats.removeBuff(buffInst);
+			}
+		}
+		updateMoveSpeed(event.entityLiving, stats);
 		if (!stats.canMove()) {
 			event.setCanceled(true);
 			// Update items in inventory so that cooldown keeps on ticking:

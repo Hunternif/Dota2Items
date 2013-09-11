@@ -1,7 +1,6 @@
 package hunternif.mc.dota2items.core;
 
 import hunternif.mc.dota2items.ClientProxy;
-import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.util.MCConstants;
 
 import java.util.EnumSet;
@@ -10,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.Timer;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
-import cpw.mods.fml.relauncher.Side;
 
 public class ClientTickHandler implements ITickHandler {
 	public static Timer timer = new Timer(MCConstants.TICKS_PER_SECOND);
@@ -18,8 +16,6 @@ public class ClientTickHandler implements ITickHandler {
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {
 		if (type.contains(TickType.CLIENT)) {
-			Dota2Items.mechanics.checkAndUpdatePlayerInventories(Side.CLIENT);
-			Dota2Items.mechanics.updateAllEntityStats(Side.CLIENT);
 			ClientProxy.swingRenderer.onTick();
 		}
 		if (type.contains(TickType.RENDER)) {

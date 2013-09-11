@@ -1,19 +1,14 @@
 package hunternif.mc.dota2items.core;
 
-import hunternif.mc.dota2items.Dota2Items;
-
 import java.util.EnumSet;
 
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
-import cpw.mods.fml.relauncher.Side;
 
 public class ServerTickHandler implements ITickHandler {
 
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {
-		Dota2Items.mechanics.checkAndUpdatePlayerInventories(Side.SERVER);
-		Dota2Items.mechanics.updateAllEntityStats(Side.SERVER);
 	}
 
 	@Override

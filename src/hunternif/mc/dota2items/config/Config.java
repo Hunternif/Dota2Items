@@ -130,12 +130,12 @@ public class Config {
 				.setPrice(225).setWeaponDamage(6).setColumn(Column.ARMAMENTS)
 				.setPassiveBuff(new Buff("Quelling Blade").setDamagePercent(32, 16).setDoesNotStack())
 				.setDescription("Active: Destroy Tree/Ward - Destroy a target tree, or deals 100 damage to a ward.\n" +
-				"Passive: Quell - Gives bonus attack damage against non-hero units, depending on the type of hero you are.\n" +
-				"[Melee bonus:] {32%}\n[Ranged bonus:] {12%}");
+				"Passive: Quell - Gives bonus attack damage against non-player units, depending on the type of your " +
+				"weapon (melee or ranged).\n[Melee bonus:] {32%}\n[Ranged bonus:] {12%}");
 		public static CfgInfo<Dota2Item> stoutShield = new CfgInfo<Dota2Item>(27031, "Stout Shield")
 				.setPrice(250).setColumn(Column.ARMAMENTS)
 				.setPassiveBuff(new Buff("Stout Shield").setDamageBlock(20, 10, 60))
-				.setDescription("Passive: Damage Block - Gives a chance to block damage, depending on the type of hero you are.");
+				.setDescription("Passive: Damage Block - Gives a chance to block damage, depending on the type of your weapon (melee or ranged).");
 		public static CfgInfo<Dota2Item> bladesOfAttack = new CfgInfo<Dota2Item>(27023, "Blades of Attack")
 				.setPrice(450).setWeaponDamage(5).setIsFull3D(false).setColumn(Column.ARMAMENTS)
 				.setPassiveBuff(new Buff("Blades of Attack").setDamage(9));
@@ -194,8 +194,8 @@ public class Config {
 				.setPassiveBuff(new Buff("Talisman of Evasion").setEvasionPercent(25));
 		public static CfgInfo<BlinkDagger> blinkDagger = new CfgInfo<BlinkDagger>(27001, "Blink Dagger")
 				.setPrice(2150).setWeaponDamage(4).setColumn(Column.ARCANE)
-				.setDescription("Active: Blink - Teleport to a target point up to 1200 units away. " +
-				"If damage is taken from an enemy hero, Blink Dagger cannot be used for 3 seconds.");
+				.setDescription("Active: Blink - Teleport to a target point up to 50 blocks away. " +
+				"If damage is taken from an enemy player, Blink Dagger cannot be used for 3 seconds.");
 //		shadowAmulet
 		
 		// Item column: Common ========================================================================
@@ -213,7 +213,7 @@ public class Config {
 				.setRecipe(stoutShield, slippersOfAgility, slippersOfAgility).setColumn(Column.COMMON)
 				.setPassiveBuff(new BuffPoorMansShield("Poor Man's Shield"))
 				.setDescription("Passive: Damage Block - Blocks physical attack damage, " +
-				"depending on the type of hero you are. Poor Man's Shield will always block " +
+				"depending on the type of your weapon (melee or ranged). Poor Man's Shield will always block " +
 				"attacks from enemy Heroes, but has a chance to block damage from creeps.");
 //		soulRing
 		public static CfgInfo<PhaseBoots> phaseBoots = new CfgInfo<PhaseBoots>(27065, "Phase Boots")
@@ -233,7 +233,7 @@ public class Config {
 		public static CfgInfo<HandOfMidas> handOfMidas = new CfgInfo<HandOfMidas>(27060, "Hand of Midas")
 			.setPrice(1400).setRecipe(glovesOfHaste).setColumn(Column.COMMON)
 			.setPassiveBuff(new Buff("Hand of Midas").setAttackSpeed(30))
-			.setDescription("Active: Transmute - Kills a non-hero target for 190 gold and 2.5x experience.");
+			.setDescription("Active: Transmute - Kills a non-player target for 190 gold and 2.5x experience.");
 //		bootsOfTravel
 		
 		// Item column: Support =======================================================================
@@ -311,7 +311,7 @@ public class Config {
 		public static CfgInfo<Dota2Item> vanguard = new CfgInfo<Dota2Item>(27052, "Vanguard")
 				.setRecipe(ringOfHealth, vitalityBooster, stoutShield).setColumn(Column.ARMOR)
 				.setPassiveBuff(new Buff("Vanguard").setHealth(250).setHealthRegen(6).setDamageBlock(40, 20, 70))
-				.setDescription("Passive: Damage Block - Gives a chance to block damage, depending on the type of hero you are.");
+				.setDescription("Passive: Damage Block - Gives a chance to block damage, depending on the type of your weapon (melee or ranged).");
 		public static CfgInfo<Dota2Item> soulBooster = new CfgInfo<Dota2Item>(27049, "Soul Booster")
 				.setRecipe(vitalityBooster, energyBooster, pointBooster).setColumn(Column.ARMOR)
 				.setPassiveBuff(new Buff("Soul Booster").setHealth(450).setMana(400).setHealthRegen(4).setManaRegenPercent(100));

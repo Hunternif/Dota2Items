@@ -43,9 +43,9 @@ public class EffectBlink extends Effect {
 			double velX = -sinYaw*cosPitch / (distance) * 0.05D;
 			double velZ = cosYaw*cosPitch / (distance) * 0.05D;
 			double velY = -sinPitch / (distance) * 0.05D;
-			double x = (Double) inst.data[0];
-			double y = (Double) inst.data[1];
-			double z = (Double) inst.data[2];
+			double x = ((Number) inst.data[0]).doubleValue();
+			double y = ((Number) inst.data[1]).doubleValue();
+			double z = ((Number) inst.data[2]).doubleValue();
 			EntityFX particle = new ParticleBlink(world, x + rX, y + rY, z + rZ, velX, velY, velZ);
 			effectRenderer.addEffect(particle);
 		}
@@ -55,15 +55,15 @@ public class EffectBlink extends Effect {
 	public Object[] readInstanceData(ByteArrayDataInput in) {
 		Object[] data = new Object[3];
 		for (int i = 0; i < 3; i++) {
-			data[i] = in.readDouble();
+			data[i] = in.readFloat();
 		}
 		return data;
 	}
 
 	@Override
 	public void writeInstanceData(Object[] data, ByteArrayDataOutput out) {
-		for (int i = 0; i < 3; i++) {
-			out.writeDouble((Double)data[i]);
+		for (int i = 0; i < 3; i++) { 
+			out.writeFloat(((Number)data[i]).floatValue());
 		}
 	}
 

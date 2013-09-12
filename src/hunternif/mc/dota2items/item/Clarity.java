@@ -5,10 +5,12 @@ import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
+import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.util.MCConstants;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 public class Clarity extends Dota2Item {
 	
@@ -21,6 +23,7 @@ public class Clarity extends Dota2Item {
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
+		MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
 		itemStack.stackSize--;
 		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
 		long startTime = world.getTotalWorldTime();

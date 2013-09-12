@@ -5,6 +5,7 @@ import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
+import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.util.IntVec3;
 import hunternif.mc.dota2items.util.MCConstants;
 import hunternif.mc.dota2items.util.SideHit;
@@ -13,6 +14,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 public class Tango extends Dota2Item {
 	public static final float duration = 16f;
@@ -81,6 +83,7 @@ public class Tango extends Dota2Item {
 			}
 			if (trunkBase != null && trunkBase.y > 0) {
 				// Yep, found a tree
+				MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
 				TreeUtil.removeTree(world, trunkBase, true);
 				itemStack.stackSize --;
 				EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);

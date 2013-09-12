@@ -5,6 +5,7 @@ import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
+import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.util.MCConstants;
 
 import java.util.UUID;
@@ -16,6 +17,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 public class PhaseBoots extends CooldownItem {
 	private static final UUID uuid = UUID.fromString("4512aab0-1ba2-11e3-b773-0800200c9a66");
@@ -32,6 +34,7 @@ public class PhaseBoots extends CooldownItem {
 		if (!tryUse(stack, player)) {
 			return stack;
 		}
+		MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
 		startCooldown(stack, player);
 		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
 		long startTime = world.getTotalWorldTime();

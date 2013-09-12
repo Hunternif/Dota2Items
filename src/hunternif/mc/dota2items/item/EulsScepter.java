@@ -6,6 +6,7 @@ import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
+import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.network.BuffPacket;
 import hunternif.mc.dota2items.network.EntityMovePacket;
 import hunternif.mc.dota2items.tileentity.TileEntityCyclone;
@@ -20,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class EulsScepter extends CooldownItem {
@@ -57,6 +59,7 @@ public class EulsScepter extends CooldownItem {
 		if (!tryUse(stack, player, entity)) {
 			return false;
 		}
+		MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
 		
 		int x = MathHelper.floor_double(entity.posX);
 		int y = MathHelper.floor_double(entity.posY);

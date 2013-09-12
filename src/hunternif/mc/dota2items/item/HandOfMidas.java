@@ -3,11 +3,13 @@ package hunternif.mc.dota2items.item;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
+import hunternif.mc.dota2items.event.UseItemEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
+import net.minecraftforge.common.MinecraftForge;
 
 public class HandOfMidas extends CooldownItem {
 
@@ -21,6 +23,8 @@ public class HandOfMidas extends CooldownItem {
 		if (!tryUse(stack, player, entity)) {
 			return false;
 		}
+		MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
+		
 		entity.setDead();
 		player.playSound(Sound.HAND_OF_MIDAS.getName(), 0.7f, 1);
 		startCooldown(stack, player);

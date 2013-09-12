@@ -1,6 +1,7 @@
 package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.Sound;
+import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.util.IntVec3;
 import hunternif.mc.dota2items.util.SideHit;
 import hunternif.mc.dota2items.util.TreeUtil;
@@ -11,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -96,6 +98,7 @@ public class QuellingBlade extends CooldownItem {
 			}
 			if (trunkBase != null && trunkBase.y > 0) {
 				// Yep, found a tree
+				MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
 				if (!world.isRemote) {
 					startCooldown(itemStack, player);
 				}

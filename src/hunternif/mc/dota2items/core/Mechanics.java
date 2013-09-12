@@ -7,6 +7,7 @@ import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.effect.Effect;
 import hunternif.mc.dota2items.effect.EffectInstance;
+import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.item.PhaseBoots;
 import hunternif.mc.dota2items.util.MCConstants;
@@ -509,6 +510,20 @@ public class Mechanics {
 			return newStats;
 		}
 		return getOrCreateEntityStats(player);
+	}
+	
+	@ForgeSubscribe
+	public void onUseDota2Item(UseItemEvent event) {
+		// Phase is cancelled upon using another item or ability:
+		if (!(event.item instanceof PhaseBoots)) {
+			EntityStats stats = getOrCreateEntityStats(event.entityPlayer);
+			for (BuffInstance buffInst : stats.getAppliedBuffs()) {
+				if (buffInst.buff == Buff.phase) {
+					stats.removeBuff(buffInst);
+					break;
+				}
+			}
+		}
 	}
 	
 	/*@ForgeSubscribe

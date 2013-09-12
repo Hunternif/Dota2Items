@@ -4,6 +4,7 @@ import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.effect.Effect;
 import hunternif.mc.dota2items.effect.EffectInstance;
+import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.network.EffectPacket;
 import hunternif.mc.dota2items.util.BlockUtil;
 import hunternif.mc.dota2items.util.SideHit;
@@ -51,6 +52,7 @@ public class BlinkDagger extends CooldownItem {
 		if (!tryUse(itemStack, player)) {
 			return itemStack;
 		}
+		MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
 		
 		int destX;
 		int destY;

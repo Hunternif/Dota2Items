@@ -3,6 +3,7 @@ package hunternif.mc.dota2items.item;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
+import hunternif.mc.dota2items.event.UseItemEvent;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 public class ArcaneBoots extends CooldownItem {
 	public static final double radius = 6;
@@ -27,6 +29,7 @@ public class ArcaneBoots extends CooldownItem {
 		if (!tryUse(stack, player)) {
 			return stack;
 		}
+		MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
 		startCooldown(stack, player);
 		Dota2Items.mechanics.getOrCreateEntityStats(player).removeMana(getManaCost());
 		world.playSoundAtEntity(player, Sound.ARCANE_BOOTS.getName(), 0.7f, 1);

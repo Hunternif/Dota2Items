@@ -138,6 +138,7 @@ public class Mechanics {
 					stats.lastAttackTime = worldTime;
 				} else {
 					event.setCanceled(true);
+					return;
 				}
 			}
 		}

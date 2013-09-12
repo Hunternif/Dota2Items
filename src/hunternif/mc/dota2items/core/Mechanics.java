@@ -163,6 +163,10 @@ public class Mechanics {
 			if (targetStats.canEvade() && !trueStrike) {
 				Dota2Items.logger.info("evaded");
 				event.setCanceled(true);
+				if (event.source.getEntity() instanceof EntityLivingBase) { 
+					EffectInstance effect = new EffectInstance(Effect.miss, entity.posX, entity.posY+1.5, entity.posZ);
+					EffectInstance.notifyPlayersAround(effect, entity);
+				}
 			}
 		}
 	}

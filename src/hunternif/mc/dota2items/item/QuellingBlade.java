@@ -85,24 +85,16 @@ public class QuellingBlade extends CooldownItem {
 		}
 		if (block != Block.wood && block != Block.leaves) {
 			return false;
-		} else if (block == Block.wood) {
-			// Supposedly hit the trunk
-			int trunkBaseY = TreeUtil.getTreeTrunkBaseY(world, x, y, z);
-			if (trunkBaseY > 0) {
-				// Yep, found a tree
-				if (!world.isRemote) {
-					startCooldown(itemStack, player);
-				}
-				TreeUtil.removeTree(world, new IntVec3(x, trunkBaseY, z), true);
-				world.playSoundEffect(x, trunkBaseY, z, Sound.TREE_FALL.getName(), 1.0f, 1.0f);
-				return true;
+		} else if (block == Block.wood || block == Block.leaves) {
+			IntVec3 trunkBase = null;
+			if (block == Block.wood) {
+				// Supposedly hit the trunk
+				trunkBase = new IntVec3(x, TreeUtil.getTreeTrunkBaseY(world, x, y, z), z);
 			} else {
-				return false;
+				// Hit some leaves. Looking for the closest tree trunk around
+				trunkBase = TreeUtil.findTreeTrunkInBox(world, x, y, z, trunkSearchDeltaY, trunkSearchRadius);
 			}
-		} else if (block == Block.leaves) {
-			// Hit some leaves. Looking for the closest tree trunk around
-			IntVec3 trunkBase = TreeUtil.findTreeTrunkInBox(world, x, y, z, trunkSearchDeltaY, trunkSearchRadius);
-			if (trunkBase != null) {
+			if (trunkBase != null && trunkBase.y > 0) {
 				// Yep, found a tree
 				if (!world.isRemote) {
 					startCooldown(itemStack, player);

@@ -3,10 +3,12 @@ package hunternif.mc.dota2items.core;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.config.Config;
+import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.effect.Effect;
 import hunternif.mc.dota2items.effect.EffectInstance;
 import hunternif.mc.dota2items.item.Dota2Item;
+import hunternif.mc.dota2items.item.PhaseBoots;
 import hunternif.mc.dota2items.util.MCConstants;
 
 import java.util.ArrayList;
@@ -379,6 +381,9 @@ public class Mechanics {
 		for (BuffInstance buffInst : stats.getAppliedBuffs()) {
 			if (!buffInst.isPermanent() && event.entity.worldObj.getTotalWorldTime() > buffInst.endTime) {
 				stats.removeBuff(buffInst);
+				if (buffInst.buff == Buff.phase) {
+					PhaseBoots.removeKnockbackResistance(event.entityLiving);
+				}
 			}
 		}
 		updateMoveSpeed(event.entityLiving, stats);

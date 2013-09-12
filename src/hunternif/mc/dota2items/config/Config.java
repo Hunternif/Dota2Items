@@ -219,8 +219,8 @@ public class Config {
 		public static CfgInfo<PhaseBoots> phaseBoots = new CfgInfo<PhaseBoots>(27065, "Phase Boots")
 			.setRecipe(bootsOfSpeed, bladesOfAttack, bladesOfAttack).setColumn(Column.COMMON)
 			.setPassiveBuff(new Buff("Phase Boots").setDamage(24).setMovementSpeed(55, true))
-			.setDescription("Active: Phase - Gives increased movement speed and lets you move " +
-					"through units. Phase is cancelled upon using another item or ability.\n" +
+			.setDescription("Active: Phase - Gives increased movement speed and makes you immune " +
+					"to knockback. Phase is cancelled upon using another item or ability.\n" +
 					"[Phase duration:] {4}\n[Phase move boost:] {16%}");
 //		powerTreads
 		public static CfgInfo<Dota2Item> oblivionStaff = new CfgInfo<Dota2Item>(27051, "Oblivion Staff")

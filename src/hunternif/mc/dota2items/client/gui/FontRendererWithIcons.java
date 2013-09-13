@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Level;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Tessellator;
@@ -63,12 +62,12 @@ public class FontRendererWithIcons extends FontRenderer {
 			for (IconInTextPos iconInText : iconsFound) {
 				String lastTextChunk = text.substring(posX, iconInText.posX);
 				posX = iconInText.posX + iconInText.icon.key.length();
-				x = super.drawString(lastTextChunk, x, y, color, dropShadow);
+				x = super.drawString(lastTextChunk, x, y, color, dropShadow) + iconInText.icon.kerning;
 				renderIcon(iconInText.icon, x, y);
 				x += iconInText.icon.width + iconInText.icon.kerning;
 			}
 		} catch (Exception e) {
-			Dota2Items.logger.log(Level.SEVERE, "Error rendering text: " + text, e);
+			Dota2Items.logger.severe("Error rendering text: " + text + "; " + e);
 		}
 		if (posX < text.length()) {
 			String veryLastTextChunk = text.substring(posX);

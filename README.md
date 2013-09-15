@@ -12,6 +12,6 @@ Building
 
 LibSchematic sources have to be copied to `mcp/src/minecraft`. To obtain the sources, refer to this repo: https://github.com/tehbeard/LibSchematic
 
-Link the `src` folder as source to your project build path. In order to build and package the mod for release run the script `build.bat`. The script must be run in its current directory and the environment variable `FORGE_HOME` must point to Minecraft Forge install directory. Additionally, the mod will be packaged into an archive (with resources and mcmod.info) only if you have WinRAR installed at default path.
+Link the `src` folder as source to your project build path. In order to build and package the mod for release run the script `build.bat`. The script must be run in its current directory and the environment variable `MCP_HOME` must point to MCP install directory. (If you only install Minecraft Forge, then its's in forge/mcp.)
 
 TODO: make a better building solution using Ant.

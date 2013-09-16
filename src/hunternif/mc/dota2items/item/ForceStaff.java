@@ -28,7 +28,7 @@ public class ForceStaff extends CooldownItem {
 	public static final String TAG_YAW = "yaw";
 	
 	public static final float forceDuration = 0.25f;
-	public static final double forceSpeed = 2.5;
+	public static final double forceSpeed = 3;
 	public static final int puffsPerBlock = 2;
 	private static final double trailStep = 1 / ((double) puffsPerBlock);
 	
@@ -62,7 +62,7 @@ public class ForceStaff extends CooldownItem {
 			long startTime = entity.worldObj.getTotalWorldTime();
 			long endTime = startTime + (long) (forceDuration * MCConstants.TICKS_PER_SECOND);
 			BuffInstance buffInst = new BuffInstance(Buff.force, entity.entityId, startTime, endTime, usingOnSelf);
-			buffInst.tag.setFloat(TAG_YAW, player.rotationYaw);
+			buffInst.tag.setFloat(TAG_YAW, entity.rotationYaw);
 			EntityStats entityStats = Dota2Items.mechanics.getOrCreateEntityStats((EntityLivingBase)entity);
 			entityStats.addBuff(buffInst);
 			PacketDispatcher.sendPacketToAllPlayers(new BuffForcePacket(buffInst).makePacket());

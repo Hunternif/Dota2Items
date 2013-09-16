@@ -266,6 +266,10 @@ public class Dota2Item extends Item {
 		return itemStack.getItem() instanceof Dota2Item &&
 				((Dota2Item)itemStack.getItem()).hasRecipe();
 	}
+	public static boolean isUsedInRecipe(ItemStack itemStack) {
+		return itemStack.getItem() instanceof Dota2Item &&
+				!((Dota2Item)itemStack.getItem()).usedInRecipes.isEmpty();
+	}
 	
 	public static int getPrice(ItemStack itemStack) {
 		if (itemStack == null) {

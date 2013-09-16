@@ -226,12 +226,16 @@ public class GuiShopBuy extends GuiShopBase {
 			if (btn.itemStack == null) {
 				return;
 			}
-			if (Dota2Item.canBuy(btn.itemStack, player)) {
+			boolean canBuy = Dota2Item.canBuy(btn.itemStack, player);
+			if (canBuy) {
 				((ContainerShopBuy)this.inventorySlots).setResultItem(btn.itemStack);
 				PacketDispatcher.sendPacketToServer(new ShopBuySetResultPacket(btn.itemStack).makePacket());
 			}
 			if (Dota2Item.hasRecipe(btn.itemStack)) {
-				((ContainerShopBuy)this.inventorySlots).setRecipeResultItem((Dota2Item)btn.itemStack.getItem());
+				((ContainerShopBuy)this.inventorySlots).setRecipeResult((Dota2Item)btn.itemStack.getItem());
+			} else if (Dota2Item.isUsedInRecipe(btn.itemStack) && (!canBuy || btn.selected)) {
+				// When clicking on an item that's already selected (or not purchasable), show it in hierarchy:
+				((ContainerShopBuy)this.inventorySlots).setRecipeIngredient((Dota2Item)btn.itemStack.getItem());
 			}
 		} else if (button == upButton) {
 			List<ItemStack> results = ((ContainerShopBuy)this.inventorySlots).getRecipeResults();

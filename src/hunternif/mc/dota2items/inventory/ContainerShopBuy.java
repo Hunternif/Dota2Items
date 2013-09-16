@@ -62,7 +62,11 @@ public class ContainerShopBuy extends Container {
 				ItemStack stack = invShop.getStackInSlot(slotNumber);
 				if (stack != null) {
 					Dota2Item item = (Dota2Item) stack.getItem();
-					setRecipeResultItem(item);
+					if (item.hasRecipe()) {
+						setRecipeResult(item);
+					} else {
+						setRecipeIngredient(item);
+					}
 					EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
 					if (stats.getGold() >= item.getTotalPrice()) {
 						setResultItem(item);
@@ -70,7 +74,7 @@ public class ContainerShopBuy extends Container {
 						setResultItem((Dota2Item)null);
 					}
 				} else {
-					setRecipeResultItem(null);
+					setRecipeResult(null);
 					setResultItem((Dota2Item)null);
 				}
 				return null;
@@ -85,7 +89,7 @@ public class ContainerShopBuy extends Container {
 	public List<ItemStack> getRecipeIngredients() {
 		return recipeIngredients;
 	}
-	public void setRecipeResultItem(Dota2Item item) {
+	public void setRecipeResult(Dota2Item item) {
 		recipeResults.clear();
 		recipeIngredients.clear();
 		if (item != null) {

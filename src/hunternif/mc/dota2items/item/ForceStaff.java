@@ -71,6 +71,9 @@ public class ForceStaff extends CooldownItem {
 	}
 	
 	public static void processForceMovement(Entity entity, float yaw) {
+		if (entity.ridingEntity != null) {
+			entity = entity.ridingEntity;
+		}
 		float sinYaw = MathHelper.sin(yaw * (float)Math.PI / 180.0F);
 		float cosYaw = MathHelper.cos(yaw * (float)Math.PI / 180.0F);
 		

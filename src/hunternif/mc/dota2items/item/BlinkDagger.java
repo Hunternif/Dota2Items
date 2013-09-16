@@ -14,6 +14,7 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -143,9 +144,15 @@ public class BlinkDagger extends CooldownItem {
 	 * from the given destination. Otherwise returns false and doesn't blink.
 	 */
 	private boolean blink(ItemStack itemStack, World world, EntityPlayer player, int x, int y, int z) {
+		Entity blinkingEntity;
+		if (player.ridingEntity != null) {
+			blinkingEntity = player.ridingEntity;
+		} else {
+			blinkingEntity = player;
+		}
 		// First of all, check if we are hanging in the air; if so, land.
 		Material material = world.getBlockMaterial(x, y-1, z);
-		boolean isUnderWater = player.isInsideOfMaterial(Material.water);
+		boolean isUnderWater = blinkingEntity.isInsideOfMaterial(Material.water);
 		while (!(material.isSolid() || (!isUnderWater && material.isLiquid()))) {
 			y--;
 			material = world.getBlockMaterial(x, y-1, z);
@@ -155,7 +162,7 @@ public class BlinkDagger extends CooldownItem {
 			}
 		}
 		double destX = (double) x + 0.5D;
-		double destY = (double) y + player.yOffset;
+		double destY = (double) y + blinkingEntity.yOffset;
 		double destZ = (double) z + 0.5D;
 		
 		// Special care must be taken with fences which are 1.5 blocks high
@@ -169,16 +176,18 @@ public class BlinkDagger extends CooldownItem {
 		}
 		
 		// Keep previous coordinates
-		double srcX = player.posX;
-		double srcY = player.posY;
-		double srcZ = player.posZ;
+		double srcX = blinkingEntity.posX;
+		double srcY = blinkingEntity.posY;
+		double srcZ = blinkingEntity.posZ;
 		
-		player.setPosition(destX, destY, destZ);
+		blinkingEntity.setPosition(destX, destY, destZ);
+		blinkingEntity.updateRiderPosition();
 		
 		// If colliding with something right now, return false immediately:
 		if (!world.getCollidingBoundingBoxes(player, player.boundingBox).isEmpty()) {
 			// Reset player position
-			player.setPosition(srcX, srcY, srcZ);
+			blinkingEntity.setPosition(srcX, srcY, srcZ);
+			blinkingEntity.updateRiderPosition();
 			return false;
 		}
 		
@@ -187,10 +196,10 @@ public class BlinkDagger extends CooldownItem {
 		if (!player.capabilities.isCreativeMode) {
 			Dota2Items.mechanics.getOrCreateEntityStats(player).removeMana(getManaCost());
 		}
-		player.motionX = 0;
-		player.motionY = 0;
-		player.motionZ = 0;
-		player.fallDistance = 0;
+		blinkingEntity.motionX = 0;
+		blinkingEntity.motionY = 0;
+		blinkingEntity.motionZ = 0;
+		blinkingEntity.fallDistance = 0;
 
 		EffectInstance srcEffect = new EffectInstance(Effect.blink, srcX, srcY, srcZ);
 		EffectInstance destEffect = new EffectInstance(Effect.blink, destX, destY, destZ);

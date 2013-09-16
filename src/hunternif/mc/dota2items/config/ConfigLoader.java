@@ -82,21 +82,22 @@ public class ConfigLoader {
 				}
 			}
 			// Parse fields one more time to set their recipes:
-			for (CfgInfo<?> info : itemsWithRecipes) {
+			for (CfgInfo<? extends Dota2Item> info : itemsWithRecipes) {
 				List<Dota2Item> recipeForShop = new ArrayList<Dota2Item>();
 				List<ItemStack> recipeForCraft = new ArrayList<ItemStack>();
 				
-				for (CfgInfo<?> ingredient : info.recipe) {
-					Dota2Item item = (Dota2Item) ingredient.instance;
+				for (CfgInfo<? extends Dota2Item> ingredient : info.recipe) {
+					Dota2Item item = ingredient.instance;
 					recipeForShop.add(item);
 					recipeForCraft.add(new ItemStack(item, item.getDefaultQuantity()));
+					ingredient.usedInRecipes.add(info.instance);
 				}
-				((Dota2Item) info.instance).setRecipe(recipeForShop);
+				info.instance.setRecipe(recipeForShop);
 				
-				if (((Dota2Item)info.instance).isRecipeItemRequired()) {
+				if (info.instance.isRecipeItemRequired()) {
 					recipeForCraft.add(ItemRecipe.forItem(info.getID(), false));
 				}
-				ItemStack craftResult = new ItemStack((Dota2Item)info.instance, ((Dota2Item)info.instance).getDefaultQuantity());
+				ItemStack craftResult = new ItemStack(info.instance, info.instance.getDefaultQuantity());
 				GameRegistry.addShapelessRecipe(craftResult, recipeForCraft.toArray());
 				
 				Dota2Items.logger.info("Added recipe for Dota 2 item " + info.name);

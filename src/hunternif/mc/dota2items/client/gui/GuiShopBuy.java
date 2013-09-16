@@ -60,8 +60,10 @@ public class GuiShopBuy extends GuiShopBase {
 	private float curScroll = 0;
 	private SlotColumnIcon[] columnIcons = new SlotColumnIcon[COLUMNS];
 	
-	private GuiRecipeButton recipeResultButton;
-	private List<GuiRecipeButton> recipeButtons = new ArrayList<GuiRecipeButton>();
+	private List<GuiRecipeButton> resultBtns = new ArrayList<GuiRecipeButton>();
+	private List<GuiRecipeButton> ingredientBtns = new ArrayList<GuiRecipeButton>();
+	private GuiUpDownButton upBtn;
+	private GuiUpDownButton downBtn;
 	
 	public GuiShopBuy(InventoryPlayer inventoryPlayer) {
 		super(inventoryPlayer.player, new ContainerShopBuy(inventoryPlayer));
@@ -71,7 +73,6 @@ public class GuiShopBuy extends GuiShopBase {
 		for (int i = 0; i < COLUMNS; i++) {
 			columnIcons[i] = new SlotColumnIcon(Column.forId(i), COLUMN_ICONS_X+18*i+1, COLUMN_ICONS_Y+1);
 		}
-		//TODO make buttons to traverse full recipe hierarchy up and down.
 	}
 	
 	@Override
@@ -84,6 +85,8 @@ public class GuiShopBuy extends GuiShopBase {
 		filterField.setFocused(false);
 		filterField.setCanLoseFocus(true);
 		filterField.setTextColor(COLOR_SEARCH);
+		upBtn = new GuiUpDownButton(1, guiLeft + 105, guiTop + 162, false);
+		downBtn = new GuiUpDownButton(2, guiLeft + 105, guiTop + 173, true);
 		resetRecipeButtons();
 	}
 	
@@ -138,14 +141,14 @@ public class GuiShopBuy extends GuiShopBase {
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 		//RenderHelper.disableStandardItemLighting();
 		this.fontRenderer.drawString("Shopkeeper", 8, 29, TITLE_COLOR);
-		this.fontRenderer.drawString("Price", 114, 139, TITLE_COLOR);
-		this.fontRenderer.drawString("Purchase", 114, 160, TITLE_COLOR);
-		this.fontRenderer.drawString("Inventory", 114, 204, TITLE_COLOR);
+		this.fontRenderer.drawString("Price", 128, 139, TITLE_COLOR);
+		this.fontRenderer.drawString("Purchase", 128, 160, TITLE_COLOR);
+		this.fontRenderer.drawString("Inventory", 128, 204, TITLE_COLOR);
 		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
 		ClientProxy.guiGold.renderGoldText(stats.getGold(), WIDTH - GuiGold.GUI_GOLD_WIDTH, 0);
 		ItemStack resultStack = ((ContainerShopBuy)this.inventorySlots).getSlotResult().getStack();
 		int price = Dota2Item.getPrice(resultStack);
-		renderBuyPrice(price, 180, 139, stats.getGold() >= price);
+		renderBuyPrice(price, 187, 139, stats.getGold() >= price);
 		
 		// Column icons' hovering text
 		for (int i = 0; i < COLUMNS; i++) {
@@ -166,7 +169,7 @@ public class GuiShopBuy extends GuiShopBase {
 				// Permit clicking on the button if this item can be bought now
 				// or if it has a recipe to view.
 				btn.enabled = shopContains(btn.itemStack.getItem()) && Dota2Item.canBuy(btn.itemStack, player) ||
-						btn != recipeResultButton && Dota2Item.hasRecipe(btn.itemStack);
+						ingredientBtns.contains(btn) && Dota2Item.hasRecipe(btn.itemStack);
 				
 				if (isPointInRegion(btn.xPosition - guiLeft, btn.yPosition - guiTop, 18, 18, mouseX, mouseY)) {
 					drawItemStackTooltip(btn.itemStack, mouseX - guiLeft, mouseY - guiTop);
@@ -253,21 +256,31 @@ public class GuiShopBuy extends GuiShopBase {
 	
 	private void resetRecipeButtons() {
 		buttonList.clear();
+		buttonList.add(upBtn);
+		buttonList.add(downBtn);
 		ItemStack resultStack = ((ContainerShopBuy)this.inventorySlots).getResultItem();
-		ItemStack recipeResultStack = ((ContainerShopBuy)this.inventorySlots).getRecipeResultItem();
-		if (recipeResultStack != null) {
-			recipeResultButton = new GuiRecipeButton(-1, guiLeft + 51, guiTop + 142, recipeResultStack);
-			recipeResultButton.enabled = false;
-			if (resultStack != null && recipeResultStack.itemID == resultStack.itemID) {
-				recipeResultButton.setSelected(true);
+		int id = -1;
+		List<ItemStack> results = ((ContainerShopBuy)this.inventorySlots).getRecipeResults();
+		if (results != null && !results.isEmpty()) {
+			resultBtns.clear();
+			int x = guiLeft + 66 - MathHelper.floor_float( ((float)results.size())/2f * (18+3) );
+			int y = guiTop + 142;
+			for (int i = 0; i < results.size(); i++) {
+				GuiRecipeButton btn = new GuiRecipeButton(id, x, y, results.get(i));
+				btn.enabled = false;
+				if (resultStack != null && results.get(i).itemID == resultStack.itemID) {
+					btn.setSelected(true);
+				}
+				buttonList.add(btn);
+				resultBtns.add(btn);
+				id --;
+				x += 18+3;
 			}
-			buttonList.add(recipeResultButton);
 		}
 		List<ItemStack> ingredients = ((ContainerShopBuy)this.inventorySlots).getRecipeIngredients();
-		if (ingredients != null && !ingredients.isEmpty()) {
-			recipeButtons.clear();
-			int id = -2;
-			int x = guiLeft + 60 - MathHelper.floor_float( ((float)ingredients.size())/2f * (18+3) );
+		if (!ingredients.isEmpty()) {
+			ingredientBtns.clear();
+			int x = guiLeft + 66 - MathHelper.floor_float( ((float)ingredients.size())/2f * (18+3) );
 			int y = guiTop + 186;
 			for (int i = 0; i < ingredients.size(); i++) {
 				GuiRecipeButton btn = new GuiRecipeButton(id, x, y, ingredients.get(i));
@@ -276,20 +289,26 @@ public class GuiShopBuy extends GuiShopBase {
 					btn.setSelected(true);
 				}
 				buttonList.add(btn);
-				recipeButtons.add(btn);
-				id -= i;
+				ingredientBtns.add(btn);
+				id --;
 				x += 18+3;
 			}
 		}
 	}
 	
+	/** Only reset buttons, when their contents change. Otherwise they flick weirdly. */
 	private boolean shouldResetRecipeButtons() {
-		if (recipeResultButton == null || recipeResultButton.itemStack == null) {
+		if (resultBtns.isEmpty()) {
 			return true;
 		}
-		ItemStack recipeResult = ((ContainerShopBuy)this.inventorySlots).getRecipeResultItem();
-		if (recipeResult != null && recipeResult.itemID != recipeResultButton.itemStack.itemID) {
+		List<ItemStack> recipeResults = ((ContainerShopBuy)this.inventorySlots).getRecipeResults();
+		if (recipeResults.size() != resultBtns.size()) {
 			return true;
+		}
+		for (int i = 0; i < recipeResults.size(); i++) {
+			if (recipeResults.get(i).itemID != resultBtns.get(i).itemStack.itemID) {
+				return true;
+			}
 		}
 		return false;
 	}

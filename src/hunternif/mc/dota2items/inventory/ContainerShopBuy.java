@@ -27,8 +27,8 @@ public class ContainerShopBuy extends Container {
 	private InventoryPlayer invPlayer;
 	private int slotResultNumber;
 	
-	private ItemStack recipeResultItem;
-	private List<ItemStack> recipeIngredients;
+	private List<ItemStack> recipeResults = new ArrayList<ItemStack>();
+	private List<ItemStack> recipeIngredients = new ArrayList<ItemStack>();
 	
 	public ContainerShopBuy(InventoryPlayer inventoryPlayer) {
 		this.invPlayer = inventoryPlayer;
@@ -42,7 +42,7 @@ public class ContainerShopBuy extends Container {
 		for (int i = 0; i < 9; ++i) {
 			addSlotToContainer(new Slot(inventoryPlayer, i, PLAYER_INV_X + i * 18, PLAYER_INV_Y));
 		}
-		slotResultNumber = addSlotToContainer(new SlotShopBuyResult(invResult, 0, 160, 175)).slotNumber;
+		slotResultNumber = addSlotToContainer(new SlotShopBuyResult(invResult, 0, 167, 175)).slotNumber;
 	}
 
 	@Override
@@ -79,29 +79,25 @@ public class ContainerShopBuy extends Container {
 		return super.slotClick(slotNumber, mouseClick, holdShift, player);
 	}
 	
-	public ItemStack getRecipeResultItem() {
-		return recipeResultItem;
+	public List<ItemStack> getRecipeResults() {
+		return recipeResults;
 	}
 	public List<ItemStack> getRecipeIngredients() {
 		return recipeIngredients;
 	}
 	public void setRecipeResultItem(Dota2Item item) {
+		recipeResults.clear();
+		recipeIngredients.clear();
 		if (item != null) {
-			recipeResultItem = invShop.sampleFor(item);
+			recipeResults.add(invShop.sampleFor(item));
 			if (item.hasRecipe()) {
-				recipeIngredients = new ArrayList<ItemStack>();
 				for (Dota2Item curRecipeItem : item.getRecipe()) {
 					recipeIngredients.add(invShop.sampleFor(curRecipeItem));
 				}
 				if (item.isRecipeItemRequired()) {
 					recipeIngredients.add(ItemRecipe.forItem(item, true));
 				}
-			} else {
-				recipeIngredients = null;
 			}
-		} else {
-			recipeResultItem = null;
-			recipeIngredients = null;
 		}
 	}
 	

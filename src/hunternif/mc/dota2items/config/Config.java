@@ -268,8 +268,7 @@ public class Config {
 				.setPassiveBuff( new Buff("Eul's Scepter of Divinity").setMovementSpeed(30, false).setIntelligence(10).setManaRegenPercent(150) )
 				.setRecipe(staffOfWizardry, sagesMask, voidStone)
 				.setDescription("Active (left click on unit or right click on block below): Cyclone - "
-						+ "Target unit is swept up in a cyclone for 2.5 seconds, and is invulnerable.\n"
-						+ "Flat movement speed bonuses from multiple Eul's Scepters do not stack.");
+						+ "Target unit is swept up in a cyclone for 2.5 seconds, and is invulnerable.");
 //		dagon
 //		veilOfDiscord
 //		rodOfAtos

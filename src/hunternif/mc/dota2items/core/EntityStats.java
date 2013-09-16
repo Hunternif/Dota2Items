@@ -150,6 +150,17 @@ public class EntityStats implements IExtendedEntityProperties {
 	public void removeBuff(BuffInstance buffInst) {
 		appliedBuffs.remove(buffInst);
 	}
+	public boolean hasBuff(Buff buff) {
+		return getBuffInstance(buff) != null;
+	}
+	public BuffInstance getBuffInstance(Buff buff) {
+		for (BuffInstance buffInst : appliedBuffs) {
+			if (buffInst.buff == buff) {
+				return buffInst;
+			}
+		}
+		return null;
+	}
 	
 	/** Returns a copy. */
 	public Set<Integer> getPlayerAttackersIDs() {

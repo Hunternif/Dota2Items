@@ -75,7 +75,7 @@ public class ShopSpawner {
 	
 	public void spawnShop(World world, int x, int z) {
 		PasteToWorld pasteToWorld = new PasteToWorld(world);
-		IntVec3 coords = BlockUtil.findSurfaceDownward(world, x - 40 - shopSchematic.getWidth(), world.getHeight(), z - shopSchematic.getLength());
+		IntVec3 coords = BlockUtil.findGroundDownward(world, x - 40 - shopSchematic.getWidth(), world.getHeight(), z - shopSchematic.getLength());
 		if (coords == null) {
 			Dota2Items.logger.warning("Couldn't find surface to spawn shop at (x:" + x + ", z:" + z + ")");
 		} else {

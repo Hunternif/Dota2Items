@@ -11,6 +11,7 @@ import hunternif.mc.dota2items.item.Daedalus;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.item.Dota2Logo;
 import hunternif.mc.dota2items.item.EulsScepter;
+import hunternif.mc.dota2items.item.ForceStaff;
 import hunternif.mc.dota2items.item.GoldCoin;
 import hunternif.mc.dota2items.item.HandOfMidas;
 import hunternif.mc.dota2items.item.ItemRecipe;
@@ -255,14 +256,20 @@ public class Config {
 //		pipeOfInsight
 		
 		// Item column: Caster ========================================================================
-//		forceStaff
+		public static CfgInfo<ForceStaff> forceStaff = new CfgInfo<ForceStaff>(27069, "Force Staff")
+				.setPrice(900).setWeaponDamage(2).setColumn(Column.CASTER)
+				.setPassiveBuff( new Buff("Force Staff").setIntelligence(10).setHealthRegen(3) )
+				.setRecipe(staffOfWizardry, ringOfRegen)
+				.setDescription("Active (left click): Force - Pushes any target unit 600 units in the "
+						+ "direction it is facing. Right-click to self-cast.");
 //		necronomicon
 		public static CfgInfo<EulsScepter> eulsScepter = new CfgInfo<EulsScepter>(27004, "Eul's Scepter of Divinity")
 				.setPrice(600).setWeaponDamage(2).setColumn(Column.CASTER)
 				.setPassiveBuff( new Buff("Eul's Scepter of Divinity").setMovementSpeed(30, false).setIntelligence(10).setManaRegenPercent(150) )
 				.setRecipe(staffOfWizardry, sagesMask, voidStone)
-				.setDescription("Active: Cyclone - Target unit is swept up in a cyclone for 2.5 seconds, " +
-				"and is invulnerable.\nFlat movement speed bonuses from multiple Eul's Scepters do not stack.");
+				.setDescription("Active (left click on unit or right click on block below): Cyclone - "
+						+ "Target unit is swept up in a cyclone for 2.5 seconds, and is invulnerable.\n"
+						+ "Flat movement speed bonuses from multiple Eul's Scepters do not stack.");
 //		dagon
 //		veilOfDiscord
 //		rodOfAtos
@@ -346,7 +353,7 @@ public class Config {
 //		eyeOfSkadi
 //		satanic
 		
-		// Last item ID: 27068
+		// Last item ID: 27069
 		
 		// Blocks
 		public static CfgInfo<BlockCycloneContainer> cycloneContainer = new CfgInfo<BlockCycloneContainer>(2700, "Cyclone Container");

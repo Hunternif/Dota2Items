@@ -89,8 +89,9 @@ public final class BlockUtil {
 		return true;
 	}
 	
+	/** Find first non-solid block above. */
 	public static IntVec3 findSurfaceUpward(World world, int x, int y, int z) {
-		while (!world.isAirBlock(x, y, z) && y < world.getHeight()) {
+		while (isSolid(world, x, y, z) && y < world.getHeight()) {
 			y++;
 		}
 		if (y >= world.getHeight()) {
@@ -99,8 +100,23 @@ public final class BlockUtil {
 		return new IntVec3(x, y, z);
 	}
 	
-	/** Finds first block below which is considered ground material. */
+	/** Find first solid or liquid block below. */
 	public static IntVec3 findSurfaceDownward(World world, int x, int y, int z) {
+		while (y > 0) {
+			if (isSolid(world, x, y, z) || world.getBlockMaterial(x, y, z).isLiquid()) {
+				break;
+			} else {
+				y--;
+			}
+		}
+		if (y == 0) {
+			return null;
+		}
+		return new IntVec3(x, y + 1, z);
+	}
+	
+	/** Finds first block below which is considered ground material. */
+	public static IntVec3 findGroundDownward(World world, int x, int y, int z) {
 		while (y > 0) {
 			Material material = world.getBlockMaterial(x, y, z);
 			if (groundMaterials.contains(material)) {
@@ -119,7 +135,12 @@ public final class BlockUtil {
 		int x = MathHelper.floor_double(vec.xCoord);
 		int y = MathHelper.floor_double(vec.yCoord);
 		int z = MathHelper.floor_double(vec.zCoord);
-		return world.getBlockMaterial(x, y, z).isSolid();
+		return isSolid(world, x, y, z);
+	}
+	
+	public static boolean isSolid(World world, int x, int y, int z) {
+		return world.getBlockMaterial(x, y, z).isSolid() ||
+				world.getBlockId(x, y-1, z) == Block.fence.blockID;
 	}
 	
 	public static boolean areCoordinatesWithinChunk(Chunk chunk, ChunkCoordinates coords) {

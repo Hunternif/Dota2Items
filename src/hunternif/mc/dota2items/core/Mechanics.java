@@ -9,6 +9,7 @@ import hunternif.mc.dota2items.effect.Effect;
 import hunternif.mc.dota2items.effect.EffectInstance;
 import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.item.Dota2Item;
+import hunternif.mc.dota2items.item.ForceStaff;
 import hunternif.mc.dota2items.item.PhaseBoots;
 import hunternif.mc.dota2items.util.MCConstants;
 
@@ -395,6 +396,10 @@ public class Mechanics {
 				((EntityPlayer)event.entityLiving).inventory.decrementAnimations();
 			}
 		}
+		BuffInstance buffForce = stats.getBuffInstance(Buff.force);
+		if (buffForce != null) {
+			ForceStaff.processForceMovement(event.entity,buffForce.tag.getFloat(ForceStaff.TAG_YAW));
+		}
 		// Workaround for creepers still exploding while having their attack disabled:
 		if (!stats.canAttack()) {
 			if (event.entityLiving instanceof EntityCreeper) {
@@ -517,11 +522,9 @@ public class Mechanics {
 		// Phase is cancelled upon using another item or ability:
 		if (!(event.item instanceof PhaseBoots)) {
 			EntityStats stats = getOrCreateEntityStats(event.entityPlayer);
-			for (BuffInstance buffInst : stats.getAppliedBuffs()) {
-				if (buffInst.buff == Buff.phase) {
-					stats.removeBuff(buffInst);
-					break;
-				}
+			BuffInstance phaseInstance = stats.getBuffInstance(Buff.phase);
+			if (phaseInstance != null) {
+				stats.removeBuff(phaseInstance);
 			}
 		}
 	}

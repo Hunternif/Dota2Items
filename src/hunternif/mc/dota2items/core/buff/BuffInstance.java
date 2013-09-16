@@ -3,7 +3,7 @@ package hunternif.mc.dota2items.core.buff;
 import net.minecraft.nbt.NBTTagCompound;
 
 
-public class BuffInstance {
+public final class BuffInstance {
 	private static final String TAG_BUFF_ID = "buffId";
 	private static final String TAG_START_TIME = "startTime";
 	private static final String TAG_END_TIME = "endTime";
@@ -14,6 +14,7 @@ public class BuffInstance {
 	public long startTime;
 	public long endTime;
 	public boolean isFriendly;
+	public NBTTagCompound tag;
 	
 	/** For passive item buffs. */
 	public BuffInstance(Buff buff, int entityID, boolean isFriendly) {
@@ -26,6 +27,7 @@ public class BuffInstance {
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.isFriendly = isFriendly;
+		this.tag = toNBT();
 	}
 	
 	/** Only passive buffs from items can be permanent. */
@@ -51,7 +53,9 @@ public class BuffInstance {
 	}
 	
 	public NBTTagCompound toNBT() {
-		NBTTagCompound tag = new NBTTagCompound();
+		if (tag == null) {
+			tag = new NBTTagCompound();
+		}
 		tag.setInteger(TAG_BUFF_ID, buff.id);
 		tag.setLong(TAG_START_TIME, startTime);
 		tag.setLong(TAG_END_TIME, endTime);

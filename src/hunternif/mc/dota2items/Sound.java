@@ -20,7 +20,8 @@ public enum Sound {
 	SALVE("healing_salve"),
 	PHASE_BOOTS("phase_boots"),
 	ARCANE_BOOTS("arcane_boots"),
-	MASK_OF_MADNESS("mask_of_madness");
+	MASK_OF_MADNESS("mask_of_madness"),
+	FORCE_STAFF("force_staff");
 	
 	private String name;
 	public int randomVariants = 0;

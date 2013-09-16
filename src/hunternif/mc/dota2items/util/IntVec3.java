@@ -16,6 +16,12 @@ public class IntVec3 {
 		this.z = z;
 	}
 	
+	public IntVec3(double x, double y, double z) {
+		this.x = MathHelper.floor_double(x);
+		this.y = MathHelper.floor_double(y);
+		this.z = MathHelper.floor_double(z);
+	}
+	
 	public IntVec3(Vec3 vec3) {
 		x = MathHelper.floor_double(vec3.xCoord);
 		y = MathHelper.floor_double(vec3.yCoord);

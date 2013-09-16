@@ -92,6 +92,7 @@ public class Buff {
 	public static final Buff salve = new Buff(4, "Regenerate").setHealthRegen(400f/10f).setDoesNotStack().setIsDisplayed().setIconTexture("items/healingSalve.png");
 	public static final Buff phase = new Buff(5, "Phase").setMovementSpeedPercent(16).setDoesNotStack().setIsDisplayed().setIconTexture("items/phaseBoots.png");
 	public static final Buff berserk = new Buff(6, "Berserk").setMovementSpeedPercent(30).setAttackSpeed(100).setAmplifyDamage(30, 0).setIsDisplayed().setIconTexture("items/maskOfMadness.png");
+	public static final Buff force = new Buff(7, "Force").setIsDisplayed();
 	
 	
 	public Buff(int id, String name) {

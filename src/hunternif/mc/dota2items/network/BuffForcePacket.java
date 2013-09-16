@@ -4,6 +4,7 @@ import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
+import hunternif.mc.dota2items.item.ForceStaff;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,41 +15,28 @@ import com.google.common.io.ByteArrayDataOutput;
 
 import cpw.mods.fml.relauncher.Side;
 
-public class BuffPacket extends CustomPacket {
-	protected int buffID;
-	protected int entityID;
-	protected long startTime;
-	protected long endTime;
-	protected boolean isFriendly;
+public class BuffForcePacket extends BuffPacket {
+	protected float yaw;
 	
-	public BuffPacket() {}
+	public BuffForcePacket() {}
 	
-	public BuffPacket(BuffInstance inst) {
-		buffID = inst.buff.id;
-		entityID = inst.entityID;
-		startTime = inst.startTime;
-		endTime = inst.endTime;
-		isFriendly = inst.isFriendly;
+	public BuffForcePacket(BuffInstance inst) {
+		super(inst);
+		yaw = inst.tag.getFloat(ForceStaff.TAG_YAW);
 	}
-
+	
 	@Override
 	public void write(ByteArrayDataOutput out) {
-		out.writeInt(buffID);
-		out.writeInt(entityID);
-		out.writeLong(startTime);
-		out.writeLong(endTime);
-		out.writeBoolean(isFriendly);
+		super.write(out);
+		out.writeFloat(yaw);
 	}
-
+	
 	@Override
 	public void read(ByteArrayDataInput in) throws ProtocolException {
-		buffID = in.readInt();
-		entityID = in.readInt();
-		startTime = in.readLong();
-		endTime = in.readLong();
-		isFriendly = in.readBoolean();
+		super.read(in);
+		yaw = in.readFloat();
 	}
-
+	
 	@Override
 	public void execute(EntityPlayer player, Side side) throws ProtocolException {
 		if (side.isClient()) {
@@ -56,6 +44,7 @@ public class BuffPacket extends CustomPacket {
 			if (entity != null && entity instanceof EntityLivingBase) {
 				EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats((EntityLivingBase)entity);
 				BuffInstance buffInst = new BuffInstance(Buff.buffList[buffID], entityID, startTime, endTime, isFriendly);
+				buffInst.tag.setFloat(ForceStaff.TAG_YAW, yaw);
 				stats.addBuff(buffInst);
 			}
 		} else {

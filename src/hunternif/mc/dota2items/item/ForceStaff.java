@@ -114,6 +114,7 @@ public class ForceStaff extends CooldownItem {
 			trailEffect(entity.worldObj, oldPosX, oldPosY, oldPosZ, 0, entity.posY - entity.yOffset - oldPosY, 0);
 			entity.moveEntity(dx, 0, dz);
 			trailEffect(entity.worldObj, oldPosX, oldPosY, oldPosZ, entity.posX - oldPosX, 0, entity.posZ - oldPosZ);
+			entity.fallDistance = 0;
 		}
 	}
 	

@@ -2,9 +2,11 @@ package hunternif.mc.dota2items.config;
 
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.inventory.Column;
+import hunternif.mc.dota2items.item.Dota2Item;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,7 +18,7 @@ public class CfgInfo<T> {
 	protected int id;
 	public String name;
 	protected int price = 0;
-	protected List<CfgInfo<?>> recipe;
+	protected List<CfgInfo<? extends Dota2Item>> recipe;
 	protected Buff passiveBuff;
 	protected float weaponDamage = 0;
 	protected Column column;
@@ -46,7 +48,7 @@ public class CfgInfo<T> {
 		this.price = value;
 		return this;
 	}
-	public CfgInfo setRecipe(CfgInfo<?> ... items) {
+	public CfgInfo setRecipe(CfgInfo<? extends Dota2Item> ... items) {
 		this.recipe = Arrays.asList(items);
 		return this;
 	}

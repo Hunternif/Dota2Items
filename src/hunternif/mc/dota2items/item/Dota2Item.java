@@ -10,7 +10,9 @@ import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.inventory.Column;
 import hunternif.mc.dota2items.inventory.InventoryShop;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -43,6 +45,7 @@ public class Dota2Item extends Item {
 	
 	/** If this item has a recipe, this "price" represents the price of the recipe. */
 	private int price;
+	private Set<Dota2Item> usedInRecipes = new HashSet<Dota2Item>();
 	private List<Dota2Item> recipe;
 	
 	public Dota2Item(int id) {
@@ -163,6 +166,9 @@ public class Dota2Item extends Item {
 	}
 	public Dota2Item setRecipe(List<Dota2Item> list) {
 		this.recipe = list;
+		for (Dota2Item item : list) {
+			item.usedInRecipes.add(this);
+		}
 		return this;
 	}
 	public Dota2Item setRecipe(List<Dota2Item> list, int priceOfRecipe) {
@@ -178,6 +184,9 @@ public class Dota2Item extends Item {
 	}
 	public List<Dota2Item> getRecipe() {
 		return recipe;
+	}
+	public Set<Dota2Item> getUsedInRecipes() {
+		return usedInRecipes;
 	}
 	public int getRecipePrice() {
 		return price;
@@ -256,6 +265,10 @@ public class Dota2Item extends Item {
 	public static boolean hasRecipe(ItemStack itemStack) {
 		return itemStack.getItem() instanceof Dota2Item &&
 				((Dota2Item)itemStack.getItem()).hasRecipe();
+	}
+	public static boolean isUsedInRecipe(ItemStack itemStack) {
+		return itemStack.getItem() instanceof Dota2Item &&
+				!((Dota2Item)itemStack.getItem()).usedInRecipes.isEmpty();
 	}
 	
 	public static int getPrice(ItemStack itemStack) {

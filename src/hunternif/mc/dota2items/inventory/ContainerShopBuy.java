@@ -27,8 +27,8 @@ public class ContainerShopBuy extends Container {
 	private InventoryPlayer invPlayer;
 	private int slotResultNumber;
 	
-	private ItemStack recipeResultItem;
-	private List<ItemStack> recipeIngredients;
+	private List<ItemStack> recipeResults = new ArrayList<ItemStack>();
+	private List<ItemStack> recipeIngredients = new ArrayList<ItemStack>();
 	
 	public ContainerShopBuy(InventoryPlayer inventoryPlayer) {
 		this.invPlayer = inventoryPlayer;
@@ -42,7 +42,7 @@ public class ContainerShopBuy extends Container {
 		for (int i = 0; i < 9; ++i) {
 			addSlotToContainer(new Slot(inventoryPlayer, i, PLAYER_INV_X + i * 18, PLAYER_INV_Y));
 		}
-		slotResultNumber = addSlotToContainer(new SlotShopBuyResult(invResult, 0, 160, 175)).slotNumber;
+		slotResultNumber = addSlotToContainer(new SlotShopBuyResult(invResult, 0, 167, 175)).slotNumber;
 	}
 
 	@Override
@@ -62,7 +62,11 @@ public class ContainerShopBuy extends Container {
 				ItemStack stack = invShop.getStackInSlot(slotNumber);
 				if (stack != null) {
 					Dota2Item item = (Dota2Item) stack.getItem();
-					setRecipeResultItem(item);
+					if (item.hasRecipe()) {
+						setRecipeResult(item);
+					} else {
+						setRecipeIngredient(item);
+					}
 					EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
 					if (stats.getGold() >= item.getTotalPrice()) {
 						setResultItem(item);
@@ -70,7 +74,7 @@ public class ContainerShopBuy extends Container {
 						setResultItem((Dota2Item)null);
 					}
 				} else {
-					setRecipeResultItem(null);
+					setRecipeResult(null);
 					setResultItem((Dota2Item)null);
 				}
 				return null;
@@ -79,29 +83,38 @@ public class ContainerShopBuy extends Container {
 		return super.slotClick(slotNumber, mouseClick, holdShift, player);
 	}
 	
-	public ItemStack getRecipeResultItem() {
-		return recipeResultItem;
+	public List<ItemStack> getRecipeResults() {
+		return recipeResults;
 	}
 	public List<ItemStack> getRecipeIngredients() {
 		return recipeIngredients;
 	}
-	public void setRecipeResultItem(Dota2Item item) {
+	public void setRecipeResult(Dota2Item item) {
+		recipeResults.clear();
+		recipeIngredients.clear();
 		if (item != null) {
-			recipeResultItem = invShop.sampleFor(item);
+			recipeResults.add(invShop.sampleFor(item));
 			if (item.hasRecipe()) {
-				recipeIngredients = new ArrayList<ItemStack>();
 				for (Dota2Item curRecipeItem : item.getRecipe()) {
 					recipeIngredients.add(invShop.sampleFor(curRecipeItem));
 				}
 				if (item.isRecipeItemRequired()) {
 					recipeIngredients.add(ItemRecipe.forItem(item, true));
 				}
-			} else {
-				recipeIngredients = null;
 			}
-		} else {
-			recipeResultItem = null;
-			recipeIngredients = null;
+		}
+	}
+	/** Sets this 1 item as ingredient and shows all recipes it is used in. */
+	public void setRecipeIngredient(Dota2Item item) {
+		recipeResults.clear();
+		recipeIngredients.clear();
+		if (item != null) {
+			recipeIngredients.add(invShop.sampleFor(item));
+			if (!item.getUsedInRecipes().isEmpty()) {
+				for (Dota2Item curRecipeItem : item.getUsedInRecipes()) {
+					recipeResults.add(invShop.sampleFor(curRecipeItem));
+				}
+			}
 		}
 	}
 	

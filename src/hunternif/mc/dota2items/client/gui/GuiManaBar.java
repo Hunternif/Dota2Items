@@ -34,7 +34,7 @@ public class GuiManaBar extends Gui {
 	
 	@ForgeSubscribe
 	public void onRenderHotBar(RenderGameOverlayEvent event) {
-		// Only interested in Post-ExperienceBar events (the end of overlay rendering)
+		// Only interested in Post-HotBar events ((almost) the end of overlay rendering)
 		if (event.isCancelable() || event.type != ElementType.HOTBAR || mc.thePlayer.capabilities.isCreativeMode) {
 			return;
 		}

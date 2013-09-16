@@ -171,6 +171,8 @@ public class GuiShopBuy extends GuiShopBase {
 				btn.enabled = shopContains(btn.itemStack.getItem()) && Dota2Item.canBuy(btn.itemStack, player) ||
 						ingredientBtns.contains(btn) && Dota2Item.hasRecipe(btn.itemStack);
 				
+				btn.selected = resultStack != null && btn.itemStack.itemID == resultStack.itemID;
+				
 				if (isPointInRegion(btn.xPosition - guiLeft, btn.yPosition - guiTop, 18, 18, mouseX, mouseY)) {
 					drawItemStackTooltip(btn.itemStack, mouseX - guiLeft, mouseY - guiTop);
 				}
@@ -227,18 +229,12 @@ public class GuiShopBuy extends GuiShopBase {
 			if (btn.itemStack == null) {
 				return;
 			}
-			boolean shouldResetButtons = false;
 			if (Dota2Item.canBuy(btn.itemStack, player)) {
 				((ContainerShopBuy)this.inventorySlots).setResultItem(btn.itemStack);
 				PacketDispatcher.sendPacketToServer(new ShopBuySetResultPacket(btn.itemStack).makePacket());
-				shouldResetButtons = true;
 			}
 			if (Dota2Item.hasRecipe(btn.itemStack)) {
 				((ContainerShopBuy)this.inventorySlots).setRecipeResultItem((Dota2Item)btn.itemStack.getItem());
-				shouldResetButtons = true;
-			}
-			if (shouldResetButtons) {
-				resetRecipeButtons();
 			}
 		}
 	}
@@ -258,7 +254,6 @@ public class GuiShopBuy extends GuiShopBase {
 		buttonList.clear();
 		buttonList.add(upBtn);
 		buttonList.add(downBtn);
-		ItemStack resultStack = ((ContainerShopBuy)this.inventorySlots).getResultItem();
 		int id = -1;
 		List<ItemStack> results = ((ContainerShopBuy)this.inventorySlots).getRecipeResults();
 		if (results != null && !results.isEmpty()) {
@@ -268,9 +263,6 @@ public class GuiShopBuy extends GuiShopBase {
 			for (int i = 0; i < results.size(); i++) {
 				GuiRecipeButton btn = new GuiRecipeButton(id, x, y, results.get(i));
 				btn.enabled = false;
-				if (resultStack != null && results.get(i).itemID == resultStack.itemID) {
-					btn.setSelected(true);
-				}
 				buttonList.add(btn);
 				resultBtns.add(btn);
 				id --;
@@ -285,9 +277,6 @@ public class GuiShopBuy extends GuiShopBase {
 			for (int i = 0; i < ingredients.size(); i++) {
 				GuiRecipeButton btn = new GuiRecipeButton(id, x, y, ingredients.get(i));
 				btn.enabled = false;
-				if (resultStack != null && ingredients.get(i).itemID == resultStack.itemID) {
-					btn.setSelected(true);
-				}
 				buttonList.add(btn);
 				ingredientBtns.add(btn);
 				id --;

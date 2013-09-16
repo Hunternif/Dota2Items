@@ -12,7 +12,7 @@ public class GuiRecipeButton extends GuiButton {
 	protected static RenderItem itemRenderer = new RenderItem();
 	
 	public ItemStack itemStack;
-	private boolean isSelected;
+	public boolean selected;
 	
 	public GuiRecipeButton(int id, int x, int y, ItemStack itemStack) {
 		super(id, x, y, 18, 18, "");
@@ -32,7 +32,7 @@ public class GuiRecipeButton extends GuiButton {
 			int v = 23;
 			if (!this.enabled) {
 				v += this.height * 2;
-			} else if (isSelected) {
+			} else if (selected) {
 				v += this.height * 1;
 			} else if (isMouseOver) {
 				v += this.height * 3;
@@ -47,12 +47,5 @@ public class GuiRecipeButton extends GuiButton {
 				itemRenderer.renderItemOverlayIntoGUI(font, mc.renderEngine, itemStack, this.xPosition + 1, this.yPosition + 1, (String)null);
 			}
 		}
-	}
-	
-	public boolean isSelected() {
-		return isSelected;
-	}
-	public void setSelected(boolean value) {
-		isSelected = value;
 	}
 }

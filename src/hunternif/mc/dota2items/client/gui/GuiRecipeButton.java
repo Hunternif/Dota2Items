@@ -12,6 +12,7 @@ public class GuiRecipeButton extends GuiButton {
 	protected static RenderItem itemRenderer = new RenderItem();
 	
 	public ItemStack itemStack;
+	public boolean displayEnabled;
 	public boolean selected;
 	
 	public GuiRecipeButton(int id, int x, int y, ItemStack itemStack) {
@@ -30,7 +31,7 @@ public class GuiRecipeButton extends GuiButton {
 			boolean isMouseOver = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 			int u = 230;
 			int v = 23;
-			if (!this.enabled) {
+			if (!displayEnabled) {
 				v += this.height * 2;
 			} else if (selected) {
 				v += this.height * 1;

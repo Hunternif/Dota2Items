@@ -90,7 +90,6 @@ public class ConfigLoader {
 					Dota2Item item = ingredient.instance;
 					recipeForShop.add(item);
 					recipeForCraft.add(new ItemStack(item, item.getDefaultQuantity()));
-					ingredient.usedInRecipes.add(info.instance);
 				}
 				info.instance.setRecipe(recipeForShop);
 				

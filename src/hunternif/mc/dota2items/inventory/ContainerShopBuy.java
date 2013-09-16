@@ -100,6 +100,19 @@ public class ContainerShopBuy extends Container {
 			}
 		}
 	}
+	/** Sets this 1 item as ingredient and shows all recipes it is used in. */
+	public void setRecipeIngredient(Dota2Item item) {
+		recipeResults.clear();
+		recipeIngredients.clear();
+		if (item != null) {
+			recipeIngredients.add(invShop.sampleFor(item));
+			if (!item.getUsedInRecipes().isEmpty()) {
+				for (Dota2Item curRecipeItem : item.getUsedInRecipes()) {
+					recipeResults.add(invShop.sampleFor(curRecipeItem));
+				}
+			}
+		}
+	}
 	
 	public ItemStack getResultItem() {
 		return invResult.getStackInSlot(0);

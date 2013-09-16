@@ -62,8 +62,7 @@ public class GuiShopBuy extends GuiShopBase {
 	
 	private List<GuiRecipeButton> resultBtns = new ArrayList<GuiRecipeButton>();
 	private List<GuiRecipeButton> ingredientBtns = new ArrayList<GuiRecipeButton>();
-	private GuiUpDownButton upBtn;
-	private GuiUpDownButton downBtn;
+	private GuiUpDownButton upButton;
 	
 	public GuiShopBuy(InventoryPlayer inventoryPlayer) {
 		super(inventoryPlayer.player, new ContainerShopBuy(inventoryPlayer));
@@ -85,8 +84,7 @@ public class GuiShopBuy extends GuiShopBase {
 		filterField.setFocused(false);
 		filterField.setCanLoseFocus(true);
 		filterField.setTextColor(COLOR_SEARCH);
-		upBtn = new GuiUpDownButton(1, guiLeft + 105, guiTop + 162, false);
-		downBtn = new GuiUpDownButton(2, guiLeft + 105, guiTop + 173, true);
+		upButton = new GuiUpDownButton(1, guiLeft + 105, guiTop + 167, false);
 		resetRecipeButtons();
 	}
 	
@@ -166,10 +164,9 @@ public class GuiShopBuy extends GuiShopBase {
 				if (btn.itemStack == null) {
 					continue;
 				}
-				// Permit clicking on the button if this item can be bought now
-				// or if it has a recipe to view.
-				btn.enabled = shopContains(btn.itemStack.getItem()) && Dota2Item.canBuy(btn.itemStack, player) ||
-						ingredientBtns.contains(btn) && Dota2Item.hasRecipe(btn.itemStack);
+				// It is always permitted to click on the button, for example to view the recipe
+				// But it is displayed as enabled only if you have enough money:
+				btn.displayEnabled = shopContains(btn.itemStack.getItem()) && Dota2Item.canBuy(btn.itemStack, player);
 				
 				btn.selected = resultStack != null && btn.itemStack.itemID == resultStack.itemID;
 				
@@ -236,6 +233,9 @@ public class GuiShopBuy extends GuiShopBase {
 			if (Dota2Item.hasRecipe(btn.itemStack)) {
 				((ContainerShopBuy)this.inventorySlots).setRecipeResultItem((Dota2Item)btn.itemStack.getItem());
 			}
+		} else if (button == upButton) {
+			List<ItemStack> results = ((ContainerShopBuy)this.inventorySlots).getRecipeResults();
+			((ContainerShopBuy)this.inventorySlots).setRecipeIngredient((Dota2Item)results.get(0).getItem());
 		}
 	}
 	
@@ -252,17 +252,19 @@ public class GuiShopBuy extends GuiShopBase {
 	
 	private void resetRecipeButtons() {
 		buttonList.clear();
-		buttonList.add(upBtn);
-		buttonList.add(downBtn);
+		buttonList.add(upButton);
+		upButton.enabled = false;
 		int id = -1;
 		List<ItemStack> results = ((ContainerShopBuy)this.inventorySlots).getRecipeResults();
-		if (results != null && !results.isEmpty()) {
+		if (results.size() == 1 && !((Dota2Item) results.get(0).getItem()).getUsedInRecipes().isEmpty()) {
+			upButton.enabled = true;
+		}
+		if (!results.isEmpty()) {
 			resultBtns.clear();
 			int x = guiLeft + 66 - MathHelper.floor_float( ((float)results.size())/2f * (18+3) );
 			int y = guiTop + 142;
 			for (int i = 0; i < results.size(); i++) {
 				GuiRecipeButton btn = new GuiRecipeButton(id, x, y, results.get(i));
-				btn.enabled = false;
 				buttonList.add(btn);
 				resultBtns.add(btn);
 				id --;
@@ -276,7 +278,6 @@ public class GuiShopBuy extends GuiShopBase {
 			int y = guiTop + 186;
 			for (int i = 0; i < ingredients.size(); i++) {
 				GuiRecipeButton btn = new GuiRecipeButton(id, x, y, ingredients.get(i));
-				btn.enabled = false;
 				buttonList.add(btn);
 				ingredientBtns.add(btn);
 				id --;
@@ -290,12 +291,23 @@ public class GuiShopBuy extends GuiShopBase {
 		if (resultBtns.isEmpty()) {
 			return true;
 		}
+		// Return true if result buttons have changed:
 		List<ItemStack> recipeResults = ((ContainerShopBuy)this.inventorySlots).getRecipeResults();
 		if (recipeResults.size() != resultBtns.size()) {
 			return true;
 		}
 		for (int i = 0; i < recipeResults.size(); i++) {
 			if (recipeResults.get(i).itemID != resultBtns.get(i).itemStack.itemID) {
+				return true;
+			}
+		}
+		// Return true if ingredient buttons have changed:
+		List<ItemStack> recipeIngredients = ((ContainerShopBuy)this.inventorySlots).getRecipeIngredients();
+		if (recipeIngredients.size() != ingredientBtns.size()) {
+			return true;
+		}
+		for (int i = 0; i < recipeIngredients.size(); i++) {
+			if (recipeIngredients.get(i).itemID != ingredientBtns.get(i).itemStack.itemID) {
 				return true;
 			}
 		}

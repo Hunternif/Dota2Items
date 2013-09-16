@@ -18,7 +18,6 @@ public class CfgInfo<T> {
 	protected int id;
 	public String name;
 	protected int price = 0;
-	public List<Dota2Item> usedInRecipes = new ArrayList<Dota2Item>();
 	protected List<CfgInfo<? extends Dota2Item>> recipe;
 	protected Buff passiveBuff;
 	protected float weaponDamage = 0;

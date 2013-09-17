@@ -1,5 +1,6 @@
-All code (under src/hunternif) is licensed under GPL v3 or later.
+All source code (under src/hunternif) is licensed under GPL v3 or later.
 All textures (under src/assets/dota2items/textures) are licensed under Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0).
+"Dota 2"(tm) and all sounds (under src/assets/dota2items/sound) belong to Valve Corporation.
 
 Copyright (c) 2013 Hunternif <hunternif@gmail.com>
 
@@ -7,13 +8,13 @@ Copyright (c) 2013 Hunternif <hunternif@gmail.com>
 
 The licenses summarized:
 
-1. You are free to modify and distribute source code as long as:
+1. You are free to use, modify and distribute the source code as long as:
   1.1. You include a copy of the license and copyright notice with the code.
   1.2. You indicate significant changes made to the code.
   1.3 Source code is made available when distributing the software.
 2. You are free to, but discouraged from using the source code for commercial purposes.
 
-3. You are free to modify and distribute the textures as long as:
+3. You are free to use, modify and distribute the textures as long as:
   3.1. You attribute them to Hunternif.
   3.2. If you alter, transform, or build upon this work, you may distribute the resulting work only under the same or similar license to this one.
 4. You may not use the textures for commercial purposes.

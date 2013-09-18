@@ -183,7 +183,7 @@ public class BlinkDagger extends CooldownItem {
 		blinkingEntity.updateRiderPosition();
 		
 		// If colliding with something right now, return false immediately:
-		if (!world.getCollidingBoundingBoxes(player, player.boundingBox).isEmpty()) {
+		if (!world.getCollidingBlockBounds(player.boundingBox).isEmpty()) {
 			// Reset player position
 			blinkingEntity.setPosition(srcX, srcY, srcZ);
 			blinkingEntity.updateRiderPosition();

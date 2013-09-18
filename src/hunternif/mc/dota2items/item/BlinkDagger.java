@@ -7,6 +7,7 @@ import hunternif.mc.dota2items.effect.EffectInstance;
 import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.network.EffectPacket;
 import hunternif.mc.dota2items.util.BlockUtil;
+import hunternif.mc.dota2items.util.PositionUtil;
 import hunternif.mc.dota2items.util.SideHit;
 
 import java.util.Random;
@@ -18,6 +19,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumMovingObjectType;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -67,53 +70,63 @@ public class BlinkDagger extends CooldownItem {
         Vec3 look = player.getLook(1.0F);
         Vec3 lookFar = position.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
         boolean isUnderWater = player.isInsideOfMaterial(Material.water);
-		MovingObjectPosition hit = world.clip(position, lookFar, !isUnderWater); // raytrace
+		MovingObjectPosition hit = PositionUtil.tracePath(world,
+				position.xCoord, position.yCoord, position.zCoord,
+				lookFar.xCoord, lookFar.yCoord, lookFar.zCoord, 0, player, !isUnderWater);
 		
 		if (hit != null) {
-			destX = hit.blockX;
-			destY = hit.blockY;
-			destZ = hit.blockZ;
-			
-			// Only blink on top when there's a block of air 1 block above
-			// target block AND it's reachable straight,
-			// like this:       or this:  0
-			//             0             00
-			//            00             0#
-			//    ray ->  0#     ray ->  0#
-			// (0 = air, # = block)
-			
-			if (hit.sideHit != SideHit.BOTTOM && hit.sideHit != SideHit.TOP) {
-				if (BlockUtil.isReachableAirAbove(world, hit.sideHit, destX, destY, destZ, 1)) {
-					// Blink on top of that block
-					destY += 1;
-				} else if (BlockUtil.isReachableAirAbove(world, hit.sideHit, destX, destY, destZ, 2)) {
-					// ...or the one above it
-					destY += 2;
+			if (hit.typeOfHit == EnumMovingObjectType.ENTITY && hit.entityHit != null) {
+				// Land just in front of the entity
+				destX = MathHelper.floor_double(hit.entityHit.posX - look.xCoord);
+				destY = MathHelper.floor_double(hit.entityHit.posY - hit.entityHit.yOffset - look.yCoord);
+				destZ = MathHelper.floor_double(hit.entityHit.posZ - look.zCoord);
+			} else {
+				// Land on top of the block
+				destX = hit.blockX;
+				destY = hit.blockY;
+				destZ = hit.blockZ;
+				
+				// Only blink on top when there's a block of air 1 block above
+				// target block AND it's reachable straight,
+				// like this:       or this:  0
+				//             0             00
+				//            00             0#
+				//    ray ->  0#     ray ->  0#
+				// (0 = air, # = block)
+				
+				if (hit.sideHit != SideHit.BOTTOM && hit.sideHit != SideHit.TOP) {
+					if (BlockUtil.isReachableAirAbove(world, hit.sideHit, destX, destY, destZ, 1)) {
+						// Blink on top of that block
+						destY += 1;
+					} else if (BlockUtil.isReachableAirAbove(world, hit.sideHit, destX, destY, destZ, 2)) {
+						// ...or the one above it
+						destY += 2;
+					} else {
+						// There's no reachable air above, move back 1 block
+						switch (hit.sideHit) {
+						case SideHit.NORTH:
+							destX--;
+							break;
+						case SideHit.SOUTH:
+							destX++;
+							break;
+						case SideHit.EAST:
+							destZ--;
+							break;
+						case SideHit.WEST:
+							destZ++;
+							break;
+						}
+					}
 				} else {
-					// There's no reachable air above, move back 1 block
 					switch (hit.sideHit) {
-					case SideHit.NORTH:
-						destX--;
+					case SideHit.BOTTOM:
+						destY -= 2;
 						break;
-					case SideHit.SOUTH:
-						destX++;
-						break;
-					case SideHit.EAST:
-						destZ--;
-						break;
-					case SideHit.WEST:
-						destZ++;
+					case SideHit.TOP:
+						destY++;
 						break;
 					}
-				}
-			} else {
-				switch (hit.sideHit) {
-				case SideHit.BOTTOM:
-					destY -= 2;
-					break;
-				case SideHit.TOP:
-					destY++;
-					break;
 				}
 			}
 			// Safeguard in case of an infinite loop.

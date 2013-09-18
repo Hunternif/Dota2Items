@@ -25,7 +25,7 @@ public class Clarity extends Dota2Item {
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
 		MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
 		itemStack.stackSize--;
-		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
+		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 		long startTime = world.getTotalWorldTime();
 		long endTime = startTime + (long) (duration * MCConstants.TICKS_PER_SECOND);
 		stats.addBuff(new BuffInstance(Buff.clarity, player.entityId, startTime, endTime, true));

@@ -3,10 +3,11 @@ package hunternif.mc.dota2items;
 import hunternif.mc.dota2items.client.gui.GuiHandler;
 import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.config.ConfigLoader;
+import hunternif.mc.dota2items.core.AttackHandler;
 import hunternif.mc.dota2items.core.BowHandler;
-import hunternif.mc.dota2items.core.Dota2PlayerTracker;
-import hunternif.mc.dota2items.core.Mechanics;
-import hunternif.mc.dota2items.core.PlayerAttackedHandler;
+import hunternif.mc.dota2items.core.GoldHandler;
+import hunternif.mc.dota2items.core.ItemTracker;
+import hunternif.mc.dota2items.core.StatsTracker;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
 import hunternif.mc.dota2items.inventory.Dota2CreativeTab;
 import hunternif.mc.dota2items.inventory.InventoryShop;
@@ -46,8 +47,8 @@ public class Dota2Items {
 	public static CreativeTabs dota2CreativeTab;
 	public static List<Item> itemList = new ArrayList<Item>();
 	
-	public static final Dota2PlayerTracker playerTracker = new Dota2PlayerTracker();
-	public static final Mechanics mechanics = new Mechanics();
+	public static final StatsTracker stats = new StatsTracker();
+	public static final ItemTracker itemTracker = new ItemTracker();
 	public static final ShopSpawner shopSpawner = new ShopSpawner();
 	
 	@Instance(ID)
@@ -88,11 +89,14 @@ public class Dota2Items {
 		
 		proxy.registerRenderers();
 		proxy.registerTickHandlers();
-		MinecraftForge.EVENT_BUS.register(mechanics);
+		MinecraftForge.EVENT_BUS.register(itemTracker);
+		MinecraftForge.EVENT_BUS.register(stats);
 		MinecraftForge.EVENT_BUS.register(shopSpawner);
-		MinecraftForge.EVENT_BUS.register(new PlayerAttackedHandler());
+		MinecraftForge.EVENT_BUS.register(new AttackHandler());
 		MinecraftForge.EVENT_BUS.register(new BowHandler());
-		GameRegistry.registerPlayerTracker(playerTracker);
+		MinecraftForge.EVENT_BUS.register(new GoldHandler());
+		GameRegistry.registerPlayerTracker(stats);
+		GameRegistry.registerPlayerTracker(itemTracker);
 	}
 	
 	@EventHandler

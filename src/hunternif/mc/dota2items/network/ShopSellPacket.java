@@ -30,7 +30,7 @@ public class ShopSellPacket extends CustomPacket {
 				ItemStack stackOnSale = cont.getSellingSlot().getStack();
 				int sellPrice = Dota2Item.getSellPrice(stackOnSale);
 				cont.putStackInSlot(0, null);
-				EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
+				EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 				// Reliable gold:
 				stats.addGold(sellPrice, 0);
 			}

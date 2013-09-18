@@ -22,6 +22,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class ForceStaff extends CooldownItem {
@@ -36,6 +38,7 @@ public class ForceStaff extends CooldownItem {
 		super(id);
 		setCooldown(10);
 		setManaCost(25);
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
@@ -55,7 +58,7 @@ public class ForceStaff extends CooldownItem {
 		}
 		MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
 		startCooldown(stack, player);
-		Dota2Items.mechanics.getOrCreateEntityStats(player).removeMana(getManaCost());
+		Dota2Items.stats.getOrCreateEntityStats(player).removeMana(getManaCost());
 		if (!entity.worldObj.isRemote) {
 			boolean usingOnSelf = player == entity;
 			entity.worldObj.playSoundAtEntity(entity, Sound.FORCE_STAFF.getName(), 0.5f, 1);
@@ -63,11 +66,21 @@ public class ForceStaff extends CooldownItem {
 			long endTime = startTime + (long) (forceDuration * MCConstants.TICKS_PER_SECOND);
 			BuffInstance buffInst = new BuffInstance(Buff.force, entity.entityId, startTime, endTime, usingOnSelf);
 			buffInst.tag.setFloat(TAG_YAW, entity.rotationYaw);
-			EntityStats entityStats = Dota2Items.mechanics.getOrCreateEntityStats((EntityLivingBase)entity);
+			EntityStats entityStats = Dota2Items.stats.getOrCreateEntityStats((EntityLivingBase)entity);
 			entityStats.addBuff(buffInst);
 			PacketDispatcher.sendPacketToAllPlayers(new BuffForcePacket(buffInst).makePacket());
 		}
 		return true;
+	}
+	@ForgeSubscribe
+	public void onLivingUpdate(LivingUpdateEvent event) {
+		EntityStats stats = Dota2Items.stats.getEntityStats(event.entityLiving);
+		if (stats != null) {
+			BuffInstance buffForce = stats.getBuffInstance(Buff.force);
+			if (buffForce != null) {
+				processForceMovement(event.entity, buffForce.tag.getFloat(ForceStaff.TAG_YAW));
+			}
+		}
 	}
 	
 	public static void processForceMovement(Entity entity, float yaw) {

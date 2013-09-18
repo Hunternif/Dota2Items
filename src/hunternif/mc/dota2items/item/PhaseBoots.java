@@ -5,6 +5,8 @@ import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
+import hunternif.mc.dota2items.event.BuffEvent.BuffAddEvent;
+import hunternif.mc.dota2items.event.BuffEvent.BuffRemoveEvent;
 import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.util.MCConstants;
 
@@ -18,6 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
 
 public class PhaseBoots extends CooldownItem {
 	private static final UUID uuid = UUID.fromString("4512aab0-1ba2-11e3-b773-0800200c9a66");
@@ -27,6 +30,7 @@ public class PhaseBoots extends CooldownItem {
 	public PhaseBoots(int id) {
 		super(id);
 		setCooldown(8);
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
 	@Override
@@ -36,14 +40,27 @@ public class PhaseBoots extends CooldownItem {
 		}
 		MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
 		startCooldown(stack, player);
-		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
+		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 		long startTime = world.getTotalWorldTime();
 		long endTime = startTime + (long) (duration * MCConstants.TICKS_PER_SECOND);
 		stats.addBuff(new BuffInstance(Buff.phase, player.entityId, startTime, endTime, true));
-		// Make the player resistant to knockback, since he can move through units already:
-		addKnockbackResistance(player);
 		player.playSound(Sound.PHASE_BOOTS.getName(), 0.7f, 1);
 		return stack;
+	}
+	
+	@ForgeSubscribe
+	public void onBuffAdd(BuffAddEvent event) {
+		if (event.buffInst.buff == Buff.phase) {
+			// Make the player resistant to knockback, since he can move through units already:
+			addKnockbackResistance(event.entityLiving);
+		}
+	}
+	
+	@ForgeSubscribe
+	public void onBuffRemove(BuffRemoveEvent event) {
+		if (event.buffInst.buff == Buff.phase) {
+			removeKnockbackResistance(event.entityLiving);
+		}
 	}
 	
 	public static void addKnockbackResistance(EntityLivingBase entity) {

@@ -31,7 +31,7 @@ public class ArcaneBoots extends CooldownItem {
 		}
 		MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
 		startCooldown(stack, player);
-		Dota2Items.mechanics.getOrCreateEntityStats(player).removeMana(getManaCost());
+		Dota2Items.stats.getOrCreateEntityStats(player).removeMana(getManaCost());
 		world.playSoundAtEntity(player, Sound.ARCANE_BOOTS.getName(), 0.7f, 1);
 		// Restore mana in the area:
 		double x = Math.floor(player.posX);
@@ -42,7 +42,7 @@ public class ArcaneBoots extends CooldownItem {
 		List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class, area);
 		if (list != null && !list.isEmpty()) {
 			for (EntityLivingBase entity : list) {
-				EntityStats stats = Dota2Items.mechanics.getEntityStats(entity);
+				EntityStats stats = Dota2Items.stats.getEntityStats(entity);
 				if (stats != null) {
 					stats.addMana(manaRestored);
 					if (stats.entity instanceof EntityPlayer) {

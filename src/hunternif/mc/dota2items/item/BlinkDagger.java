@@ -36,7 +36,6 @@ public class BlinkDagger extends CooldownItem {
 	
 	public BlinkDagger(int id) {
 		super(id);
-		MinecraftForge.EVENT_BUS.register(this);
 		rand = new Random();
 		setCooldown(usualCooldown);
 		setManaCost(75);
@@ -194,7 +193,7 @@ public class BlinkDagger extends CooldownItem {
 		//------------------------ Successful blink ------------------------
 		
 		if (!player.capabilities.isCreativeMode) {
-			Dota2Items.mechanics.getOrCreateEntityStats(player).removeMana(getManaCost());
+			Dota2Items.stats.getOrCreateEntityStats(player).removeMana(getManaCost());
 		}
 		blinkingEntity.motionX = 0;
 		blinkingEntity.motionY = 0;

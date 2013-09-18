@@ -86,7 +86,7 @@ public class Tango extends Dota2Item {
 				MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
 				TreeUtil.removeTree(world, trunkBase, true);
 				itemStack.stackSize --;
-				EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
+				EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 				long startTime = world.getTotalWorldTime();
 				long endTime = startTime + (long) (duration * MCConstants.TICKS_PER_SECOND);
 				stats.addBuff(new BuffInstance(Buff.tango, player.entityId, startTime, endTime, true));

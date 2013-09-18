@@ -5,6 +5,8 @@ import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.entity.IInvulnerableEntity;
 import hunternif.mc.dota2items.entity.IMagicImmuneEntity;
+import hunternif.mc.dota2items.event.BuffEvent.BuffAddEvent;
+import hunternif.mc.dota2items.event.BuffEvent.BuffRemoveEvent;
 import hunternif.mc.dota2items.network.EntityStatsSyncPacket;
 import hunternif.mc.dota2items.util.MCConstants;
 
@@ -29,6 +31,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
+import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
@@ -145,10 +148,14 @@ public class EntityStats implements IExtendedEntityProperties {
 				}
 			}
 		}
-		appliedBuffs.add(buffInst);
+		if (appliedBuffs.add(buffInst)) {
+			MinecraftForge.EVENT_BUS.post(new BuffAddEvent(buffInst, entity));
+		}
 	}
 	public void removeBuff(BuffInstance buffInst) {
-		appliedBuffs.remove(buffInst);
+		if (appliedBuffs.remove(buffInst)) {
+			MinecraftForge.EVENT_BUS.post(new BuffRemoveEvent(buffInst, entity));
+		}
 	}
 	public boolean hasBuff(Buff buff) {
 		return getBuffInstance(buff) != null;

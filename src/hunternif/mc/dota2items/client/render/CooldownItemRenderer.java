@@ -66,7 +66,7 @@ public class CooldownItemRenderer implements IItemRenderer {
 		
 		// handleRenderType should ensure that the item is a CooldownItem
 		CooldownItem item = (CooldownItem) itemStack.getItem();
-		EntityStats playerStats = Dota2Items.mechanics.getOrCreateEntityStats(Minecraft.getMinecraft().thePlayer);
+		EntityStats playerStats = Dota2Items.stats.getOrCreateEntityStats(Minecraft.getMinecraft().thePlayer);
 		if (!Minecraft.getMinecraft().thePlayer.capabilities.isCreativeMode &&
 				!item.isSampleItemStack(itemStack) && playerStats.getMana() < item.getManaCost()) {
 			GL11.glColor4f(0.6f, 0.7f, 1f, 1f);

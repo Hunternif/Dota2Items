@@ -11,7 +11,7 @@ public class BowHandler {
 	
 	@ForgeSubscribe
 	public void onArrowLoose(ArrowLooseEvent event) {
-		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(event.entityPlayer);
+		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(event.entityPlayer);
 		float speed = (float) MAX_CHARGE / stats.getAttackTime();
 		float timeCharged = (float) event.charge / MCConstants.TICKS_PER_SECOND;
 		int newCharge = MathHelper.ceiling_float_int( speed * timeCharged );

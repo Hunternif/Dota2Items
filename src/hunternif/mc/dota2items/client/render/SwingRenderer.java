@@ -23,7 +23,7 @@ public class SwingRenderer {
 	public void onTick() {
 		if (Minecraft.getMinecraft().inGameHasFocus) {
 			prevSwingProgress = swingProgress;
-			EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats( Minecraft.getMinecraft().thePlayer );
+			EntityStats stats = Dota2Items.stats.getOrCreateEntityStats( Minecraft.getMinecraft().thePlayer );
 			float animationLength = stats.getAttackTime() * MCConstants.TICKS_PER_SECOND;
 			if (isSwinging) {
 				swingPosition++;

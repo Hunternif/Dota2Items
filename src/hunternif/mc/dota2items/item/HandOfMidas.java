@@ -39,7 +39,7 @@ public class HandOfMidas extends CooldownItem {
 			}
 		}
 		// Add 190 reliable gold
-		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
+		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 		stats.addGold(190, 0);
 		return true;
 	}

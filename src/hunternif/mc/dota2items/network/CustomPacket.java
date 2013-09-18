@@ -31,7 +31,7 @@ public abstract class CustomPacket {
 		builder.put(Integer.valueOf(6), ShopBuySetResultPacket.class);
 		builder.put(Integer.valueOf(7), ShopBuySetFilterPacket.class);
 		builder.put(Integer.valueOf(8), ShopBuyScrollPacket.class);
-		builder.put(Integer.valueOf(9), PlayerHurtPacket.class);
+		builder.put(Integer.valueOf(9), EntityHurtPacket.class);
 		builder.put(Integer.valueOf(10), BuffForcePacket.class);
 		
 		idMap = builder.build();

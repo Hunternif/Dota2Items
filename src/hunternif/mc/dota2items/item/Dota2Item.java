@@ -120,7 +120,7 @@ public class Dota2Item extends Item {
 	 * cannot use this item.
 	 */
 	public Sound canUseItem(ItemStack stack, EntityLivingBase player, Entity target) {
-		EntityStats playerStats = Dota2Items.mechanics.getOrCreateEntityStats(player);
+		EntityStats playerStats = Dota2Items.stats.getOrCreateEntityStats(player);
 		if (!playerStats.canUseItems()) {
 			return Sound.DENY_SILENCE;
 		}
@@ -128,7 +128,7 @@ public class Dota2Item extends Item {
 			if (!(target instanceof EntityLivingBase)) {
 				return Sound.DENY_GENERAL;
 			}
-			EntityStats targetStats = Dota2Items.mechanics.getOrCreateEntityStats((EntityLivingBase)target);
+			EntityStats targetStats = Dota2Items.stats.getOrCreateEntityStats((EntityLivingBase)target);
 			if (targetStats.isMagicImmune()) {
 				return Sound.MAGIC_IMMUNE;
 			}
@@ -235,7 +235,7 @@ public class Dota2Item extends Item {
 		}
 		// If the item is displayed in shop
 		if (isSampleItemStack(stack)) {
-			if (Dota2Items.mechanics.getOrCreateEntityStats(player).getGold() < itemPrice*stack.stackSize) {
+			if (Dota2Items.stats.getOrCreateEntityStats(player).getGold() < itemPrice*stack.stackSize) {
 				list.add(EnumChatFormatting.DARK_RED + "Not enough gold");
 			}
 		}
@@ -259,7 +259,7 @@ public class Dota2Item extends Item {
 		} else if (itemStack.getItem() instanceof ItemRecipe) {
 			curPrice = ItemRecipe.getPrice(itemStack);
 		}
-		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
+		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 		return stats.getGold() >= curPrice;
 	}
 	public static boolean hasRecipe(ItemStack itemStack) {

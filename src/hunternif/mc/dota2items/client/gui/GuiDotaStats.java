@@ -2,8 +2,9 @@ package hunternif.mc.dota2items.client.gui;
 
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.config.Config;
+import hunternif.mc.dota2items.core.AttackHandler;
 import hunternif.mc.dota2items.core.EntityStats;
-import hunternif.mc.dota2items.core.Mechanics;
+import hunternif.mc.dota2items.core.StatsTracker;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.util.RenderHelper;
 
@@ -65,7 +66,7 @@ public class GuiDotaStats {
 		tessellator.addVertexWithUV(left, top+HEIGHT, 0, 0, 1);
 		tessellator.draw();
 		
-		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(mc.thePlayer);
+		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(mc.thePlayer);
 		StringBuilder sb = new StringBuilder();
 		
 		float baseDmg = 1;
@@ -93,7 +94,7 @@ public class GuiDotaStats {
 				}
 			}
 		}
-		baseDmg *= Mechanics.DOTA_VS_MINECRAFT_DAMAGE;
+		baseDmg *= AttackHandler.DOTA_VS_MINECRAFT_DAMAGE;
 		float improvedDmg = stats.getDamage(baseDmg, isMelee);
 		int baseValue = MathHelper.floor_float(baseDmg);
 		int bonus = MathHelper.floor_float(improvedDmg) - baseValue;

@@ -18,7 +18,7 @@ public class SlotShopBuyResult extends Slot {
 
 	@Override
 	public boolean canTakeStack(EntityPlayer player) {
-		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
+		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 		return stats.getGold() >= Dota2Item.getPrice(getStack());
 	}
 	
@@ -29,7 +29,7 @@ public class SlotShopBuyResult extends Slot {
 	
 	@Override
 	public void onPickupFromSlot(EntityPlayer player, ItemStack stack) {
-		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(player);
+		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 		// Buying items uses up your unreliable gold first before using your reliable gold:
 		stats.deductReliableGold( stats.deductUnreliableGold( Dota2Item.getPrice(stack) ) );
 		if (player.worldObj.isRemote) {

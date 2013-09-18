@@ -1,10 +1,7 @@
 package hunternif.mc.dota2items.network;
 
 import hunternif.mc.dota2items.Dota2Items;
-import hunternif.mc.dota2items.core.EntityStats;
-import hunternif.mc.dota2items.core.buff.Buff;
-import hunternif.mc.dota2items.core.buff.BuffInstance;
-import hunternif.mc.dota2items.item.ForceStaff;
+import hunternif.mc.dota2items.core.AttackHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,37 +12,31 @@ import com.google.common.io.ByteArrayDataOutput;
 
 import cpw.mods.fml.relauncher.Side;
 
-public class BuffForcePacket extends BuffPacket {
-	protected float yaw;
+public class EntityHurtPacket extends CustomPacket {
+	private int entityID;
 	
-	public BuffForcePacket() {}
+	public EntityHurtPacket() {}
 	
-	public BuffForcePacket(BuffInstance inst) {
-		super(inst);
-		yaw = inst.tag.getFloat(ForceStaff.TAG_YAW);
+	public EntityHurtPacket(EntityLivingBase entity) {
+		this.entityID = entity.entityId;
 	}
-	
+
 	@Override
 	public void write(ByteArrayDataOutput out) {
-		super.write(out);
-		out.writeFloat(yaw);
+		out.writeInt(entityID);
 	}
-	
+
 	@Override
 	public void read(ByteArrayDataInput in) throws ProtocolException {
-		super.read(in);
-		yaw = in.readFloat();
+		entityID = in.readInt();
 	}
-	
+
 	@Override
 	public void execute(EntityPlayer player, Side side) throws ProtocolException {
 		if (side.isClient()) {
 			Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(entityID);
 			if (entity != null && entity instanceof EntityLivingBase) {
-				EntityStats stats = Dota2Items.stats.getOrCreateEntityStats((EntityLivingBase)entity);
-				BuffInstance buffInst = new BuffInstance(Buff.buffList[buffID], entityID, startTime, endTime, isFriendly);
-				buffInst.tag.setFloat(ForceStaff.TAG_YAW, yaw);
-				stats.addBuff(buffInst);
+				Dota2Items.stats.removeBuffsOnHurt((EntityLivingBase)entity);
 			}
 		} else {
 			throw new ProtocolException("Cannot send this packet to the server!");

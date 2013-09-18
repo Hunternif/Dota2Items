@@ -3,7 +3,7 @@ package hunternif.mc.dota2items.client.gui;
 import hunternif.mc.dota2items.ClientProxy;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.EntityStats;
-import hunternif.mc.dota2items.core.Mechanics;
+import hunternif.mc.dota2items.core.StatsTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -34,13 +34,13 @@ public class GuiHealthAndMana {
 		//TODO make text positioning configurable; add an option to show Dota-like HP and mana bars.
 		//NOTE I could make a sheet for smaller font size, if it's only 0123456789/+
 		
-		EntityStats stats = Dota2Items.mechanics.getOrCreateEntityStats(mc.thePlayer);
+		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(mc.thePlayer);
 		int left = width / 2 - 91;
 		int top = height - 38;
 		String hp = stats.getHealth(mc.thePlayer) + "/" + stats.getMaxHealth();
 		int strlen = fontRenderer.getStringWidth(hp);
 		fontRenderer.drawStringWithShadow(hp, left - strlen - 1, top, 0xFF1313);
-		if (Mechanics.shouldHeal(mc.thePlayer, stats)) {
+		if (StatsTracker.shouldHeal(mc.thePlayer, stats)) {
 			String hpRegen = String.format("+%.2f", stats.getHealthRegen());
 			fontRenderer.drawStringWithShadow(hpRegen, left + HP_BAR_WIDTH + 1, top, 0xFF6C6C);
 		}

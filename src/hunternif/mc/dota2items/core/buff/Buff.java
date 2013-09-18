@@ -16,6 +16,9 @@ public class Buff {
 	public boolean magicImmune;
 	public boolean invulnerable;
 	
+	public boolean isRemovedOnHurt;
+	public boolean isRemovedOnAction;
+	
 	@BuffLineFormat("+{%d} Health")
 	public int health = 0;
 	@BuffLineFormat("+{%.0f} HP Regeneration")
@@ -88,9 +91,9 @@ public class Buff {
 	
 	public static final Buff tango = new Buff(1, "Eat Tree").setHealthRegen(115f/16f).setDoesNotStack().setIsDisplayed().setIconTexture("items/tango.png");
 	public static final Buff inCyclone = new Buff(2, "Swept up in Cyclone").setDisableAttack().setDisableItems().setDisableMove().setInvulnerable().setMagicImmune().setIsDisplayed();
-	public static final Buff clarity = new Buff(3, "Clarity").setManaRegen(100f/30f).setDoesNotStack().setIsDisplayed().setIconTexture("items/clarity.png");
-	public static final Buff salve = new Buff(4, "Regenerate").setHealthRegen(400f/10f).setDoesNotStack().setIsDisplayed().setIconTexture("items/healingSalve.png");
-	public static final Buff phase = new Buff(5, "Phase").setMovementSpeedPercent(16).setDoesNotStack().setIsDisplayed().setIconTexture("items/phaseBoots.png");
+	public static final Buff clarity = new Buff(3, "Clarity").setManaRegen(100f/30f).setIsRemovedOnHurt().setDoesNotStack().setIsDisplayed().setIconTexture("items/clarity.png");
+	public static final Buff salve = new Buff(4, "Regenerate").setHealthRegen(400f/10f).setIsRemovedOnHurt().setDoesNotStack().setIsDisplayed().setIconTexture("items/healingSalve.png");
+	public static final Buff phase = new Buff(5, "Phase").setMovementSpeedPercent(16).setIsRemovedOnAction().setDoesNotStack().setIsDisplayed().setIconTexture("items/phaseBoots.png");
 	public static final Buff berserk = new Buff(6, "Berserk").setMovementSpeedPercent(30).setAttackSpeed(100).setAmplifyDamage(30, 0).setIsDisplayed().setIconTexture("items/maskOfMadness.png");
 	public static final Buff force = new Buff(7, "Force").setIsDisplayed();
 	
@@ -271,6 +274,15 @@ public class Buff {
 	
 	public Buff setLifesteal(int percent) {
 		this.lifesteal = percent;
+		return this;
+	}
+	
+	public Buff setIsRemovedOnHurt() {
+		this.isRemovedOnHurt = true;
+		return this;
+	}
+	public Buff setIsRemovedOnAction() {
+		this.isRemovedOnAction = true;
 		return this;
 	}
 	

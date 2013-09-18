@@ -158,7 +158,7 @@ public abstract class CooldownItem extends Dota2Item {
 			}
 			if (isOnCooldown(stack)) {
 				failSound = Sound.DENY_COOLDOWN;
-			} else if (Dota2Items.mechanics.getOrCreateEntityStats(player).getMana() < this.getManaCost()) {
+			} else if (Dota2Items.stats.getOrCreateEntityStats(player).getMana() < this.getManaCost()) {
 				failSound = Sound.DENY_MANA;
 			}
 		}

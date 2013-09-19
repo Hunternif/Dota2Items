@@ -2,17 +2,15 @@ package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
-import hunternif.mc.dota2items.client.particle.ParticleDust;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
+import hunternif.mc.dota2items.effect.Effect;
+import hunternif.mc.dota2items.effect.EffectInstance;
 import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.network.BuffForcePacket;
 import hunternif.mc.dota2items.util.BlockUtil;
 import hunternif.mc.dota2items.util.MCConstants;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,8 +31,6 @@ public class ForceStaff extends CooldownItem {
 	
 	public static final float forceDuration = 0.25f;
 	public static final double forceSpeed = 3;
-	public static final int puffsPerBlock = 2;
-	private static final double trailStep = 1 / ((double) puffsPerBlock);
 	
 	public ForceStaff(int id) {
 		super(id);
@@ -124,34 +120,34 @@ public class ForceStaff extends CooldownItem {
 			double dz = (bb.minZ + bb.maxZ)/2d - oldPosZ;
 			if ((flags & FLAG_MOVED_UP) != 0) {
 				entity.moveEntity(0, dy, 0);
-				trailEffect(entity.worldObj, oldPosX, oldPosY, oldPosZ, 0, entity.posY - entity.yOffset - oldPosY, 0);
+				if (entity.worldObj.isRemote) {
+					new EffectInstance(Effect.force,
+							oldPosX, oldPosY, oldPosZ,
+							0, entity.posY - entity.yOffset - oldPosY, 0)
+					.perform();
+				}
 				oldPosY = entity.posY - entity.yOffset;
 			}
 			entity.moveEntity(dx, 0, dz);
-			trailEffect(entity.worldObj, oldPosX, oldPosY, oldPosZ, entity.posX - oldPosX, 0, entity.posZ - oldPosZ);
+			if (entity.worldObj.isRemote) {
+				new EffectInstance(Effect.force,
+						oldPosX, oldPosY, oldPosZ,
+						entity.posX - oldPosX, 0, entity.posZ - oldPosZ)
+				.perform();
+			}
 			oldPosX = entity.posX;
 			oldPosZ = entity.posZ;
 			if ((flags & FLAG_MOVED_DOWN) != 0) {
 				entity.moveEntity(0, dy, 0);
-				trailEffect(entity.worldObj, oldPosX, oldPosY, oldPosZ, 0, entity.posY - entity.yOffset - oldPosY, 0);
+				if (entity.worldObj.isRemote) {
+					new EffectInstance(Effect.force,
+							oldPosX, oldPosY, oldPosZ,
+							0, entity.posY - entity.yOffset - oldPosY, 0)
+					.perform();
+				}
 			}
 			entity.fallDistance = 0;
 		}
 		//System.out.println((entity.worldObj.isRemote ? "client" : "server") + ": forced entity to " + entity.toString());
-	}
-	
-	public static void trailEffect(World world, double oldPosX, double oldPosY, double oldPosZ,
-			double dx, double dy, double dz) {
-		if (world.isRemote) {
-			EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
-			double d = Math.sqrt(dx*dx + dy*dy + dz*dz);
-			for (double i = 0; i < d; i += trailStep) {
-				EntityFX particle = new ParticleDust(world,
-						oldPosX + dx * i/d,
-						oldPosY + dy * i/d,
-						oldPosZ + dz * i/d, 0, 0, 0);
-				effectRenderer.addEffect(particle);
-			}
-		}
 	}
 }

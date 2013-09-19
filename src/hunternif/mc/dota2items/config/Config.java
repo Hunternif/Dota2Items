@@ -260,8 +260,8 @@ public class Config {
 				.setPrice(900).setWeaponDamage(2).setColumn(Column.CASTER)
 				.setPassiveBuff( new Buff("Force Staff").setIntelligence(10).setHealthRegen(3) )
 				.setRecipe(staffOfWizardry, ringOfRegen)
-				.setDescription("Active (left click): Force - Pushes any target unit 15 blocks in the "
-						+ "direction it is facing. Right-click to self-cast.");
+				.setDescription("Active (left click): Force - Pushes any target unit approx. " +
+						"15 blocks in the direction it is facing. Right-click to self-cast.");
 //		necronomicon
 		public static CfgInfo<EulsScepter> eulsScepter = new CfgInfo<EulsScepter>(27004, "Eul's Scepter of Divinity")
 				.setPrice(600).setWeaponDamage(2).setColumn(Column.CASTER)

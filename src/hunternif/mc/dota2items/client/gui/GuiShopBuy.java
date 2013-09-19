@@ -5,13 +5,10 @@ import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.inventory.Column;
-import hunternif.mc.dota2items.inventory.ContainerShopBuy;
+import hunternif.mc.dota2items.inventory.ContainerShopShowcase;
 import hunternif.mc.dota2items.inventory.InventoryShop;
 import hunternif.mc.dota2items.inventory.SlotColumnIcon;
 import hunternif.mc.dota2items.item.Dota2Item;
-import hunternif.mc.dota2items.network.ShopBuyScrollPacket;
-import hunternif.mc.dota2items.network.ShopBuySetFilterPacket;
-import hunternif.mc.dota2items.network.ShopBuySetResultPacket;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,8 +30,6 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiShopBuy extends GuiShopBase {
 	protected static final ResourceLocation texture = new ResourceLocation(Dota2Items.ID+":textures/gui/container/shop_buy.png");
@@ -65,7 +60,7 @@ public class GuiShopBuy extends GuiShopBase {
 	private GuiUpDownButton upButton;
 	
 	public GuiShopBuy(InventoryPlayer inventoryPlayer) {
-		super(inventoryPlayer.player, new ContainerShopBuy(inventoryPlayer));
+		super(inventoryPlayer.player, new ContainerShopShowcase(inventoryPlayer));
 		this.xSize = WIDTH;
 		this.ySize = HEIGHT;
 		this.curTab = ShopTab.BUY;
@@ -108,11 +103,10 @@ public class GuiShopBuy extends GuiShopBase {
 			curScroll = ((float)yMouse - (float)SCROLLBAR_Y - 7.5f) / (float)(SCROLLBAR_HEIGHT - SCROLL_ANCHOR_HEIGHT);
 			if (curScroll < 0) curScroll = 0;
 			if (curScroll > 1) curScroll = 1;
-			InventoryShop invShop = ((ContainerShopBuy)inventorySlots).invShop;
+			InventoryShop invShop = ((ContainerShopShowcase)inventorySlots).invShop;
 			int scrollRow = MathHelper.floor_float(curScroll * (float)(invShop.getFilteredRows() - invShop.getRows()));
 			if (invShop.getScrollRow() != scrollRow) {
 				invShop.scrollToRow(scrollRow);
-				PacketDispatcher.sendPacketToServer(new ShopBuyScrollPacket(scrollRow).makePacket());
 			}
 		}
 		super.drawScreen(xMouse, yMouse, par3);
@@ -124,13 +118,12 @@ public class GuiShopBuy extends GuiShopBase {
 		int wheelMove = Mouse.getEventDWheel();
 		if (wheelMove != 0 && needsScrollBar()) {
 			wheelMove = wheelMove > 0 ? -1 : 1;
-			InventoryShop invShop = ((ContainerShopBuy)inventorySlots).invShop;
+			InventoryShop invShop = ((ContainerShopShowcase)inventorySlots).invShop;
 			int scrollRow = invShop.getScrollRow() + wheelMove;
 			if (scrollRow < 0) scrollRow = 0;
 			if (scrollRow > invShop.getFilteredRows() - invShop.getRows()) scrollRow = invShop.getFilteredRows() - invShop.getRows();
 			curScroll = (float) scrollRow / (float)(invShop.getFilteredRows() - invShop.getRows());
 			invShop.scrollToRow(scrollRow);
-			PacketDispatcher.sendPacketToServer(new ShopBuyScrollPacket(scrollRow).makePacket());
 		}
 	}
 	
@@ -144,7 +137,7 @@ public class GuiShopBuy extends GuiShopBase {
 		this.fontRenderer.drawString("Inventory", 128, 204, TITLE_COLOR);
 		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 		ClientProxy.guiGold.renderGoldText(stats.getGold(), WIDTH - GuiGold.GUI_GOLD_WIDTH, 0);
-		ItemStack resultStack = ((ContainerShopBuy)this.inventorySlots).getSlotResult().getStack();
+		ItemStack resultStack = ((ContainerShopShowcase)this.inventorySlots).getSlotResult().getStack();
 		int price = Dota2Item.getPrice(resultStack);
 		renderBuyPrice(price, 187, 139, stats.getGold() >= price);
 		
@@ -228,26 +221,25 @@ public class GuiShopBuy extends GuiShopBase {
 			}
 			boolean canBuy = Dota2Item.canBuy(btn.itemStack, player);
 			if (canBuy) {
-				((ContainerShopBuy)this.inventorySlots).setResultItem(btn.itemStack);
-				PacketDispatcher.sendPacketToServer(new ShopBuySetResultPacket(btn.itemStack).makePacket());
+				((ContainerShopShowcase)this.inventorySlots).setResultItem(btn.itemStack);
 			}
 			if (Dota2Item.hasRecipe(btn.itemStack)) {
-				((ContainerShopBuy)this.inventorySlots).setRecipeResult((Dota2Item)btn.itemStack.getItem());
+				((ContainerShopShowcase)this.inventorySlots).setRecipeResult((Dota2Item)btn.itemStack.getItem());
 			} else if (Dota2Item.isUsedInRecipe(btn.itemStack) && (!canBuy || btn.selected)) {
 				// When clicking on an item that's already selected (or not purchasable), show it in hierarchy:
-				((ContainerShopBuy)this.inventorySlots).setRecipeIngredient((Dota2Item)btn.itemStack.getItem());
+				((ContainerShopShowcase)this.inventorySlots).setRecipeIngredient((Dota2Item)btn.itemStack.getItem());
 			}
 		} else if (button == upButton) {
-			List<ItemStack> results = ((ContainerShopBuy)this.inventorySlots).getRecipeResults();
-			((ContainerShopBuy)this.inventorySlots).setRecipeIngredient((Dota2Item)results.get(0).getItem());
+			List<ItemStack> results = ((ContainerShopShowcase)this.inventorySlots).getRecipeResults();
+			((ContainerShopShowcase)this.inventorySlots).setRecipeIngredient((Dota2Item)results.get(0).getItem());
 		}
 	}
 	
 	private void updateFilter() {
-		((ContainerShopBuy)this.inventorySlots).invShop.setFilterStr(filterField.getText());
+		((ContainerShopShowcase)this.inventorySlots).invShop.setFilterStr(filterField.getText());
 		curScroll = 0;
-		((ContainerShopBuy)this.inventorySlots).invShop.scrollToRow(0);
-		PacketDispatcher.sendPacketToServer(new ShopBuySetFilterPacket(filterField.getText()).makePacket());
+		((ContainerShopShowcase)this.inventorySlots).invShop.scrollToRow(0);
+		//PacketDispatcher.sendPacketToServer(new ShopBuySetFilterPacket(filterField.getText()).makePacket());
 	}
 	
 	private boolean isMouseOverSlot(Slot slot, int mouseX, int mouseY) {
@@ -259,7 +251,7 @@ public class GuiShopBuy extends GuiShopBase {
 		buttonList.add(upButton);
 		upButton.enabled = false;
 		int id = -1;
-		List<ItemStack> results = ((ContainerShopBuy)this.inventorySlots).getRecipeResults();
+		List<ItemStack> results = ((ContainerShopShowcase)this.inventorySlots).getRecipeResults();
 		if (results.size() == 1 && !((Dota2Item) results.get(0).getItem()).getUsedInRecipes().isEmpty()) {
 			upButton.enabled = true;
 		}
@@ -275,7 +267,7 @@ public class GuiShopBuy extends GuiShopBase {
 				x += 18+3;
 			}
 		}
-		List<ItemStack> ingredients = ((ContainerShopBuy)this.inventorySlots).getRecipeIngredients();
+		List<ItemStack> ingredients = ((ContainerShopShowcase)this.inventorySlots).getRecipeIngredients();
 		if (!ingredients.isEmpty()) {
 			ingredientBtns.clear();
 			int x = guiLeft + 66 - MathHelper.floor_float( ((float)ingredients.size())/2f * (18+3) );
@@ -296,7 +288,7 @@ public class GuiShopBuy extends GuiShopBase {
 			return true;
 		}
 		// Return true if result buttons have changed:
-		List<ItemStack> recipeResults = ((ContainerShopBuy)this.inventorySlots).getRecipeResults();
+		List<ItemStack> recipeResults = ((ContainerShopShowcase)this.inventorySlots).getRecipeResults();
 		if (recipeResults.size() != resultBtns.size()) {
 			return true;
 		}
@@ -306,7 +298,7 @@ public class GuiShopBuy extends GuiShopBase {
 			}
 		}
 		// Return true if ingredient buttons have changed:
-		List<ItemStack> recipeIngredients = ((ContainerShopBuy)this.inventorySlots).getRecipeIngredients();
+		List<ItemStack> recipeIngredients = ((ContainerShopShowcase)this.inventorySlots).getRecipeIngredients();
 		if (recipeIngredients.size() != ingredientBtns.size()) {
 			return true;
 		}
@@ -322,14 +314,14 @@ public class GuiShopBuy extends GuiShopBase {
 		if (item.itemID == Config.recipe.getID()) {
 			return true;
 		} else if (item instanceof Dota2Item) {
-			 return ((ContainerShopBuy)this.inventorySlots).invShop.contains((Dota2Item)item);
+			 return ((ContainerShopShowcase)this.inventorySlots).invShop.contains((Dota2Item)item);
 		} else {
 			return false;
 		}
 	}
 	
 	private boolean needsScrollBar() {
-		return ((ContainerShopBuy)this.inventorySlots).invShop.getFilteredRows() >
-				((ContainerShopBuy)this.inventorySlots).invShop.getRows();
+		return ((ContainerShopShowcase)this.inventorySlots).invShop.getFilteredRows() >
+				((ContainerShopShowcase)this.inventorySlots).invShop.getRows();
 	}
 }

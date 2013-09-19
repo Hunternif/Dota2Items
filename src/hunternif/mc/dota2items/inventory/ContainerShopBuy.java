@@ -1,20 +1,16 @@
 package hunternif.mc.dota2items.inventory;
 
-import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.config.Config;
-import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.item.ItemRecipe;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import hunternif.mc.dota2items.network.ShopBuySetResultPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class ContainerShopBuy extends Container {
 	private static final int SHOP_INV_X = 8;
@@ -25,10 +21,7 @@ public class ContainerShopBuy extends Container {
 	public InventoryShop invShop = InventoryShop.newFullShop(4);
 	private InventoryBasic invResult = new InventoryBasic("Buying", false, 1);
 	private InventoryPlayer invPlayer;
-	private int slotResultNumber;
-	
-	private List<ItemStack> recipeResults = new ArrayList<ItemStack>();
-	private List<ItemStack> recipeIngredients = new ArrayList<ItemStack>();
+	protected int slotResultNumber;
 	
 	public ContainerShopBuy(InventoryPlayer inventoryPlayer) {
 		this.invPlayer = inventoryPlayer;
@@ -54,80 +47,21 @@ public class ContainerShopBuy extends Container {
 		return (SlotShopBuyResult)inventorySlots.get(slotResultNumber);
 	}
 	
-	@Override
-	public ItemStack slotClick(int slotNumber, int mouseClick, int holdShift, EntityPlayer player) {
-		if (slotNumber != slotResultNumber && slotNumber >= 0) {
-			Slot slot = (Slot)this.inventorySlots.get(slotNumber);
-			if (slot.inventory instanceof InventoryShop) {
-				ItemStack stack = invShop.getStackInSlot(slotNumber);
-				if (stack != null) {
-					Dota2Item item = (Dota2Item) stack.getItem();
-					if (item.hasRecipe()) {
-						setRecipeResult(item);
-					} else {
-						setRecipeIngredient(item);
-					}
-					EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
-					if (stats.getGold() >= item.getTotalPrice()) {
-						setResultItem(item);
-					} else {
-						setResultItem((Dota2Item)null);
-					}
-				} else {
-					setRecipeResult(null);
-					setResultItem((Dota2Item)null);
-				}
-				return null;
-			}
-		}
-		return super.slotClick(slotNumber, mouseClick, holdShift, player);
-	}
-	
-	public List<ItemStack> getRecipeResults() {
-		return recipeResults;
-	}
-	public List<ItemStack> getRecipeIngredients() {
-		return recipeIngredients;
-	}
-	public void setRecipeResult(Dota2Item item) {
-		recipeResults.clear();
-		recipeIngredients.clear();
-		if (item != null) {
-			recipeResults.add(invShop.sampleFor(item));
-			if (item.hasRecipe()) {
-				for (Dota2Item curRecipeItem : item.getRecipe()) {
-					recipeIngredients.add(invShop.sampleFor(curRecipeItem));
-				}
-				if (item.isRecipeItemRequired()) {
-					recipeIngredients.add(ItemRecipe.forItem(item, true));
-				}
-			}
-		}
-	}
-	/** Sets this 1 item as ingredient and shows all recipes it is used in. */
-	public void setRecipeIngredient(Dota2Item item) {
-		recipeResults.clear();
-		recipeIngredients.clear();
-		if (item != null) {
-			recipeIngredients.add(invShop.sampleFor(item));
-			if (!item.getUsedInRecipes().isEmpty()) {
-				for (Dota2Item curRecipeItem : item.getUsedInRecipes()) {
-					recipeResults.add(invShop.sampleFor(curRecipeItem));
-				}
-			}
-		}
-	}
-	
 	public ItemStack getResultItem() {
 		return invResult.getStackInSlot(0);
 	}
 	public void setResultItem(Dota2Item item) {
+		ItemStack stack = null;
 		if (item != null) {
 			if (invShop.contains(item)) {
-				invResult.setInventorySlotContents(0, new ItemStack(item, ((Dota2Item)item).getDefaultQuantity()));
+				stack = new ItemStack(item, ((Dota2Item)item).getDefaultQuantity());
+				invResult.setInventorySlotContents(0, stack);
 			}
 		} else {
 			invResult.setInventorySlotContents(0, null);
+		}
+		if (invPlayer.player.worldObj.isRemote) {
+			PacketDispatcher.sendPacketToServer(new ShopBuySetResultPacket(stack).makePacket());
 		}
 	}
 	public void setResultItem(ItemStack stack) {
@@ -136,9 +70,15 @@ public class ContainerShopBuy extends Container {
 				setResultItem((Dota2Item)stack.getItem());
 			} else if (stack.itemID == Config.recipe.getID()) {
 				invResult.setInventorySlotContents(0, ItemRecipe.copy(stack, false));
+				if (invPlayer.player.worldObj.isRemote) {
+					PacketDispatcher.sendPacketToServer(new ShopBuySetResultPacket(stack).makePacket());
+				}
 			}
 		} else {
 			invResult.setInventorySlotContents(0, null);
+			if (invPlayer.player.worldObj.isRemote) {
+				PacketDispatcher.sendPacketToServer(new ShopBuySetResultPacket(null).makePacket());
+			}
 		}
 	}
 	

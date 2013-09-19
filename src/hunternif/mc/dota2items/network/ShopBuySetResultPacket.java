@@ -20,9 +20,13 @@ public class ShopBuySetResultPacket extends CustomPacket{
 	public ShopBuySetResultPacket() {}
 	
 	public ShopBuySetResultPacket(ItemStack stack) {
-		itemID = stack.itemID;
-		if (stack.itemID == Config.recipe.getID()) {
-			recipeItemID = ItemRecipe.getItemID(stack);
+		if (stack == null) {
+			itemID = -1;
+		} else {
+			itemID = stack.itemID;
+			if (stack.itemID == Config.recipe.getID()) {
+				recipeItemID = ItemRecipe.getItemID(stack);
+			}
 		}
 	}
 
@@ -47,7 +51,9 @@ public class ShopBuySetResultPacket extends CustomPacket{
 		if (!side.isClient()) {
 			if (player.openContainer instanceof ContainerShopBuy) {
 				ContainerShopBuy cont = (ContainerShopBuy)player.openContainer;
-				if (itemID != Config.recipe.getID()) {
+				if (itemID == -1) {
+					cont.setResultItem((Dota2Item)null);
+				} else if (itemID != Config.recipe.getID()) {
 					cont.setResultItem((Dota2Item)Item.itemsList[itemID]);
 				} else {
 					cont.setResultItem(ItemRecipe.forItem(recipeItemID, false));

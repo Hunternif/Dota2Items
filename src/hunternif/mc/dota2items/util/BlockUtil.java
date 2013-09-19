@@ -138,6 +138,12 @@ public final class BlockUtil {
 		return isSolid(world, x, y, z);
 	}
 	
+	public static boolean isSolid(World world, double x, double y, double z) {
+		return isSolid(world,
+				MathHelper.floor_double(x),
+				MathHelper.floor_double(y),
+				MathHelper.floor_double(z));
+	}
 	public static boolean isSolid(World world, int x, int y, int z) {
 		return world.getBlockMaterial(x, y, z).isSolid() ||
 				world.getBlockId(x, y-1, z) == Block.fence.blockID;

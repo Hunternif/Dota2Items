@@ -10,7 +10,6 @@ import hunternif.mc.dota2items.effect.EffectInstance;
 import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.network.BuffForcePacket;
 import hunternif.mc.dota2items.util.BlockUtil;
-import hunternif.mc.dota2items.util.MCConstants;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,11 +24,12 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class ForceStaff extends CooldownItem {
 	public static final String TAG_YAW = "yaw";
+	public static final String TAG_TOTAL_DISTANCE = "totalDistance";
 	
 	private static final byte FLAG_MOVED_UP = 1;
 	private static final byte FLAG_MOVED_DOWN = 2;
 	
-	public static final float forceDuration = 0.25f;
+	public static final double forceDistance = 15;
 	public static final double forceSpeed = 3;
 	
 	public ForceStaff(int id) {
@@ -60,9 +60,7 @@ public class ForceStaff extends CooldownItem {
 		if (!entity.worldObj.isRemote) {
 			boolean usingOnSelf = player == entity;
 			entity.worldObj.playSoundAtEntity(entity, Sound.FORCE_STAFF.getName(), 0.5f, 1);
-			long startTime = entity.worldObj.getTotalWorldTime();
-			long endTime = startTime + (long) (forceDuration * MCConstants.TICKS_PER_SECOND);
-			BuffInstance buffInst = new BuffInstance(Buff.force, entity.entityId, startTime, endTime, usingOnSelf);
+			BuffInstance buffInst = new BuffInstance(Buff.force, entity.entityId, usingOnSelf);
 			buffInst.tag.setFloat(TAG_YAW, entity.rotationYaw);
 			EntityStats entityStats = Dota2Items.stats.getOrCreateEntityStats((EntityLivingBase)entity);
 			entityStats.addBuff(buffInst);
@@ -76,19 +74,21 @@ public class ForceStaff extends CooldownItem {
 		if (stats != null) {
 			BuffInstance buffForce = stats.getBuffInstance(Buff.force);
 			if (buffForce != null) {
-				processForceMovement(event.entity, buffForce.tag.getFloat(ForceStaff.TAG_YAW));
+				float yaw = buffForce.tag.getFloat(ForceStaff.TAG_YAW);
+				processForceMovement(event.entity, yaw);
 			}
 		}
 	}
 	
 	public static void processForceMovement(Entity entity, float yaw) {
+		Entity forced = entity;
 		if (entity.ridingEntity != null) {
 			entity = entity.ridingEntity;
 		}
 		float sinYaw = MathHelper.sin(yaw * (float)Math.PI / 180.0F);
 		float cosYaw = MathHelper.cos(yaw * (float)Math.PI / 180.0F);
 		
-		AxisAlignedBB startBb = entity.boundingBox.copy();
+		AxisAlignedBB startBb = forced.boundingBox.copy();
 		AxisAlignedBB bb = null;
 		double distance = -1;
 		while (distance < forceSpeed) {
@@ -99,55 +99,67 @@ public class ForceStaff extends CooldownItem {
 			}
 			bb = startBb.getOffsetBoundingBox(-distance * sinYaw, 0, distance * cosYaw);
 			// Make sure that we're not moving inside blocks:
-			while (!entity.worldObj.getCollidingBlockBounds(bb).isEmpty() && bb.minY > 0) {
+			while (!forced.worldObj.getCollidingBlockBounds(bb).isEmpty() && bb.minY > 0) {
 				bb.offset(0, 1, 0);
 				flags |= FLAG_MOVED_UP;
 			}
 			// Make sure that we're not flying in the air:
-			while (!BlockUtil.isSolid(entity.worldObj, (bb.minX + bb.maxX)/2d, bb.minY - 1, (bb.minZ + bb.maxZ)/2d)
-					&& bb.maxY < entity.worldObj.getActualHeight()) {
+			while (!BlockUtil.isSolid(forced.worldObj, (bb.minX + bb.maxX)/2d, bb.minY - 1, (bb.minZ + bb.maxZ)/2d)
+					&& bb.maxY < forced.worldObj.getActualHeight()) {
 				bb.offset(0, -1, 0);
 				flags |= FLAG_MOVED_DOWN;
 			}
-			if (bb.minY <= 0 || bb.maxY >= entity.worldObj.getActualHeight()) {
+			if (bb.minY <= 0 || bb.maxY >= forced.worldObj.getActualHeight()) {
 				return;
 			}
-			double oldPosX = entity.posX;
-			double oldPosY = entity.posY - entity.yOffset;
-			double oldPosZ = entity.posZ;
+			double oldPosX = forced.posX;
+			double oldPosY = forced.posY - forced.yOffset;
+			double oldPosZ = forced.posZ;
 			double dx = (bb.minX + bb.maxX)/2d - oldPosX;
 			double dy = bb.minY - oldPosY;
 			double dz = (bb.minZ + bb.maxZ)/2d - oldPosZ;
 			if ((flags & FLAG_MOVED_UP) != 0) {
-				entity.moveEntity(0, dy, 0);
-				if (entity.worldObj.isRemote) {
+				forced.moveEntity(0, dy, 0);
+				if (forced.worldObj.isRemote) {
 					new EffectInstance(Effect.force,
 							oldPosX, oldPosY, oldPosZ,
-							0, entity.posY - entity.yOffset - oldPosY, 0)
+							0, forced.posY - forced.yOffset - oldPosY, 0)
 					.perform();
 				}
-				oldPosY = entity.posY - entity.yOffset;
+				oldPosY = forced.posY - forced.yOffset;
 			}
-			entity.moveEntity(dx, 0, dz);
-			if (entity.worldObj.isRemote) {
+			forced.moveEntity(dx, 0, dz);
+			if (forced.worldObj.isRemote) {
 				new EffectInstance(Effect.force,
 						oldPosX, oldPosY, oldPosZ,
-						entity.posX - oldPosX, 0, entity.posZ - oldPosZ)
+						forced.posX - oldPosX, 0, forced.posZ - oldPosZ)
 				.perform();
 			}
-			oldPosX = entity.posX;
-			oldPosZ = entity.posZ;
+			oldPosX = forced.posX;
+			oldPosZ = forced.posZ;
 			if ((flags & FLAG_MOVED_DOWN) != 0) {
-				entity.moveEntity(0, dy, 0);
-				if (entity.worldObj.isRemote) {
+				forced.moveEntity(0, dy, 0);
+				if (forced.worldObj.isRemote) {
 					new EffectInstance(Effect.force,
 							oldPosX, oldPosY, oldPosZ,
-							0, entity.posY - entity.yOffset - oldPosY, 0)
+							0, forced.posY - forced.yOffset - oldPosY, 0)
 					.perform();
 				}
 			}
-			entity.fallDistance = 0;
+			forced.fallDistance = 0;
+			
 		}
-		//System.out.println((entity.worldObj.isRemote ? "client" : "server") + ": forced entity to " + entity.toString());
+		EntityStats stats = Dota2Items.stats.getEntityStats(entity);
+		if (stats != null) {
+			BuffInstance buffInst = stats.getBuffInstance(Buff.force);
+			if (buffInst != null) {
+				double totalDistance = buffInst.tag.getDouble(TAG_TOTAL_DISTANCE) + forceSpeed;
+				if (totalDistance >= forceDistance) {
+					stats.removeBuff(buffInst);
+				} else {
+					buffInst.tag.setDouble(TAG_TOTAL_DISTANCE, totalDistance);
+				}
+			}
+		}
 	}
 }

@@ -137,6 +137,7 @@ public class EntityStats implements IExtendedEntityProperties {
 		return appliedBuffs;
 	}
 	public void addBuff(BuffInstance buffInst) {
+		if (buffInst == null) { return; }
 		if (!buffInst.buff.stacks) {
 			for (BuffInstance curBuffInst : appliedBuffs) {
 				if (curBuffInst.buff.id == buffInst.buff.id) {
@@ -153,6 +154,7 @@ public class EntityStats implements IExtendedEntityProperties {
 		}
 	}
 	public void removeBuff(BuffInstance buffInst) {
+		if (buffInst == null) { return; }
 		if (appliedBuffs.remove(buffInst)) {
 			MinecraftForge.EVENT_BUS.post(new BuffRemoveEvent(buffInst, entity));
 		}

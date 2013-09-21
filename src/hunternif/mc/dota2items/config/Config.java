@@ -271,7 +271,7 @@ public class Config {
 				.setDescription("Active (left click on unit or right click on block below): Cyclone - "
 						+ "Target unit is swept up in a cyclone for 2.5 seconds, and is invulnerable.");
 		public static CfgInfo<Dagon> dagon1 = new CfgInfo<Dagon>(27070, "Dagon level 1")
-				.setPrice(1250).setRecipe(forceStaff, nullTalisman).setColumn(Column.CASTER)
+				.setPrice(1250).setRecipe(staffOfWizardry, nullTalisman).setColumn(Column.CASTER)
 				.setWeaponDamage(2).setUpgradeLevel(1).setDescription("Active (left click): "
 						+ "Energy Burst - Burst of damage to target enemy unit. Upgradable.");
 		public static CfgInfo<Dagon> dagon2 = new CfgInfo<Dagon>(27071, "Dagon level 2")

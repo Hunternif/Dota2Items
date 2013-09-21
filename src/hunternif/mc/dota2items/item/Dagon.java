@@ -46,7 +46,7 @@ public class Dagon extends CooldownItem {
 			return false;
 		}
 		MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
-		player.worldObj.playSoundAtEntity(player, Sound.DAGON.getName(), 0.8f, 1);
+		player.worldObj.playSoundAtEntity(player, Sound.DAGON.getName(), 0.7f, 1);
 		startCooldown(stack, player);
 		Dota2Items.stats.getOrCreateEntityStats(player).removeMana(getManaCost());
 		float mcDamage = damage / AttackHandler.DOTA_VS_MINECRAFT_DAMAGE;

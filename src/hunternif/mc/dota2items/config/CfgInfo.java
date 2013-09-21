@@ -6,7 +6,6 @@ import hunternif.mc.dota2items.item.Dota2Item;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +25,7 @@ public class CfgInfo<T> {
 	protected boolean dropsOnDeath = false;
 	/** Is set to true when weaponDamage is set to > 0 */
 	protected boolean isFull3D = false;
+	protected CfgInfo<? extends Dota2Item> baseShopItem;
 	
 	protected Class type;
 	
@@ -77,6 +77,10 @@ public class CfgInfo<T> {
 	}
 	public CfgInfo setIsFull3D(boolean value) {
 		this.isFull3D = value;
+		return this;
+	}
+	public CfgInfo setBaseShopItem(CfgInfo<? extends Dota2Item> itemInfo) {
+		this.baseShopItem = itemInfo;
 		return this;
 	}
 }

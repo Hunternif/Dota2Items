@@ -81,8 +81,10 @@ public class ConfigLoader {
 					Dota2Items.logger.info("Registered item " + info.name);
 				}
 			}
-			// Parse fields one more time to set their recipes:
+			// Parse fields one more time to set their recipes and base shop item, if any:
 			for (CfgInfo<? extends Dota2Item> info : itemsWithRecipes) {
+				info.instance.setBaseShopItem(info.baseShopItem.instance);
+				
 				List<Dota2Item> recipeForShop = new ArrayList<Dota2Item>();
 				List<ItemStack> recipeForCraft = new ArrayList<ItemStack>();
 				

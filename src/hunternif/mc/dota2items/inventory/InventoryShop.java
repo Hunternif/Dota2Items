@@ -30,6 +30,9 @@ public class InventoryShop implements IInventory {
 		for (Item item : Dota2Items.itemList) {
 			if (item instanceof Dota2Item) {
 				Dota2Item dota2Item = (Dota2Item) item;
+				if (dota2Item.getBaseShopItem() != null) {
+					continue;
+				}
 				int xPos = ((Dota2Item) item).getShopColumn().id;
 				int yPos = yPosInColumn[xPos];
 				ItemStack stack = new ItemStack(dota2Item, dota2Item.getDefaultQuantity());

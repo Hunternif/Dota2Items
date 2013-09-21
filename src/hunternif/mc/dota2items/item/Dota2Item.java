@@ -39,6 +39,8 @@ public class Dota2Item extends Item {
 	private Column shopColumn;
 	private int defaultQuantity = 1;
 	private float weaponDamage = 0;
+	/** Used by upgraded versions of upgradable items to point to the original item. */
+	private Dota2Item baseShopItem;
 	
 	public static int maxTooltipWidth = 128;
 	public List<String> descriptionLines;
@@ -107,6 +109,14 @@ public class Dota2Item extends Item {
 	}
 	public Buff getPassiveBuff() {
 		return this.passiveBuff;
+	}
+	
+	public Dota2Item setBaseShopItem(Dota2Item item) {
+		this.baseShopItem = item;
+		return this;
+	}
+	public Dota2Item getBaseShopItem() {
+		return this.baseShopItem;
 	}
 	
 	public static void playDenyGeneralSound(EntityPlayer player) {

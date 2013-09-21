@@ -52,8 +52,13 @@ public class ConfigLoader {
 			for (Field field : fields) {
 				if (field.getType().equals(CfgInfo.class)) {
 					CfgInfo info = (CfgInfo)field.get(null);
-					Constructor constructor = info.type.getConstructor(int.class);
-					info.instance = constructor.newInstance(info.id);
+					if (info.upgradeLevel > 0) {
+						Constructor constructor = info.type.getConstructor(int.class, int.class);
+						info.instance = constructor.newInstance(info.id, info.upgradeLevel);
+					} else {
+						Constructor constructor = info.type.getConstructor(int.class);
+						info.instance = constructor.newInstance(info.id);
+					}
 					if (info.isBlock()) {
 						((Block)info.instance).setUnlocalizedName(field.getName());
 						GameRegistry.registerBlock((Block)info.instance, ItemBlock.class, field.getName(), Dota2Items.ID);
@@ -68,8 +73,10 @@ public class ConfigLoader {
 						if (info.instance instanceof Dota2Item) {
 							Dota2Item item = (Dota2Item) info.instance;
 							item.setPrice(info.price).setWeaponDamage(info.weaponDamage)
-								.setPassiveBuff(info.passiveBuff).setShopColumn(info.column)
-								.setDropsOnDeath(info.dropsOnDeath);
+								.setShopColumn(info.column).setDropsOnDeath(info.dropsOnDeath);
+							if (info.passiveBuff != null) {
+								item.setPassiveBuff(info.passiveBuff);
+							}
 							if (info.recipe != null && !info.recipe.isEmpty()) {
 								itemsWithRecipes.add(info);
 							}
@@ -83,7 +90,9 @@ public class ConfigLoader {
 			}
 			// Parse fields one more time to set their recipes and base shop item, if any:
 			for (CfgInfo<? extends Dota2Item> info : itemsWithRecipes) {
-				info.instance.setBaseShopItem(info.baseShopItem.instance);
+				if (info.baseShopItem != null) {
+					info.instance.setBaseShopItem(info.baseShopItem.instance);
+				}
 				
 				List<Dota2Item> recipeForShop = new ArrayList<Dota2Item>();
 				List<ItemStack> recipeForCraft = new ArrayList<ItemStack>();

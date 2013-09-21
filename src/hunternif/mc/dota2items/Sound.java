@@ -21,7 +21,8 @@ public enum Sound {
 	PHASE_BOOTS("phase_boots"),
 	ARCANE_BOOTS("arcane_boots"),
 	MASK_OF_MADNESS("mask_of_madness"),
-	FORCE_STAFF("force_staff");
+	FORCE_STAFF("force_staff"),
+	DAGON("dagon");
 	
 	private String name;
 	public int randomVariants = 0;

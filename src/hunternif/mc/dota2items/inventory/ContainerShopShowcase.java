@@ -80,9 +80,16 @@ public class ContainerShopShowcase extends ContainerShopBuy {
 		recipeIngredients.clear();
 		if (item != null) {
 			recipeIngredients.add(invShop.sampleFor(item));
-			if (!item.getUsedInRecipes().isEmpty()) {
-				for (Dota2Item curRecipeItem : item.getUsedInRecipes()) {
-					recipeResults.add(invShop.sampleFor(curRecipeItem));
+			int recipesCount = item.getUsedInRecipes().size();
+			if (recipesCount > 0) {
+				if (recipesCount == 1) {
+					// If only used in 1 recipe, then show the full recipe:
+					Dota2Item recipeResult = (Dota2Item)item.getUsedInRecipes().toArray()[0];
+					setRecipeResult(recipeResult);
+				} else {
+					for (Dota2Item curRecipeItem : item.getUsedInRecipes()) {
+						recipeResults.add(invShop.sampleFor(curRecipeItem));
+					}
 				}
 			}
 		}

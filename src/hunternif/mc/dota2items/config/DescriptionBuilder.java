@@ -28,34 +28,40 @@ public class DescriptionBuilder {
 		Dota2Item item = (Dota2Item) config.instance;
 		if (config.description != null && !config.description.isEmpty()) {
 			// Build list of strings from the description string
-			String description = applyColorFormatting(config.description.replace("\n", " \n "));
-			FontRenderer font = Minecraft.getMinecraft().fontRenderer;
-			String[] descrWords = description.split(" ");
-			int curLineWidth = 0;
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < descrWords.length; i++) {
-				int wordWidth = font.getStringWidth(descrWords[i]);
-				// At least one word will always fit:
-				if ((curLineWidth > 0 && curLineWidth + wordWidth > Dota2Item.maxTooltipWidth) || descrWords[i].equals("\n")) {
-					curLineWidth = 0;
-					lines.add(sb.toString());
-					sb = new StringBuilder();
-				}
-				if (!descrWords[i].equals("\n")) {
-					curLineWidth += font.getStringWidth(descrWords[i] + " ");
-					sb.append(descrWords[i]).append(" ");
-				}
-			}
-			if (sb.length() > 0) {
-				lines.add(sb.toString());
-			}
+			lines.addAll(wrapDescriptionString(config.description));
 		}
-		Buff buff = config.passiveBuff;
+		Buff buff = item.getPassiveBuff();
 		if (buff != null) {
 			lines.addAll(buffDescription(buff));
 		}
-		item.descriptionLines = lines;
+		item.setDescriptionLines(lines);
 		Dota2Items.logger.info("Built description lines for item " + config.name);
+	}
+	
+	public static List<String> wrapDescriptionString(String text) {
+		List<String> lines = new ArrayList<String>();
+		String description = applyColorFormatting(text.replace("\n", " \n "));
+		FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+		String[] descrWords = description.split(" ");
+		int curLineWidth = 0;
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < descrWords.length; i++) {
+			int wordWidth = font.getStringWidth(descrWords[i]);
+			// At least one word will always fit:
+			if ((curLineWidth > 0 && curLineWidth + wordWidth > Dota2Item.maxTooltipWidth) || descrWords[i].equals("\n")) {
+				curLineWidth = 0;
+				lines.add(sb.toString());
+				sb = new StringBuilder();
+			}
+			if (!descrWords[i].equals("\n")) {
+				curLineWidth += font.getStringWidth(descrWords[i] + " ");
+				sb.append(descrWords[i]).append(" ");
+			}
+		}
+		if (sb.length() > 0) {
+			lines.add(sb.toString());
+		}
+		return lines;
 	}
 	
 	public static List<String> buffDescription(Buff buff) {

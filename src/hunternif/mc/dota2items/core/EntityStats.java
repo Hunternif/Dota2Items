@@ -310,7 +310,9 @@ public class EntityStats implements IExtendedEntityProperties {
 				damage += buffInst.buff.bonusDamage;
 			}
 		}
-		Dota2Items.logger.info(String.format("Bonus damage: %.1f", damage));
+		if (damage > 0) {
+			Dota2Items.logger.info(String.format("Bonus damage: %.1f", damage));
+		}
 		return damage;
 	}
 	

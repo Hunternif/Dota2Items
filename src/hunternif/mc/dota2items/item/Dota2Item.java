@@ -43,7 +43,7 @@ public class Dota2Item extends Item {
 	private Dota2Item baseShopItem;
 	
 	public static int maxTooltipWidth = 128;
-	public List<String> descriptionLines;
+	private List<String> descriptionLines;
 	
 	/** If this item has a recipe, this "price" represents the price of the recipe. */
 	private int price;
@@ -117,6 +117,11 @@ public class Dota2Item extends Item {
 	}
 	public Dota2Item getBaseShopItem() {
 		return this.baseShopItem;
+	}
+	
+	public Dota2Item setDescriptionLines(List<String> lines) {
+		this.descriptionLines = lines;
+		return this;
 	}
 	
 	public static void playDenyGeneralSound(EntityPlayer player) {

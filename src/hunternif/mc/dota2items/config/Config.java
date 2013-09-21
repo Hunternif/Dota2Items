@@ -8,6 +8,7 @@ import hunternif.mc.dota2items.item.ArcaneBoots;
 import hunternif.mc.dota2items.item.BlinkDagger;
 import hunternif.mc.dota2items.item.Clarity;
 import hunternif.mc.dota2items.item.Daedalus;
+import hunternif.mc.dota2items.item.Dagon;
 import hunternif.mc.dota2items.item.Dota2Item;
 import hunternif.mc.dota2items.item.Dota2Logo;
 import hunternif.mc.dota2items.item.EulsScepter;
@@ -269,7 +270,22 @@ public class Config {
 				.setRecipe(staffOfWizardry, sagesMask, voidStone)
 				.setDescription("Active (left click on unit or right click on block below): Cyclone - "
 						+ "Target unit is swept up in a cyclone for 2.5 seconds, and is invulnerable.");
-//		dagon
+		public static CfgInfo<Dagon> dagon1 = new CfgInfo<Dagon>(27070, "Dagon level 1")
+				.setPrice(1250).setRecipe(forceStaff, nullTalisman).setColumn(Column.CASTER)
+				.setWeaponDamage(2).setUpgradeLevel(1).setDescription("Active (left click): "
+						+ "Energy Burst - Burst of damage to target enemy unit. Upgradable.");
+		public static CfgInfo<Dagon> dagon2 = new CfgInfo<Dagon>(27071, "Dagon level 2")
+				.setPrice(1250).setRecipe(dagon1).setWeaponDamage(2).setColumn(Column.CASTER)
+				.setDescription(dagon1.description).setUpgradeLevel(2).setBaseShopItem(dagon1);
+		public static CfgInfo<Dagon> dagon3 = new CfgInfo<Dagon>(27072, "Dagon level 3")
+				.setPrice(1250).setRecipe(dagon2).setWeaponDamage(2).setColumn(Column.CASTER)
+				.setDescription(dagon1.description).setUpgradeLevel(3).setBaseShopItem(dagon1);
+		public static CfgInfo<Dagon> dagon4 = new CfgInfo<Dagon>(27073, "Dagon level 4")
+				.setPrice(1250).setRecipe(dagon3).setWeaponDamage(2).setColumn(Column.CASTER)
+				.setDescription(dagon1.description).setUpgradeLevel(4).setBaseShopItem(dagon1);
+		public static CfgInfo<Dagon> dagon5 = new CfgInfo<Dagon>(27074, "Dagon level 5")
+				.setPrice(1250).setRecipe(dagon4).setWeaponDamage(2).setColumn(Column.CASTER)
+				.setDescription(dagon1.description).setUpgradeLevel(5).setBaseShopItem(dagon1);
 //		veilOfDiscord
 //		rodOfAtos
 		public static CfgInfo<Dota2Item> aghanimsScepter = new CfgInfo<Dota2Item>(27056, "Aghanim's Scepter")
@@ -352,7 +368,7 @@ public class Config {
 //		eyeOfSkadi
 //		satanic
 		
-		// Last item ID: 27069
+		// Last item ID: 27074
 		
 		// Blocks
 		public static CfgInfo<BlockCycloneContainer> cycloneContainer = new CfgInfo<BlockCycloneContainer>(2700, "Cyclone Container");

@@ -30,9 +30,6 @@ public class InventoryShop implements IInventory {
 		for (Item item : Dota2Items.itemList) {
 			if (item instanceof Dota2Item) {
 				Dota2Item dota2Item = (Dota2Item) item;
-				if (dota2Item.getBaseShopItem() != null) {
-					continue;
-				}
 				int xPos = ((Dota2Item) item).getShopColumn().id;
 				int yPos = yPosInColumn[xPos];
 				ItemStack stack = new ItemStack(dota2Item, dota2Item.getDefaultQuantity());
@@ -42,9 +39,11 @@ public class InventoryShop implements IInventory {
 					stack.setTagCompound(tag);
 				}
 				tag.setBoolean(TAG_IS_SAMPLE, true);
-				itemSamples[xPos][yPos] = stack;
+				if (dota2Item.getBaseShopItem() == null) {
+					itemSamples[xPos][yPos] = stack;
+					yPosInColumn[xPos] = yPos + 1;
+				}
 				samplesMap.put(dota2Item, stack);
-				yPosInColumn[xPos] = yPos + 1;
 			}
 		}
 	}

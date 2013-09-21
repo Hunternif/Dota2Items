@@ -26,6 +26,7 @@ public class CfgInfo<T> {
 	/** Is set to true when weaponDamage is set to > 0 */
 	protected boolean isFull3D = false;
 	protected CfgInfo<? extends Dota2Item> baseShopItem;
+	protected int upgradeLevel = 0;
 	
 	protected Class type;
 	
@@ -81,6 +82,10 @@ public class CfgInfo<T> {
 	}
 	public CfgInfo setBaseShopItem(CfgInfo<? extends Dota2Item> itemInfo) {
 		this.baseShopItem = itemInfo;
+		return this;
+	}
+	public CfgInfo setUpgradeLevel(int level) {
+		this.upgradeLevel = level;
 		return this;
 	}
 }

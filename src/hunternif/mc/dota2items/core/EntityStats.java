@@ -22,7 +22,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeInstance;
-import net.minecraft.entity.boss.IBossDisplayData;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.EntityGolem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -122,7 +123,7 @@ public class EntityStats implements IExtendedEntityProperties {
 			double baseMoveSpeed = attrMoveSpeed.func_111125_b();
 			baseMovementSpeed = MathHelper.floor_double((double)BASE_PLAYER_MOVE_SPEED * baseMoveSpeed / MCConstants.MINECRAFT_PLAYER_MOVE_SPEED);
 		}
-		if (entity instanceof EntityGolem || entity instanceof IBossDisplayData) {
+		if (entity instanceof EntityGolem || entity instanceof EntityDragon || entity instanceof EntityWither) {
 			baseMagicImmune = true;
 		}
 		if (entity instanceof IMagicImmuneEntity) {

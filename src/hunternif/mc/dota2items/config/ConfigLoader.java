@@ -69,7 +69,7 @@ public class ConfigLoader {
 							Dota2Item item = (Dota2Item) info.instance;
 							item.setPrice(info.price).setWeaponDamage(info.weaponDamage)
 								.setPassiveBuff(info.passiveBuff).setShopColumn(info.column)
-								.setDropsOnDeath(info.dropsOnDeath).setShopColumn(info.column);
+								.setDropsOnDeath(info.dropsOnDeath);
 							if (info.recipe != null && !info.recipe.isEmpty()) {
 								itemsWithRecipes.add(info);
 							}

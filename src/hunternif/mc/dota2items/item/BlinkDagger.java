@@ -9,9 +9,6 @@ import hunternif.mc.dota2items.network.EffectPacket;
 import hunternif.mc.dota2items.util.BlockUtil;
 import hunternif.mc.dota2items.util.PositionUtil;
 import hunternif.mc.dota2items.util.SideHit;
-
-import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -26,28 +23,17 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlinkDagger extends CooldownItem {
+public class BlinkDagger extends ActiveItem {
 
 	public static final double maxDistance = 50;
 	public static final float hurtCooldown = 3;
 	public static final float usualCooldown = 14;
 	
-	private Random rand;
-	
 	public BlinkDagger(int id) {
 		super(id);
-		rand = new Random();
 		setCooldown(usualCooldown);
 		setManaCost(75);
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public boolean isFull3D() {
-		return true;
 	}
 	
 	@Override
@@ -61,7 +47,6 @@ public class BlinkDagger extends CooldownItem {
 		int destY;
 		int destZ;
 		
-		// Allow landing on all solid and liquid blocks, but the latter only if the player is not in water
 		Vec3 position = world.getWorldVec3Pool().getVecFromPool(player.posX, player.posY, player.posZ);
 		if (!world.isRemote) {
 			// Because in server worlds the Y coordinate of a player is his feet's coordinate, without yOffset.
@@ -69,6 +54,7 @@ public class BlinkDagger extends CooldownItem {
 		}
         Vec3 look = player.getLook(1.0F);
         Vec3 lookFar = position.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
+        // Allow landing on all solid and liquid blocks, but the latter only if the player is not in water
         boolean isUnderWater = player.isInsideOfMaterial(Material.water);
 		MovingObjectPosition hit = PositionUtil.tracePath(world,
 				position.xCoord, position.yCoord, position.zCoord,

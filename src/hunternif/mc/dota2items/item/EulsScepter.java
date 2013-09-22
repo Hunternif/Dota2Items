@@ -6,61 +6,26 @@ import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
-import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.network.BuffPacket;
 import hunternif.mc.dota2items.network.EntityMovePacket;
 import hunternif.mc.dota2items.tileentity.TileEntityCyclone;
 import hunternif.mc.dota2items.util.MCConstants;
-
-import java.util.List;
-
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class EulsScepter extends CooldownItem {
-
+public class EulsScepter extends TargetEntityItem {
 	public EulsScepter(int id) {
 		super(id);
 		setCooldown(30);
 		setManaCost(75);
+		setCastRange(12);
 	}
 	
 	@Override
-	public boolean isFull3D() {
-		return true;
-	}
-	
-	@Override
-	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
-		return onUseEulsScepter(stack, player, entity);
-	}
-	
-	@Override
-	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world,
-			int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-		AxisAlignedBB box = AxisAlignedBB.getBoundingBox((double)x, (double)y-0.5, (double)z, (double)x+1, (double)y+1.5, (double)z+1);
-		List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class, box);
-		if (list != null && !list.isEmpty()) {
-			return onUseEulsScepter(itemStack, player, list.get(0));
-		} else {
-			playDenyGeneralSound(player);
-			return false;
-		}
-	}
-	
-	private boolean onUseEulsScepter(ItemStack stack, EntityPlayer player, Entity entity) {
-		if (!tryUse(stack, player, entity)) {
-			return false;
-		}
-		MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
-		
+	protected void onUseOnEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity) {
 		int x = MathHelper.floor_double(entity.posX);
 		int y = MathHelper.floor_double(entity.posY);
 		int z = MathHelper.floor_double(entity.posZ);
@@ -88,15 +53,7 @@ public class EulsScepter extends CooldownItem {
 			EntityStats entityStats = Dota2Items.stats.getOrCreateEntityStats((EntityLivingBase)entity);
 			entityStats.addBuff(buffInst);
 			PacketDispatcher.sendPacketToAllPlayers(new BuffPacket(buffInst).makePacket());
-			
-			// We're on the server, so it's ok:
-			startCooldown(stack, player);
 		}
-		if (!player.capabilities.isCreativeMode) {
-			Dota2Items.stats.getOrCreateEntityStats(player).removeMana(getManaCost());
-		}
-		
 		player.worldObj.playSoundAtEntity(entity, Sound.CYCLONE_START.getName(), 0.7f, 1);
-		return true;
 	}
 }

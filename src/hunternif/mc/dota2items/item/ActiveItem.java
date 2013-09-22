@@ -3,7 +3,10 @@ package hunternif.mc.dota2items.item;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.client.event.CooldownEndDisplayEvent;
+import hunternif.mc.dota2items.core.EntityStats;
+import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.util.MCConstants;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,7 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
-public abstract class CooldownItem extends Dota2Item {
+public abstract class ActiveItem extends Dota2Item {
 	protected static final String TAG_DURATION = "D2IcdDuration";
 	protected static final String TAG_COOLDOWN = "D2IcdLeft";
 	
@@ -29,12 +32,12 @@ public abstract class CooldownItem extends Dota2Item {
 	private float cooldown = 0;
 	private int manaCost = 0;
 	
-	public CooldownItem(int id) {
+	public ActiveItem(int id) {
 		super(id);
 	}
 	
 	/** Set "usual" cooldown duration in seconds. */
-	public CooldownItem setCooldown(float value) {
+	public ActiveItem setCooldown(float value) {
 		cooldown = Math.max(0, value);
 		return this;
 	}
@@ -43,7 +46,7 @@ public abstract class CooldownItem extends Dota2Item {
 		return cooldown;
 	}
 	
-	public CooldownItem setManaCost(int value) {
+	public ActiveItem setManaCost(int value) {
 		manaCost = value;
 		return this;
 	}
@@ -149,19 +152,47 @@ public abstract class CooldownItem extends Dota2Item {
 		}
 	}
 	
-	@Override
-	public Sound canUseItem(ItemStack stack, EntityLivingBase player, Entity target) {
-		Sound failSound = super.canUseItem(stack, player, target);
-		if (failSound == null) {
-			if (player instanceof EntityPlayer && ((EntityPlayer)player).capabilities.isCreativeMode) {
-				return null;
-			}
-			if (isOnCooldown(stack)) {
-				failSound = Sound.DENY_COOLDOWN;
-			} else if (Dota2Items.stats.getOrCreateEntityStats(player).getMana() < this.getManaCost()) {
-				failSound = Sound.DENY_MANA;
-			}
+	/**
+	 * Returns the Sound that signifies the particular reason why the player
+	 * cannot use this item.
+	 */
+	protected Sound canUseItem(ItemStack stack, EntityLivingBase player) {
+		EntityStats playerStats = Dota2Items.stats.getOrCreateEntityStats(player);
+		if (!playerStats.canUseItems()) {
+			return Sound.DENY_SILENCE;
 		}
-		return failSound;
+		if (isOnCooldown(stack)) {
+			return Sound.DENY_COOLDOWN;
+		} else if (Dota2Items.stats.getOrCreateEntityStats(player).getMana() < this.getManaCost()) {
+			return Sound.DENY_MANA;
+		}
+		return null;
 	}
+	
+	/**
+	 * If the player cannot use this item, a respective sound is played.
+	 * @return whether the player can use this item.
+	 */
+	public boolean tryUse(ItemStack stack, EntityLivingBase player) {
+		Sound failSound = canUseItem(stack, player);
+		if (failSound != null && player.worldObj.isRemote) {
+			Minecraft.getMinecraft().sndManager.playSoundFX(failSound.getName(), 1.0F, 1.0F);
+		}
+		return failSound == null;
+	}
+	
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+		if (tryUse(stack, player)) {
+			MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
+			if (!player.capabilities.isCreativeMode) {
+				startCooldown(stack, player);
+				Dota2Items.stats.getOrCreateEntityStats(player).removeMana(getManaCost());
+			}
+			onUse(stack, player);
+		}
+		return stack;
+	}
+	
+	protected void onUse(ItemStack stack, EntityPlayer player) {}
 }

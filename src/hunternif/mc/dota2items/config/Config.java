@@ -261,18 +261,18 @@ public class Config {
 				.setPrice(900).setWeaponDamage(2).setColumn(Column.CASTER)
 				.setPassiveBuff( new Buff("Force Staff").setIntelligence(10).setHealthRegen(3) )
 				.setRecipe(staffOfWizardry, ringOfRegen)
-				.setDescription("Active (left click): Force - Pushes any target unit 15 " +
-						"blocks in the direction it is facing. Right-click to self-cast.");
+				.setDescription("Active: Force - Pushes any target unit 15 " +
+						"blocks in the direction it is facing.");
 //		necronomicon
 		public static CfgInfo<EulsScepter> eulsScepter = new CfgInfo<EulsScepter>(27004, "Eul's Scepter of Divinity")
 				.setPrice(600).setWeaponDamage(2).setColumn(Column.CASTER)
 				.setPassiveBuff( new Buff("Eul's Scepter of Divinity").setMovementSpeed(30, false).setIntelligence(10).setManaRegenPercent(150) )
 				.setRecipe(staffOfWizardry, sagesMask, voidStone)
-				.setDescription("Active (left click on unit or right click on block below): Cyclone - "
-						+ "Target unit is swept up in a cyclone for 2.5 seconds, and is invulnerable.");
+				.setDescription("Active: Cyclone - Target unit is swept up in a cyclone for "
+						+ "2.5 seconds, and is invulnerable.");
 		public static CfgInfo<Dagon> dagon1 = new CfgInfo<Dagon>(27070, "Dagon level 1")
 				.setPrice(1250).setRecipe(staffOfWizardry, nullTalisman).setColumn(Column.CASTER)
-				.setWeaponDamage(2).setUpgradeLevel(1).setDescription("Active (left click): "
+				.setWeaponDamage(2).setUpgradeLevel(1).setDescription("Active: "
 						+ "Energy Burst - Burst of damage to target enemy unit. Upgradable.");
 		public static CfgInfo<Dagon> dagon2 = new CfgInfo<Dagon>(27071, "Dagon level 2")
 				.setPrice(1250).setRecipe(dagon1).setWeaponDamage(2).setColumn(Column.CASTER)

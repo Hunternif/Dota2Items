@@ -17,8 +17,6 @@ import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
@@ -129,47 +127,6 @@ public class Dota2Item extends Item {
 			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.DENY_GENERAL.getName(), 1.0F, 1.0F);
 		}
 	}
-
-	/**
-	 * Returns the Sound that signifies the particular reason why the player
-	 * cannot use this item.
-	 */
-	public Sound canUseItem(ItemStack stack, EntityLivingBase player, Entity target) {
-		EntityStats playerStats = Dota2Items.stats.getOrCreateEntityStats(player);
-		if (!playerStats.canUseItems()) {
-			return Sound.DENY_SILENCE;
-		}
-		if (target != null) {
-			if (!(target instanceof EntityLivingBase)) {
-				return Sound.DENY_GENERAL;
-			}
-			EntityStats targetStats = Dota2Items.stats.getOrCreateEntityStats((EntityLivingBase)target);
-			if (targetStats.isMagicImmune()) {
-				return Sound.MAGIC_IMMUNE;
-			}
-		}
-		return null;
-	}
-	/** See {@link #canUseItem(ItemStack, EntityLivingBase, Entity)} */
-	public Sound canUseItem(ItemStack stack, EntityLivingBase player) {
-		return canUseItem(stack, player, null);
-	}
-	
-	/**
-	 * If the player cannot use this item, a respective sound is played.
-	 * @return whether the player can use this item.
-	 */
-	public boolean tryUse(ItemStack stack, EntityLivingBase player, Entity target) {
-		Sound failSound = canUseItem(stack, player, target);
-		if (failSound != null && player.worldObj.isRemote) {
-			Minecraft.getMinecraft().sndManager.playSoundFX(failSound.getName(), 1.0F, 1.0F);
-		}
-		return failSound == null;
-	}
-	/** See {@link #tryUse(ItemStack, EntityLivingBase, Entity)} */
-	public boolean tryUse(ItemStack stack, EntityLivingBase player) {
-		return tryUse(stack, player, null);
-	}
 	
 	public Dota2Item setPrice(int price) {
 		this.price = price;
@@ -235,16 +192,16 @@ public class Dota2Item extends Item {
 			list.addAll(descriptionLines);
 		}
 		
-		if (this instanceof CooldownItem) {
-			float cooldown = ((CooldownItem)this).getCooldown();
+		if (this instanceof ActiveItem) {
+			float cooldown = ((ActiveItem)this).getCooldown();
 			String cooldownStr;
 			if (cooldown != MathHelper.floor_float(cooldown)) {
 				cooldownStr = String.format("%.1f", cooldown);
 			} else {
 				cooldownStr = String.format("%.0f", cooldown);
 			}
-			if (((CooldownItem)this).getManaCost() > 0) {
-				cooldownStr += "     " + ClientProxy.ICON_MANACOST.key + EnumChatFormatting.GRAY + ((CooldownItem)this).getManaCost();
+			if (((ActiveItem)this).getManaCost() > 0) {
+				cooldownStr += "     " + ClientProxy.ICON_MANACOST.key + EnumChatFormatting.GRAY + ((ActiveItem)this).getManaCost();
 			}
 			list.add(ClientProxy.ICON_COOLDOWN.key + EnumChatFormatting.GRAY + cooldownStr);
 		}

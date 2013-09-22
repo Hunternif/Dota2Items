@@ -7,7 +7,6 @@ import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.effect.Effect;
 import hunternif.mc.dota2items.effect.EffectInstance;
-import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.network.BuffForcePacket;
 import hunternif.mc.dota2items.util.BlockUtil;
 import net.minecraft.entity.Entity;
@@ -16,47 +15,31 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class ForceStaff extends CooldownItem {
+public class ForceStaff extends TargetEntityItem {
 	public static final String TAG_YAW = "yaw";
 	public static final String TAG_TOTAL_DISTANCE = "totalDistance";
 	
 	private static final byte FLAG_MOVED_UP = 1;
 	private static final byte FLAG_MOVED_DOWN = 2;
 	
-	public static final double forceDistance = 15;
+	public static final double forceDistance = 12;
 	public static final double forceSpeed = 3;
 	
 	public ForceStaff(int id) {
 		super(id);
 		setCooldown(10);
 		setManaCost(25);
+		setCastRange(13);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
-
-	@Override
-	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
-		return onUseForceStaff(stack, player, entity);
-	}
 	
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-		onUseForceStaff(stack, player, player);
-		return stack;
-	}
-	
-	private boolean onUseForceStaff(ItemStack stack, EntityPlayer player, Entity entity) {
-		if (!tryUse(stack, player, entity)) {
-			return false;
-		}
-		MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
-		startCooldown(stack, player);
-		Dota2Items.stats.getOrCreateEntityStats(player).removeMana(getManaCost());
+	protected void onUseOnEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity) {
 		if (!entity.worldObj.isRemote) {
 			boolean usingOnSelf = player == entity;
 			entity.worldObj.playSoundAtEntity(entity, Sound.FORCE_STAFF.getName(), 0.5f, 1);
@@ -66,8 +49,8 @@ public class ForceStaff extends CooldownItem {
 			entityStats.addBuff(buffInst);
 			PacketDispatcher.sendPacketToAllPlayers(new BuffForcePacket(buffInst).makePacket());
 		}
-		return true;
 	}
+	
 	@ForgeSubscribe
 	public void onLivingUpdate(LivingUpdateEvent event) {
 		EntityStats stats = Dota2Items.stats.getEntityStats(event.entityLiving);

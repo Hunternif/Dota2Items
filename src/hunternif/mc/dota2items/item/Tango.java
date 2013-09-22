@@ -16,7 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
-public class Tango extends Dota2Item {
+public class Tango extends TargetBlockItem {
 	public static final float duration = 16f;
 	
 	/** Look for the tree trunk minus this delta on the Y axis from the click point. */
@@ -30,19 +30,11 @@ public class Tango extends Dota2Item {
 		setDefaultQuantity(3);
 	}
 	
-	@Override
-	public boolean isFull3D() {
-        return false;
-    }
-	
 	//TODO make the custom potion effect particles (namely falling green leaves)
 	
 	@Override
-	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world,
-			int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-		if (!tryUse(itemStack, player)) {
-			return false;
-		}
+	protected void onUseOnBlock(ItemStack stack, EntityPlayer player, int x, int y, int z, int side) {
+		World world = player.worldObj;
 		// Looking for a tree
 		Block block = Block.blocksList[world.getBlockId(x, y, z)];
 		if (block == Block.vine) {
@@ -71,7 +63,7 @@ public class Tango extends Dota2Item {
 			block = Block.blocksList[world.getBlockId(x, y, z)];
 		}
 		if (block != Block.wood && block != Block.leaves) {
-			return false;
+			return;
 		} else if (block == Block.wood || block == Block.leaves) {
 			IntVec3 trunkBase = null;
 			if (block == Block.wood) {
@@ -85,25 +77,13 @@ public class Tango extends Dota2Item {
 				// Yep, found a tree
 				MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
 				TreeUtil.removeTree(world, trunkBase, true);
-				itemStack.stackSize --;
+				stack.stackSize --;
 				EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 				long startTime = world.getTotalWorldTime();
 				long endTime = startTime + (long) (duration * MCConstants.TICKS_PER_SECOND);
 				stats.addBuff(new BuffInstance(Buff.tango, player.entityId, startTime, endTime, true));
 				player.playSound(Sound.TANGO.getName(), 1, 1);
-				return true;
-			} else {
-				return false;
 			}
-		} else {
-			// Dead code
-			return false;
 		}
-	}
-	
-	@Override
-	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-		playDenyGeneralSound(player);
-		return itemStack;
 	}
 }

@@ -13,11 +13,8 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-public class QuellingBlade extends CooldownItem {
-
+public class QuellingBlade extends TargetBlockItem {
 	// Quelling Blade is an axe, so why not make it effective against wood
 	public static final Block[] blocksEffectiveAgainst = ItemAxe.blocksEffectiveAgainst;
 	// Like an iron axe it is
@@ -45,19 +42,10 @@ public class QuellingBlade extends CooldownItem {
 		}
 		return true;
 	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public boolean isFull3D() {
-		return true;
-	}
 
 	@Override
-	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world,
-			int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-		if (!tryUse(itemStack, player)) {
-			return false;
-		}
+	protected void onUseOnBlock(ItemStack stack, EntityPlayer player, int x, int y, int z, int side) {
+		World world = player.worldObj;
 		// Looking for a tree
 		Block block = Block.blocksList[world.getBlockId(x, y, z)];
 		if (block == Block.vine) {
@@ -86,7 +74,7 @@ public class QuellingBlade extends CooldownItem {
 			block = Block.blocksList[world.getBlockId(x, y, z)];
 		}
 		if (block != Block.wood && block != Block.leaves) {
-			return false;
+			return;
 		} else if (block == Block.wood || block == Block.leaves) {
 			IntVec3 trunkBase = null;
 			if (block == Block.wood) {
@@ -100,23 +88,11 @@ public class QuellingBlade extends CooldownItem {
 				// Yep, found a tree
 				MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
 				if (!world.isRemote) {
-					startCooldown(itemStack, player);
+					startCooldown(stack, player);
 				}
 				TreeUtil.removeTree(world, trunkBase, true);
 				world.playSoundEffect(trunkBase.x, trunkBase.y, trunkBase.z, Sound.TREE_FALL.getName(), 1.0f, 1.0f);
-				return true;
-			} else {
-				return false;
 			}
-		} else {
-			// Dead code
-			return false;
 		}
-	}
-	
-	@Override
-	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-		playDenyGeneralSound(player);
-		return itemStack;
 	}
 }

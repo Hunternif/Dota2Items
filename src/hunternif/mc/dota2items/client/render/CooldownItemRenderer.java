@@ -4,7 +4,7 @@ import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.client.event.CooldownEndDisplayEvent;
 import hunternif.mc.dota2items.core.ClientTickHandler;
 import hunternif.mc.dota2items.core.EntityStats;
-import hunternif.mc.dota2items.item.CooldownItem;
+import hunternif.mc.dota2items.item.ActiveItem;
 import hunternif.mc.dota2items.util.MathUtil;
 import hunternif.mc.dota2items.util.RenderHelper;
 
@@ -52,7 +52,7 @@ public class CooldownItemRenderer implements IItemRenderer {
 
 	@Override
 	public boolean handleRenderType(ItemStack itemStack, ItemRenderType type) {
-		return type == ItemRenderType.INVENTORY && itemStack.getItem() instanceof CooldownItem;
+		return type == ItemRenderType.INVENTORY && itemStack.getItem() instanceof ActiveItem;
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class CooldownItemRenderer implements IItemRenderer {
 		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 		
 		// handleRenderType should ensure that the item is a CooldownItem
-		CooldownItem item = (CooldownItem) itemStack.getItem();
+		ActiveItem item = (ActiveItem) itemStack.getItem();
 		EntityStats playerStats = Dota2Items.stats.getOrCreateEntityStats(Minecraft.getMinecraft().thePlayer);
 		if (!Minecraft.getMinecraft().thePlayer.capabilities.isCreativeMode &&
 				!item.isSampleItemStack(itemStack) && playerStats.getMana() < item.getManaCost()) {

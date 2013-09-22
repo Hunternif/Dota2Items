@@ -15,6 +15,13 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 public class RenderHelper {
+	public static final int FACE_FRONT = 1;
+	public static final int FACE_BACK = 2;
+	/*public static final int FACE_LEFT = 4;
+	public static final int FACE_RIGHT = 8;
+	public static final int FACE_TOP = 16;
+	public static final int FACE_BOTTOM = 32;*/
+	
 	public static RenderItem itemRenderer = new RenderItem();
 	
 	public static void drawHoveringText(List<String> par1List, int par2, int par3, FontRenderer font) {
@@ -180,5 +187,51 @@ public class RenderHelper {
 		GL11.glDepthMask(true);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
+	}
+	
+	public static void renderColorBox(double width, double height, double length, int color, float alpha) {
+		int faceFlag = FACE_FRONT | FACE_BACK;
+		float r = (float)(color >> 16 & 0xff)/256f;
+		float g = (float)(color >> 8 & 0xff)/256f;
+		float b = (float)(color & 0xff)/256f;
+		Tessellator tessellator = Tessellator.instance;
+		if ((faceFlag & FACE_FRONT) != 0) {
+			// Front face:
+			tessellator.startDrawingQuads();
+			tessellator.setBrightness(0xf000f0);
+			tessellator.setColorRGBA_F(r, g, b, alpha);
+			tessellator.addVertex(0, -width/2, -height/2);
+			tessellator.addVertex(0, -width/2, height/2);
+			tessellator.addVertex(0, width/2, height/2);
+			tessellator.addVertex(0, width/2, -height/2);
+			tessellator.draw();
+		}
+		// Side faces:
+		GL11.glPushMatrix();
+		for (int i = 0; i < 4; ++i) {
+			double halfWidth = (i % 2 == 0 ? height : width)/2;
+			double halfHeight = (i % 2 == 0 ? width : height)/2;
+			GL11.glRotatef(90, 1, 0, 0);
+			tessellator.startDrawingQuads();
+			tessellator.setBrightness(0xf000f0);
+			tessellator.setColorRGBA_F(r, g, b, alpha);
+			tessellator.addVertex(0, -halfWidth, halfHeight);
+			tessellator.addVertex(length, -halfWidth, halfHeight);
+			tessellator.addVertex(length, halfWidth, halfHeight);
+			tessellator.addVertex(0, halfWidth, halfHeight);
+			tessellator.draw();
+		}
+		GL11.glPopMatrix();
+		if ((faceFlag & FACE_BACK) != 0) {
+			// Back face:
+			tessellator.startDrawingQuads();
+			tessellator.setBrightness(0xf000f0);
+			tessellator.setColorRGBA_F(r, g, b, alpha);
+			tessellator.addVertex(length, width/2, -height/2);
+			tessellator.addVertex(length, width/2, height/2);
+			tessellator.addVertex(length, -width/2, height/2);
+			tessellator.addVertex(length, -width/2, -height/2);
+			tessellator.draw();
+		}
 	}
 }

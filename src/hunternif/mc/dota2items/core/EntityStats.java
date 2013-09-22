@@ -211,10 +211,10 @@ public class EntityStats implements IExtendedEntityProperties {
 			int floor = MathHelper.floor_float(partialHealth);
 			entity.heal(floor);
 			partialHealth -= (float) floor;
-			if (entity.func_110143_aJ() == entity.func_110138_aP()) {
-				// At full health
-				partialHealth = 0;
-			}
+		}
+		if (entity.func_110143_aJ() == entity.func_110138_aP()) {
+			// At full health
+			partialHealth = 0;
 		}
 		partialHalfHeart = partialHealth;
 	}

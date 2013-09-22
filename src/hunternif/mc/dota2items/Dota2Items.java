@@ -8,6 +8,7 @@ import hunternif.mc.dota2items.core.BowHandler;
 import hunternif.mc.dota2items.core.GoldHandler;
 import hunternif.mc.dota2items.core.ItemTracker;
 import hunternif.mc.dota2items.core.StatsTracker;
+import hunternif.mc.dota2items.entity.EntityDagonBolt;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
 import hunternif.mc.dota2items.inventory.Dota2CreativeTab;
 import hunternif.mc.dota2items.inventory.InventoryShop;
@@ -82,6 +83,8 @@ public class Dota2Items {
 		EntityRegistry.registerGlobalEntityID(EntityShopkeeper.class, "Dota2Shopkeeper", shopkeeperId, 0x52724e, 0xc8aa64);
 		EntityRegistry.registerModEntity(EntityShopkeeper.class, "Dota2Shopkeeper", shopkeeperId, instance, 80, 3, true);
 		LanguageRegistry.instance().addStringLocalization("entity.Dota2Shopkeeper.name", "en_US", "Dota 2 Shopkeeper");
+		
+		EntityRegistry.registerModEntity(EntityDagonBolt.class, "DagonBolt", EntityRegistry.findGlobalUniqueEntityId(), instance, 80, 20, false);
 		
 		shopSpawner.init();
 		

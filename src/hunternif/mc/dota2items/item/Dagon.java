@@ -4,6 +4,7 @@ import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.config.DescriptionBuilder;
 import hunternif.mc.dota2items.core.AttackHandler;
 import hunternif.mc.dota2items.core.buff.Buff;
+import hunternif.mc.dota2items.entity.EntityDagonBolt;
 
 import java.util.List;
 
@@ -40,5 +41,11 @@ public class Dagon extends TargetEntityItem {
 		player.worldObj.playSoundAtEntity(player, Sound.DAGON.getName(), 0.7f, 1);
 		float mcDamage = damage / AttackHandler.DOTA_VS_MINECRAFT_DAMAGE;
 		entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(player, entity), mcDamage);
+		if (player.worldObj.isRemote) {
+			EntityDagonBolt bolt = new EntityDagonBolt(player.worldObj,
+					player.posX, player.posY+1, player.posZ,
+					entity.posX, (entity.boundingBox.maxY + entity.boundingBox.minY)/2d, entity.posZ);
+			player.worldObj.spawnEntityInWorld(bolt);
+		}
 	}
 }

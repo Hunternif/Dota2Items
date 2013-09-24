@@ -5,7 +5,6 @@ import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.util.MCConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.MathHelper;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 public class SwingRenderer {
@@ -51,7 +50,7 @@ public class SwingRenderer {
 	}
 	
 	public double swingCurve(double x) {
-		return x + 0.5*(Math.exp(-Math.pow(2*x-1, 2)) - Math.exp(-1));
+		return 2*x - x*x;
 	}
 	
 	public void startSwinging() {

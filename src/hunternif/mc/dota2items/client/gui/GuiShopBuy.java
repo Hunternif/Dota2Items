@@ -223,10 +223,14 @@ public class GuiShopBuy extends GuiShopBase {
 			if (canBuy) {
 				((ContainerShopShowcase)this.inventorySlots).setResultItem(btn.itemStack);
 			}
-			if (Dota2Item.hasRecipe(btn.itemStack)) {
+			if (Dota2Item.hasRecipe(btn.itemStack) && (!canBuy || btn.selected)) {
+				// When clicking on an item that has recipe, first set it as result;
+				// On the next click when the item is already selected, or if the item
+				// can't be set as result (can't buy), will the recipe be shown.
 				((ContainerShopShowcase)this.inventorySlots).setRecipeResult((Dota2Item)btn.itemStack.getItem());
 			} else if (Dota2Item.isUsedInRecipe(btn.itemStack) && (!canBuy || btn.selected)) {
-				// When clicking on an item that's already selected (or not purchasable), show it in hierarchy:
+				// And on the next click, or if can't buy, recipe hierarchy will be shown,
+				// i.e. what items use this item in their recipe.
 				((ContainerShopShowcase)this.inventorySlots).setRecipeIngredient((Dota2Item)btn.itemStack.getItem());
 			}
 		} else if (button == upButton) {

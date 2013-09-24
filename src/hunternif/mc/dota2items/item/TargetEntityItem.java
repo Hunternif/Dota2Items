@@ -83,7 +83,10 @@ public abstract class TargetEntityItem extends TargetItem {
 		Sound failSound = canUseItem(stack, player);
 		if (failSound == null) {
 			if (target != null) {
-				if (!(target instanceof EntityLivingBase)) {
+				// Only work on living entities...
+				if (!(target instanceof EntityLivingBase) ||
+						// ... if their health is > 0 
+						((EntityLivingBase)target).func_110143_aJ() <= 0) {
 					return Sound.DENY_GENERAL;
 				}
 				EntityStats targetStats = Dota2Items.stats.getOrCreateEntityStats((EntityLivingBase)target);

@@ -27,7 +27,7 @@ public class GuiRecipeButton extends GuiButton {
 			GL11.glDisable(GL11.GL_LIGHTING);
 			
 			// Render background:
-			mc.renderEngine.func_110577_a(GuiShopBuy.texture);
+			mc.renderEngine.bindTexture(GuiShopBuy.texture);
 			boolean isMouseOver = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 			int u = 230;
 			int v = 23;

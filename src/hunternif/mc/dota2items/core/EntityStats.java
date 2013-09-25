@@ -105,9 +105,9 @@ public class EntityStats implements IExtendedEntityProperties {
 	
 	public EntityStats(EntityLivingBase entity) {
 		this.entity = entity;
-		AttributeInstance attrMaxHealth = entity.func_110148_a(SharedMonsterAttributes.field_111267_a);
+		AttributeInstance attrMaxHealth = entity.getEntityAttribute(SharedMonsterAttributes.maxHealth);
 		// When EntityPlayer is Constructing, all his attributes are null
-		float maxHealth = attrMaxHealth == null ? MCConstants.MINECRAFT_PLAYER_HP : (float)attrMaxHealth.func_111126_e();
+		float maxHealth = attrMaxHealth == null ? MCConstants.MINECRAFT_PLAYER_HP : (float)attrMaxHealth.getAttributeValue();
 		baseHealth = MathHelper.floor_float(maxHealth * (float)BASE_PLAYER_HP / MCConstants.MINECRAFT_PLAYER_HP);
 		if (entity instanceof EntityPlayer) {
 			baseManaRegen = 0.01f;
@@ -119,8 +119,8 @@ public class EntityStats implements IExtendedEntityProperties {
 			baseManaRegen = 0.75f;
 			baseHealthRegen = 0.5f;
 			baseAttackTime = 0.8f;
-			AttributeInstance attrMoveSpeed = entity.func_110148_a(SharedMonsterAttributes.field_111263_d);
-			double baseMoveSpeed = attrMoveSpeed.func_111125_b();
+			AttributeInstance attrMoveSpeed = entity.getEntityAttribute(SharedMonsterAttributes.movementSpeed);
+			double baseMoveSpeed = attrMoveSpeed.getBaseValue();
 			baseMovementSpeed = MathHelper.floor_double((double)BASE_PLAYER_MOVE_SPEED * baseMoveSpeed / MCConstants.MINECRAFT_PLAYER_MOVE_SPEED);
 		}
 		if (entity instanceof EntityGolem || entity instanceof EntityDragon || entity instanceof EntityWither) {
@@ -191,8 +191,8 @@ public class EntityStats implements IExtendedEntityProperties {
 		return health + MAX_HP_PER_STR*getStrength();
 	}
 	public int getHealth(EntityLivingBase entity) {
-		float mcHPProportion = (float)entity.func_110143_aJ() / (float)entity.func_110138_aP();
-		float halfHeartEquivalent = (float)getMaxHealth() / (float)entity.func_110138_aP();
+		float mcHPProportion = entity.getHealth() / entity.getMaxHealth();
+		float halfHeartEquivalent = getMaxHealth() / entity.getMaxHealth();
 		return MathHelper.floor_float((float)getMaxHealth()*mcHPProportion + halfHeartEquivalent*partialHalfHeart);
 	}
 	public float getHealthRegen() {
@@ -204,15 +204,14 @@ public class EntityStats implements IExtendedEntityProperties {
 	}
 	
 	public void heal(float dotaHealthAmount) {
-		// func_110138_aP = "getMaxHealth"
-		float halfHeartEquivalent = (float)getMaxHealth() / (float)entity.func_110138_aP();
+		float halfHeartEquivalent = getMaxHealth() / entity.getMaxHealth();
 		float partialHealth = partialHalfHeart + dotaHealthAmount / halfHeartEquivalent;
 		if (partialHealth >= 1) {
 			int floor = MathHelper.floor_float(partialHealth);
 			entity.heal(floor);
 			partialHealth -= (float) floor;
 		}
-		if (entity.func_110143_aJ() == entity.func_110138_aP()) {
+		if (entity.getHealth() == entity.getMaxHealth()) {
 			// At full health
 			partialHealth = 0;
 		}

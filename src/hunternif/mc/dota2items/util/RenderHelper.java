@@ -133,7 +133,7 @@ public class RenderHelper {
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glColor4f(1, 1, 1, 1);
-		Minecraft.getMinecraft().renderEngine.func_110577_a(texture);
+		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
 		tessellator.addVertexWithUV(x + width, y + height, 0, 1, 1);

@@ -57,7 +57,7 @@ public class GuiDotaStats {
 		int top = mc.currentScreen.height - HEIGHT;
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDisable(GL11.GL_LIGHTING);
-		mc.renderEngine.func_110577_a(texture);
+		mc.renderEngine.bindTexture(texture);
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
 		tessellator.addVertexWithUV(left+WIDTH, top+HEIGHT, 0, 1, 1);
@@ -74,13 +74,13 @@ public class GuiDotaStats {
 		ItemStack item = mc.thePlayer.getCurrentEquippedItem();
 		if (item != null) {
 			// Get player damage output. Not accounting for enchantments yet!
-			HashMultimap map = (HashMultimap)item.func_111283_C();
-			Set<AttributeModifier> damageModifierSet = map.get(SharedMonsterAttributes.field_111264_e.func_111108_a());
+			/*HashMultimap map = (HashMultimap)item.getAttributeModifiers();
+			Set<AttributeModifier> damageModifierSet = map.get(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName());
 			for (AttributeModifier modifier : damageModifierSet) {
-				baseDmg += (float) modifier.func_111164_d();
-			}
+				baseDmg += (float) modifier.getAmount();
+			}*/
 			// The following line works correctly on the "server" side, but always returns 1 on the "client".
-			//baseDmg = (float)mc.thePlayer.func_110148_a(SharedMonsterAttributes.field_111264_e).func_111126_e();
+			baseDmg = (float)mc.thePlayer.getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue();
 			if (item.itemID == Item.bow.itemID) {
 				isMelee = false;
 				// Assume the damage of an arrow at average charge: 6

@@ -86,7 +86,7 @@ public class GoldHandler {
 				// Gold is dropped from monsters (IMob) and angry wolves:
 				if (!event.entity.worldObj.isRemote && (event.entity instanceof IMob ||
 						(event.entity instanceof EntityWolf && ((EntityWolf)event.entity).isAngry()))) {
-					int goldAmount = MathHelper.floor_float(GOLD_PER_MOB_HP * (float)event.entityLiving.func_110138_aP());
+					int goldAmount = MathHelper.floor_float(GOLD_PER_MOB_HP * (float)event.entityLiving.getMaxHealth());
 					EntityStats killerStats = Dota2Items.stats.getOrCreateEntityStats(killer);
 					// From npc kills - only unreliable gold:
 					killerStats.addGold(0, goldAmount);

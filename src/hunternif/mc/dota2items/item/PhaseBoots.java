@@ -56,24 +56,24 @@ public class PhaseBoots extends ActiveItem {
 	}
 	
 	public static void addKnockbackResistance(EntityLivingBase entity) {
-		AttributeInstance attr = entity.func_110148_a(SharedMonsterAttributes.field_111266_c);
+		AttributeInstance attr = entity.getEntityAttribute(SharedMonsterAttributes.knockbackResistance);
 		// Get the modifier:
-		AttributeModifier modifier = attr.func_111127_a(uuid);
+		AttributeModifier modifier = attr.getModifier(uuid);
 		if (modifier != null) {
 			return;
 		}
 		// I think the argument "0" stands for operation "add amount":
 		modifier = new AttributeModifier(uuid, "Speed bonus from Dota 2 Items", 1, 0)
-			.func_111168_a(false); // I think this makes it non-persistent
-		attr.func_111121_a(modifier);
+			.setSaved(false); // I think this makes it non-persistent
+		attr.applyModifier(modifier);
 	}
 	
 	public static void removeKnockbackResistance(EntityLivingBase entity) {
-		AttributeInstance attr = entity.func_110148_a(SharedMonsterAttributes.field_111266_c);
+		AttributeInstance attr = entity.getEntityAttribute(SharedMonsterAttributes.knockbackResistance);
 		// Get the modifier:
-		AttributeModifier modifier = attr.func_111127_a(uuid);
+		AttributeModifier modifier = attr.getModifier(uuid);
 		if (modifier != null) {
-			attr.func_111124_b(modifier);
+			attr.removeModifier(modifier);
 		}
 	}
 }

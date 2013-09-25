@@ -55,7 +55,7 @@ public class ParticleMiss extends EntityFX {
 		if (tessellator.isDrawing) {
 			tessellator.draw();
 		}
-		Minecraft.getMinecraft().renderEngine.func_110577_a(texture);
+		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 		tessellator.startDrawingQuads();
 		tessellator.setBrightness(getBrightnessForRender(partialTick));
 		
@@ -78,7 +78,7 @@ public class ParticleMiss extends EntityFX {
 		
 		tessellator.draw();
 		tessellator.startDrawingQuads();
-		Minecraft.getMinecraft().renderEngine.func_110577_a(Dota2Particle.minecraftParticles);
+		Minecraft.getMinecraft().renderEngine.bindTexture(Dota2Particle.minecraftParticles);
 	}
 
 }

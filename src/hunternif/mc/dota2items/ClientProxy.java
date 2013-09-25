@@ -51,8 +51,8 @@ public class ClientProxy extends CommonProxy {
 	public static IconInText ICON_COOLDOWN = new IconInText("$cd$", 7, 7, Dota2Items.ID+":textures/gui/cooldown.png", 0, 0, 3);
 	public static IconInText ICON_MANACOST = new IconInText("$manacost$", 7, 7, Dota2Items.ID+":textures/gui/manacost.png", 0, 0, 3);
 	{
-		resourceManager.func_110542_a(fontRWithIcons);
-		resourceManager.func_110542_a(fontRContourShadow);
+		resourceManager.registerReloadListener(fontRWithIcons);
+		resourceManager.registerReloadListener(fontRContourShadow);
 		fontRWithIcons.registerIcon(ICON_GOLD);
 		fontRWithIcons.registerIcon(ICON_COOLDOWN);
 		fontRWithIcons.registerIcon(ICON_MANACOST);

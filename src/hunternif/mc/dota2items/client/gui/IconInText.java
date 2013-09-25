@@ -27,14 +27,14 @@ public class IconInText implements Icon {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public int getOriginX() {
-		return 0;
+	public int getIconWidth() {
+		return width;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public int getOriginY() {
-		return 0;
+	public int getIconHeight() {
+		return height;
 	}
 
 	@Override

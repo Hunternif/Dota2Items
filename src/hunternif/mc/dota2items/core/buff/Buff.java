@@ -109,7 +109,7 @@ public class Buff {
 	 * for passive buffs.
 	 */
 	public Buff(Dota2Item item) {
-		this(lastID + 1, item.getLocalizedName(null));
+		this(lastID + 1, item.getStatName());
 	}
 	/**
 	 * For passive item buffs. ID is not specified, because it is never sent

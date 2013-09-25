@@ -102,7 +102,7 @@ public class FontRendererWithIcons extends FontRenderer {
 		x += icon.xOffset;
 		y += icon.yOffset;
 		GL11.glColor4f(1, 1, 1, 1);
-		this.textureManager.func_110577_a(icon.texture);
+		this.textureManager.bindTexture(icon.texture);
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
 		tessellator.addVertexWithUV(x, y+icon.height, 0, icon.getMinU(), icon.getMaxV());

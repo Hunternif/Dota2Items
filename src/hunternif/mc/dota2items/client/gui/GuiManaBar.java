@@ -49,7 +49,7 @@ public class GuiManaBar extends Gui {
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDisable(GL11.GL_LIGHTING);
-		mc.renderEngine.func_110577_a(texture);
+		mc.renderEngine.bindTexture(texture);
 		
 		int width = event.resolution.getScaledWidth();
 		int height = event.resolution.getScaledHeight();
@@ -58,9 +58,9 @@ public class GuiManaBar extends Gui {
 		int top = height - 39;
 		
 		// Account for health bars:
-		AttributeInstance attrMaxHealth = this.mc.thePlayer.func_110148_a(SharedMonsterAttributes.field_111267_a);
-		float healthMax = (float)attrMaxHealth.func_111126_e();
-		float absorb = this.mc.thePlayer.func_110139_bj();
+		AttributeInstance attrMaxHealth = this.mc.thePlayer.getEntityAttribute(SharedMonsterAttributes.maxHealth);
+		float healthMax = (float)attrMaxHealth.getAttributeValue();
+		float absorb = this.mc.thePlayer.getAbsorptionAmount();
 		int healthRows = MathHelper.ceiling_float_int((healthMax + absorb) / 2.0F / 10.0F);
 		int rowHeight = Math.max(10 - (healthRows - 2), 3);
 		top -= healthRows * rowHeight;

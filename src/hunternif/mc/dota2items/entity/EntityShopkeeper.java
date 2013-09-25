@@ -24,18 +24,12 @@ public class EntityShopkeeper extends EntityCreature implements INpc, IInvulnera
 		super(world);
 		this.setSize(0.6F, 1.8F);
 		this.getNavigator().setAvoidsWater(true);
+		//TODO: Make the shopkeeper return to the center of his tent.
 		//this.tasks.addTask(1, new EntityAIMoveTowardsRestriction(this, 0.4));
 		this.tasks.addTask(2, new EntityAIWatchClosest2(this, EntityPlayer.class, 3, 1));
 		//this.tasks.addTask(3, new EntityAIWander(this, 0.4));
 		this.tasks.addTask(4, new EntityAIWatchClosest(this, EntityLivingBase.class, 8));
 	}
-	
-	/** Presumably sets movement speed. */
-	/*@Override
-	protected void func_110147_ax() {
-		super.func_110147_ax();
-		this.func_110148_a(SharedMonsterAttributes.field_111263_d).func_111128_a(0.25);
-	}*/
 	
 	@Override
 	public boolean isEntityInvulnerable() {
@@ -55,22 +49,15 @@ public class EntityShopkeeper extends EntityCreature implements INpc, IInvulnera
 			this.villageObj = this.worldObj.villageCollectionObj.findNearestVillage(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ), 32);
 			
 			if (this.villageObj == null) {
-				this.func_110177_bN(); // detachHome();
+				this.detachHome();
 			}
 			else {
 				ChunkCoordinates chunkcoordinates = this.villageObj.getCenter();
 				// Set Home area
-				this.func_110171_b(chunkcoordinates.posX, chunkcoordinates.posY, chunkcoordinates.posZ, (int)((float)this.villageObj.getVillageRadius() * 0.6F));
+				this.setHomeArea(chunkcoordinates.posX, chunkcoordinates.posY, chunkcoordinates.posZ, (int)((float)this.villageObj.getVillageRadius() * 0.6F));
 			}
 		}
 		super.updateAITick();
-	}
-	
-	@Override
-	protected void entityInit() {
-		super.entityInit();
-		// Dunno why this is done, probably some kludge.
-		this.dataWatcher.addObject(16, Integer.valueOf(0));
 	}
 	
 	@Override

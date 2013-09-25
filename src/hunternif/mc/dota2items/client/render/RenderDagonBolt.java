@@ -5,7 +5,6 @@ import hunternif.mc.dota2items.util.RenderHelper;
 import hunternif.mc.dota2items.util.Vec3Chain.Segment;
 import net.minecraft.client.renderer.entity.RenderEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -39,10 +38,5 @@ public class RenderDagonBolt extends RenderEntity {
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-	}
-
-	@Override
-	protected ResourceLocation func_110775_a(Entity entity) {
-		return null;
 	}
 }

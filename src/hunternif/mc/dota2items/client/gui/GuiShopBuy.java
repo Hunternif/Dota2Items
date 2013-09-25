@@ -175,7 +175,7 @@ public class GuiShopBuy extends GuiShopBase {
 	protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		// Draw GUI background
-		mc.renderEngine.func_110577_a(texture);
+		mc.renderEngine.bindTexture(texture);
 		int x = this.guiLeft;
 		int y = this.guiTop;
 		drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);

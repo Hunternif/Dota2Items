@@ -21,7 +21,7 @@ public class GuiButtonConfirmSale extends GuiButton {
 			GL11.glDisable(GL11.GL_LIGHTING);
 			
 			// Render background:
-			mc.renderEngine.func_110577_a(beaconTexture);
+			mc.renderEngine.bindTexture(beaconTexture);
 			boolean isMouseOver = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 			int u = 0;
 			int v = 219;

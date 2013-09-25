@@ -59,7 +59,7 @@ public class ItemTracker implements IPlayerTracker {
 	
 	@Override
 	public void onPlayerLogin(EntityPlayer player) {
-		if (player.func_110143_aJ() <= 0) {
+		if (player.getHealth() <= 0) {
 			List<ItemStack> list = retainedItems.get(player);
 			if (list == null) {
 				list = new ArrayList<ItemStack>();

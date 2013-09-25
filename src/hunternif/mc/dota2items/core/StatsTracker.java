@@ -72,21 +72,21 @@ public class StatsTracker implements IPlayerTracker {
 	}
 	
 	private void updateMoveSpeed(EntityLivingBase entity, EntityStats stats) {
-		AttributeInstance moveSpeedAttribute = entity.func_110148_a(SharedMonsterAttributes.field_111263_d);
+		AttributeInstance moveSpeedAttribute = entity.getEntityAttribute(SharedMonsterAttributes.movementSpeed);
 		double newMoveSpeed = stats.getMovementSpeed();
-		double oldMoveSpeed = moveSpeedAttribute.func_111126_e();
+		double oldMoveSpeed = moveSpeedAttribute.getAttributeValue();
 		if (newMoveSpeed != oldMoveSpeed) {
-			double baseMoveSpeed = moveSpeedAttribute.func_111125_b();
+			double baseMoveSpeed = moveSpeedAttribute.getBaseValue();
 			// Get the modifier:
-			AttributeModifier speedModifier = moveSpeedAttribute.func_111127_a(uuid);
+			AttributeModifier speedModifier = moveSpeedAttribute.getModifier(uuid);
 			if (speedModifier != null) {
 				// Remove the old modifier
-				moveSpeedAttribute.func_111124_b(speedModifier);
+				moveSpeedAttribute.removeModifier(speedModifier);
 			}
 			// I think the argument "2" stands for operation "add percentage":
 			speedModifier = new AttributeModifier(uuid, "Speed bonus from Dota 2 Items", newMoveSpeed / baseMoveSpeed - 1.0, 2)
-				.func_111168_a(false); // I think this makes it non-persistent
-			moveSpeedAttribute.func_111121_a(speedModifier);
+				.setSaved(false); // I think this makes it non-persistent
+			moveSpeedAttribute.applyModifier(speedModifier);
 		}
 	}
 	
@@ -141,8 +141,7 @@ public class StatsTracker implements IPlayerTracker {
 		if ((entity instanceof EntityPlayer) && ((EntityPlayer)entity).capabilities.isCreativeMode) {
 			stats.setMana(stats.getMaxMana());
 		} else {
-			// func_110143_aJ = "getHealth"
-			if (entity.func_110143_aJ() > 0 && stats.getMana() < stats.getMaxMana()) {
+			if (entity.getHealth() > 0 && stats.getMana() < stats.getMaxMana()) {
 				stats.addMana(stats.getManaRegen() / MCConstants.TICKS_PER_SECOND);
 			}
 		}

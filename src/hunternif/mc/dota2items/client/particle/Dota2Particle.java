@@ -30,13 +30,13 @@ public class Dota2Particle extends EntityFX {
 		if (tessellator.isDrawing) {
 			tessellator.draw();
 		}
-		Minecraft.getMinecraft().renderEngine.func_110577_a(dota2itemsParticles);
+		Minecraft.getMinecraft().renderEngine.bindTexture(dota2itemsParticles);
 		tessellator.startDrawingQuads();
 		tessellator.setBrightness(getBrightnessForRender(partialTick));
 		super.renderParticle(tessellator, partialTick, rotX, rotXZ, rotZ, rotYZ, rotXY);
 		tessellator.draw();
 		tessellator.startDrawingQuads();
-		Minecraft.getMinecraft().renderEngine.func_110577_a(minecraftParticles);
+		Minecraft.getMinecraft().renderEngine.bindTexture(minecraftParticles);
 	}
 
 }

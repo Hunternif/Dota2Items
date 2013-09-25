@@ -20,7 +20,7 @@ public class ClientTickHandler implements ITickHandler {
 		}
 		if (type.contains(TickType.RENDER)) {
 			timer.updateTimer();
-			if (Minecraft.getMinecraft().inGameHasFocus) {
+			if (Minecraft.getMinecraft().thePlayer != null) {
 				if (Minecraft.getMinecraft().thePlayer.isSwingInProgress &&
 						!ClientProxy.swingRenderer.isSwinging) {
 					ClientProxy.swingRenderer.startSwinging();

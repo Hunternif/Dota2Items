@@ -12,9 +12,7 @@ import cpw.mods.fml.relauncher.Side;
 
 public class DagonBoltPacket extends CustomPacket {
 	private int entityID;
-	private double startX;
-	private double startY;
-	private double startZ;
+	private int level;
 	private double endX;
 	private double endY;
 	private double endZ;
@@ -23,9 +21,7 @@ public class DagonBoltPacket extends CustomPacket {
 	
 	public DagonBoltPacket(EntityDagonBolt bolt) {
 		this.entityID = bolt.entityId;
-		this.startX = bolt.startX;
-		this.startY = bolt.startY;
-		this.startZ = bolt.startZ;
+		this.level = bolt.level;
 		this.endX = bolt.endX;
 		this.endY = bolt.endY;
 		this.endZ = bolt.endZ;
@@ -34,9 +30,7 @@ public class DagonBoltPacket extends CustomPacket {
 	@Override
 	public void write(ByteArrayDataOutput out) {
 		out.writeInt(entityID);
-		out.writeDouble(startX);
-		out.writeDouble(startY);
-		out.writeDouble(startZ);
+		out.writeInt(level);
 		out.writeDouble(endX);
 		out.writeDouble(endY);
 		out.writeDouble(endZ);
@@ -45,9 +39,7 @@ public class DagonBoltPacket extends CustomPacket {
 	@Override
 	public void read(ByteArrayDataInput in) throws ProtocolException {
 		entityID = in.readInt();
-		startX = in.readDouble();
-		startY = in.readDouble();
-		startZ = in.readDouble();
+		level = in.readInt();
 		endX = in.readDouble();
 		endY = in.readDouble();
 		endZ = in.readDouble();
@@ -59,7 +51,8 @@ public class DagonBoltPacket extends CustomPacket {
 			Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(entityID);
 			if (entity != null && entity instanceof EntityDagonBolt) {
 				EntityDagonBolt bolt = (EntityDagonBolt) entity;
-				bolt.setBoltCoords(startX, startY, startZ, endX, endY, endZ);
+				bolt.level = level;
+				bolt.setEndCoords(endX, endY, endZ);
 			}
 		} else {
 			throw new ProtocolException("Cannot send this packet to the server!");

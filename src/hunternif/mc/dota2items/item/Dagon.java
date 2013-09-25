@@ -44,7 +44,7 @@ public class Dagon extends TargetEntityItem {
 		float mcDamage = damage / AttackHandler.DOTA_VS_MINECRAFT_DAMAGE;
 		entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(player, entity), mcDamage);
 		if (!player.worldObj.isRemote) {
-			EntityDagonBolt bolt = new EntityDagonBolt(player.worldObj,
+			EntityDagonBolt bolt = new EntityDagonBolt(player.worldObj, this.level,
 					player.posX, player.posY+1, player.posZ,
 					entity.posX, (entity.boundingBox.maxY + entity.boundingBox.minY)/2d, entity.posZ);
 			player.worldObj.spawnEntityInWorld(bolt);

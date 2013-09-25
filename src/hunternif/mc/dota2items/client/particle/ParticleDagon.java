@@ -2,17 +2,16 @@ package hunternif.mc.dota2items.client.particle;
 
 import net.minecraft.world.World;
 
-public class ParticleLifesteal extends Dota2Particle {
-
-	public ParticleLifesteal(World world, double x, double y, double z, double distance) {
+public class ParticleDagon extends Dota2Particle {
+	public ParticleDagon(World world, double x, double y, double z) {
 		super(world, x, y, z, 0, 0, 0);
-		this.particleScale = (float)(1d/(distance));
-		this.particleMaxAge = (int)(6F / (this.rand.nextFloat() * 0.7F + 0.3F));
-		this.particleTextureIndexX = 6;
+		this.particleScale = (this.rand.nextFloat() * 0.7F + 0.3F) * 2f;
+		this.particleMaxAge = (int)(3F / (this.rand.nextFloat() * 0.7F + 0.3F));
+		this.particleTextureIndexX = 8;
 		this.particleTextureIndexY = 0;
-		this.motionX = 0;
-		this.motionZ = 0;
-		this.motionY = 0.05 + 0.05*rand.nextFloat();
+		this.motionX = (rand.nextDouble()*2-1)*0.05;
+		this.motionY = (rand.nextDouble()*2-1)*0.05;
+		this.motionZ = (rand.nextDouble()*2-1)*0.05;
 	}
 	
 	@Override
@@ -25,14 +24,10 @@ public class ParticleLifesteal extends Dota2Particle {
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
-
-		this.particleScale -= 0.2;
+		
 		float ageFraq = ((float)this.particleAge) / (float)this.particleMaxAge;
-		if (ageFraq < 0.2f) {
-			setAlphaF(ageFraq*5f);
-		}
 		if (ageFraq > 0.5f) {
-			this.particleTextureIndexX = 7;
+			this.particleTextureIndexX = 9;
 			setAlphaF(1f - (ageFraq - 0.5f) * 2f);
 		}
 		
@@ -42,5 +37,4 @@ public class ParticleLifesteal extends Dota2Particle {
 
 		this.moveEntity(this.motionX, this.motionY, this.motionZ);
 	}
-
 }

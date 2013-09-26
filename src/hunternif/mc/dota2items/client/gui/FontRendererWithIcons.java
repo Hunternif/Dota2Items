@@ -20,6 +20,12 @@ public class FontRendererWithIcons extends FontRenderer {
 	private List<IconInText> icons = new ArrayList<IconInText>();
 	
 	public void registerIcon(IconInText icon) {
+		for (IconInText curIcon : icons) {
+			if (curIcon.key.equals(icon.key)) {
+				Dota2Items.logger.warning("Tried to register icon with the same key: " + icon.key);
+				return;
+			}
+		}
 		icons.add(icon);
 	}
 
@@ -58,16 +64,12 @@ public class FontRendererWithIcons extends FontRenderer {
 		}
 		Collections.sort(iconsFound, iconInTextComparator);
 		int posX = 0;
-		try {
-			for (IconInTextPos iconInText : iconsFound) {
-				String lastTextChunk = text.substring(posX, iconInText.posX);
-				posX = iconInText.posX + iconInText.icon.key.length();
-				x = super.drawString(lastTextChunk, x, y, color, dropShadow) + iconInText.icon.kerning;
-				renderIcon(iconInText.icon, x, y);
-				x += iconInText.icon.width + iconInText.icon.kerning;
-			}
-		} catch (Exception e) {
-			Dota2Items.logger.severe("Error rendering text: " + text + "; " + e);
+		for (IconInTextPos iconInText : iconsFound) {
+			String lastTextChunk = text.substring(posX, iconInText.posX);
+			posX = iconInText.posX + iconInText.icon.key.length();
+			x = super.drawString(lastTextChunk, x, y, color, dropShadow) + iconInText.icon.kerning;
+			renderIcon(iconInText.icon, x, y);
+			x += iconInText.icon.width + iconInText.icon.kerning;
 		}
 		if (posX < text.length()) {
 			String veryLastTextChunk = text.substring(posX);

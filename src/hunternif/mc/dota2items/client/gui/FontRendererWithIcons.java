@@ -67,7 +67,10 @@ public class FontRendererWithIcons extends FontRenderer {
 		for (IconInTextPos iconInText : iconsFound) {
 			String lastTextChunk = text.substring(posX, iconInText.posX);
 			posX = iconInText.posX + iconInText.icon.key.length();
-			x = super.drawString(lastTextChunk, x, y, color, dropShadow) + iconInText.icon.kerning;
+			x = super.drawString(lastTextChunk, x, y, color, dropShadow);
+			if (lastTextChunk.length() > 0) {
+				x += iconInText.icon.kerning;
+			}
 			renderIcon(iconInText.icon, x, y);
 			x += iconInText.icon.width + iconInText.icon.kerning;
 		}
@@ -90,7 +93,13 @@ public class FontRendererWithIcons extends FontRenderer {
 						String beginning = text.substring(0, i);
 						String end = text.substring(i + icon.key.length());
 						text = beginning + end;
-						totalWidth = totalWidth - keyWidth + icon.width + icon.kerning;
+						totalWidth = totalWidth - keyWidth + icon.width;
+						if (beginning.length() > 0) {
+							totalWidth += icon.kerning;
+						}
+						if (end.length() > 0) {
+							totalWidth += icon.kerning;
+						}
 					} else {
 						break;
 					}

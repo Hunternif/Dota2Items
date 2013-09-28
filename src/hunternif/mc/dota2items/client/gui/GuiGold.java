@@ -7,6 +7,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiBeacon;
+import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.util.ResourceLocation;
@@ -37,7 +38,7 @@ public class GuiGold extends Gui {
 		int x;
 		int y;
 		// Show gold when the inventory is open:
-		if (mc.currentScreen instanceof GuiContainer &&
+		if (mc.currentScreen instanceof GuiContainer && !(mc.currentScreen instanceof GuiChest) &&
 				!(mc.currentScreen instanceof GuiContainerCreative || mc.currentScreen instanceof GuiBeacon)) {
 			x = (mc.currentScreen.width - GUI_INVENTORY_WIDTH)/2 + GUI_INVENTORY_WIDTH - GUI_GOLD_WIDTH;
 			// If there are active potion effects, the inventory is shifted to the right.

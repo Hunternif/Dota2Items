@@ -15,6 +15,8 @@ import hunternif.mc.dota2items.config.CfgInfo;
 import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.config.DescriptionBuilder;
 import hunternif.mc.dota2items.core.ClientTickHandler;
+import hunternif.mc.dota2items.core.buff.Buff;
+import hunternif.mc.dota2items.effect.Effect;
 import hunternif.mc.dota2items.entity.EntityDagonBolt;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
 import hunternif.mc.dota2items.item.ActiveItem;
@@ -93,6 +95,8 @@ public class ClientProxy extends CommonProxy {
 		
 		RenderingRegistry.registerEntityRenderingHandler(EntityShopkeeper.class, new RenderShopkeeper());
 		RenderingRegistry.registerEntityRenderingHandler(EntityDagonBolt.class, new RenderDagonBolt());
+		
+		Buff.tango.setEffect(Effect.tango);
 	}
 	
 	@Override

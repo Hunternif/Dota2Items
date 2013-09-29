@@ -23,7 +23,6 @@ public class EffectLifesteal extends EntityEffect {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void perform(Entity entity, Object ... data) {
-		World world = Minecraft.getMinecraft().theWorld;
 		EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
 		Random rand = new Random();
 		for (int i = 0; i < MAX_PARTICLES; i++) {
@@ -40,7 +39,7 @@ public class EffectLifesteal extends EntityEffect {
 			/*double velX = -sinYaw*cosPitch / (distance) * 0.05D;
 			double velZ = cosYaw*cosPitch / (distance) * 0.05D;
 			double velY = -sinPitch / (distance) * 0.05D;*/
-			EntityFX particle = new ParticleLifesteal(world,
+			EntityFX particle = new ParticleLifesteal(entity.worldObj,
 					entity.posX + rX, entity.posY - entity.yOffset + 1 + rY, entity.posZ + rZ, distance);
 			effectRenderer.addEffect(particle);
 		}

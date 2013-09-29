@@ -96,9 +96,12 @@ public class StatsTracker implements IPlayerTracker {
 		if (stats == null) {
 			return;
 		}
+		if (event.entity.worldObj.isRemote) {
+			performBuffEffects(stats);
+		}
 		if (event.entityLiving instanceof EntityPlayer) {
 			// Regenerate health and mana every second:
-			regenHealthAndMana((EntityPlayer)event.entityLiving, stats);
+			regenHealthAndMana(stats);
 			// Add base attributes per level:
 			updateBaseAttributes((EntityPlayer)event.entityLiving, stats);
 			// Synchronize stats with all clients every SYNC_STATS_INTERVAL seconds:
@@ -134,25 +137,25 @@ public class StatsTracker implements IPlayerTracker {
 		return entity.worldObj.isRemote ? Side.CLIENT : Side.SERVER;
 	}
 	
-	private static void regenHealthAndMana(EntityLivingBase entity, EntityStats stats) {
-		if (shouldHeal(entity, stats)) {
+	private static void regenHealthAndMana(EntityStats stats) {
+		if (shouldHeal(stats)) {
 			stats.heal(stats.getHealthRegen() / MCConstants.TICKS_PER_SECOND);
 		}
-		if ((entity instanceof EntityPlayer) && ((EntityPlayer)entity).capabilities.isCreativeMode) {
+		if ((stats.entity instanceof EntityPlayer) && ((EntityPlayer)stats.entity).capabilities.isCreativeMode) {
 			stats.setMana(stats.getMaxMana());
 		} else {
-			if (entity.getHealth() > 0 && stats.getMana() < stats.getMaxMana()) {
+			if (stats.entity.getHealth() > 0 && stats.getMana() < stats.getMaxMana()) {
 				stats.addMana(stats.getManaRegen() / MCConstants.TICKS_PER_SECOND);
 			}
 		}
 	}
 	
-	public static boolean shouldHeal(EntityLivingBase entity, EntityStats stats) {
-		int health = stats.getHealth(entity);
+	public static boolean shouldHeal(EntityStats stats) {
+		int health = stats.getHealth(stats.entity);
 		int maxHealth = stats.getMaxHealth();
 		boolean shouldHeal = health > 0 && health < maxHealth;
-		if (entity instanceof EntityPlayer) {
-			shouldHeal &= ((EntityPlayer)entity).getFoodStats().getFoodLevel() >= FOOD_THRESHOLD_FOR_HEAL;
+		if (stats.entity instanceof EntityPlayer) {
+			shouldHeal &= ((EntityPlayer)stats.entity).getFoodStats().getFoodLevel() >= FOOD_THRESHOLD_FOR_HEAL;
 		}
 		return shouldHeal;
 	}
@@ -231,6 +234,14 @@ public class StatsTracker implements IPlayerTracker {
 			newStats.setMana(newStats.getMaxMana());
 			
 			newStats.sendSyncPacketToClient(player);
+		}
+	}
+	
+	private static void performBuffEffects(EntityStats stats) {
+		for (BuffInstance buffInst : stats.getAppliedBuffs()) {
+			if (buffInst.buff.effect != null) {
+				buffInst.buff.effect.perform(stats.entity);
+			}
 		}
 	}
 }

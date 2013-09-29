@@ -14,6 +14,7 @@ public abstract class Effect {
 	public static final Effect miss = new EffectMiss(3);
 	public static final Effect force = new EffectForce(4);
 	public static final Effect arcaneBoots = new EffectArcaneBoots(5);
+	public static final EntityEffect tango = new EffectTango(6);
 	
 	public final int id;
 	

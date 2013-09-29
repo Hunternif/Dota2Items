@@ -8,23 +8,18 @@ public class ParticleCyclone extends Dota2Particle {
 
 	public ParticleCyclone(World world, double x, double y, double z, double velX, double velY, double velZ) {
 		super(world, x, y, z, velX, velY, velZ);
-		this.particleTextureIndexX = 5;
-		this.particleTextureIndexY = 0;
+		setTexturePositions(5, 0);
+		this.particleMaxAge = 20;
+		setFade(0, 0.5f);
 	}
 	
 	@Override
 	public void onUpdate() {
-		this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
-        this.moveEntity(this.motionX, this.motionY, this.motionZ);
-        particleAge++;
+		super.onUpdate();
         /*if (particleAge == invisibleAge)
         	setAlphaF(0.7f);*/
         if (particleAge >= expandAge) {
         	particleScale += 0.2f;
-        	if (particleAlpha > 0)
-        		particleAlpha -= 0.05f;
         }
 	}
 }

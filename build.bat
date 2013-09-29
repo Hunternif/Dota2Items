@@ -15,7 +15,7 @@ cd /d "%MCP_HOME%"
 echo Recompiling...
 runtime\bin\python\python_mcp runtime\recompile.py %* 1>>"%MOD_SRC_DIR%\build.log" 2>&1
 echo Reobfuscating...
-runtime\bin\python\python_mcp runtime\reobfuscate.py %* 1>>"%MOD_SRC_DIR%\build.log" 2>&1
+runtime\bin\python\python_mcp runtime\reobfuscate.py --srgnames %* 1>>"%MOD_SRC_DIR%\build.log" 2>&1
 
 echo Removing "src" from MCP
 echo Removing "src" from MCP 1>>"%MOD_SRC_DIR%\build.log"

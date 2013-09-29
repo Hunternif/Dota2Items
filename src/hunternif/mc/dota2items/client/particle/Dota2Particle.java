@@ -136,4 +136,11 @@ public class Dota2Particle extends EntityFX {
 	protected float scaleAtAge(float ageFraq) {
 		return particleScale;
 	}
+	
+	protected void setColor(int color) {
+		float r = (float)((color >> 16) & 0xff) / (float)0xff;
+		float g = (float)((color >> 8) & 0xff) / (float)0xff;
+		float b = (float)(color & 0xff) / (float)0xff;
+		setRBGColorF(r, g, b);
+	}
 }

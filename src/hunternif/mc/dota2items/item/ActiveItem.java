@@ -161,6 +161,9 @@ public abstract class ActiveItem extends Dota2Item {
 		if (!playerStats.canUseItems()) {
 			return Sound.DENY_SILENCE;
 		}
+		if (player instanceof EntityPlayer && ((EntityPlayer)player).capabilities.isCreativeMode) {
+			return null;
+		}
 		if (isOnCooldown(stack)) {
 			return Sound.DENY_COOLDOWN;
 		} else if (Dota2Items.stats.getOrCreateEntityStats(player).getMana() < this.getManaCost()) {

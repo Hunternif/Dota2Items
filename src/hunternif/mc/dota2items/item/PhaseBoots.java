@@ -7,6 +7,7 @@ import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.event.BuffEvent.BuffAddEvent;
 import hunternif.mc.dota2items.event.BuffEvent.BuffRemoveEvent;
+import hunternif.mc.dota2items.network.BuffForcePacket;
 import hunternif.mc.dota2items.util.MCConstants;
 
 import java.util.UUID;
@@ -19,6 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
+import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class PhaseBoots extends ActiveItem {
 	private static final UUID uuid = UUID.fromString("4512aab0-1ba2-11e3-b773-0800200c9a66");
@@ -36,7 +38,9 @@ public class PhaseBoots extends ActiveItem {
 		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 		long startTime = player.worldObj.getTotalWorldTime();
 		long endTime = startTime + (long) (duration * MCConstants.TICKS_PER_SECOND);
-		stats.addBuff(new BuffInstance(Buff.phase, player.entityId, startTime, endTime, true));
+		BuffInstance buffInst = new BuffInstance(Buff.phase, player.entityId, startTime, endTime, true);
+		stats.addBuff(buffInst);
+		PacketDispatcher.sendPacketToAllPlayers(new BuffForcePacket(buffInst).makePacket());
 		player.playSound(Sound.PHASE_BOOTS.getName(), 0.7f, 1);
 	}
 	

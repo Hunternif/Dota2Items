@@ -6,6 +6,7 @@ import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.event.UseItemEvent;
+import hunternif.mc.dota2items.network.BuffForcePacket;
 import hunternif.mc.dota2items.util.IntVec3;
 import hunternif.mc.dota2items.util.MCConstants;
 import hunternif.mc.dota2items.util.SideHit;
@@ -15,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class Tango extends TargetBlockItem {
 	public static final float duration = 16f;
@@ -29,8 +31,6 @@ public class Tango extends TargetBlockItem {
 		setMaxStackSize(64);
 		setDefaultQuantity(3);
 	}
-	
-	//TODO make the custom potion effect particles (namely falling green leaves)
 	
 	@Override
 	protected void onUseOnBlock(ItemStack stack, EntityPlayer player, int x, int y, int z, int side) {
@@ -81,7 +81,9 @@ public class Tango extends TargetBlockItem {
 				EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 				long startTime = world.getTotalWorldTime();
 				long endTime = startTime + (long) (duration * MCConstants.TICKS_PER_SECOND);
-				stats.addBuff(new BuffInstance(Buff.tango, player.entityId, startTime, endTime, true));
+				BuffInstance buffInst = new BuffInstance(Buff.tango, player.entityId, startTime, endTime, true);
+				stats.addBuff(buffInst);
+				PacketDispatcher.sendPacketToAllPlayers(new BuffForcePacket(buffInst).makePacket());
 				player.playSound(Sound.TANGO.getName(), 1, 1);
 			}
 		}

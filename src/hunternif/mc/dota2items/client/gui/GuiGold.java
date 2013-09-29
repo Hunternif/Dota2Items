@@ -6,10 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.gui.inventory.GuiBeacon;
-import net.minecraft.client.gui.inventory.GuiChest;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -37,17 +33,7 @@ public class GuiGold extends Gui {
 		}
 		int x;
 		int y;
-		// Show gold when the inventory is open:
-		if (mc.currentScreen instanceof GuiContainer && !(mc.currentScreen instanceof GuiChest) &&
-				!(mc.currentScreen instanceof GuiContainerCreative || mc.currentScreen instanceof GuiBeacon)) {
-			x = (mc.currentScreen.width - GUI_INVENTORY_WIDTH)/2 + GUI_INVENTORY_WIDTH - GUI_GOLD_WIDTH;
-			// If there are active potion effects, the inventory is shifted to the right.
-			if (!mc.thePlayer.getActivePotionEffects().isEmpty()) {
-				x += 60;
-			}
-			y = (mc.currentScreen.height - GUI_INVENTORY_HEIGHT)/2 - GUI_GOLD_HEIGHT;
-		// Or in game:
-		} else if (mc.theWorld != null) {
+		if (!(mc.currentScreen instanceof GuiShopBase) && mc.theWorld != null) {
 			//TODO make this GUI placement configurable in the menu in order to not overlay other mods' GUIs.
 			ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
 			x = scaledresolution.getScaledWidth() - GUI_GOLD_WIDTH;

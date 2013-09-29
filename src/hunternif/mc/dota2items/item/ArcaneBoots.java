@@ -3,6 +3,8 @@ package hunternif.mc.dota2items.item;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
+import hunternif.mc.dota2items.effect.Effect;
+import hunternif.mc.dota2items.effect.EffectInstance;
 
 import java.util.List;
 
@@ -41,6 +43,10 @@ public class ArcaneBoots extends ActiveItem {
 					}
 				}
 			}
+		}
+		EffectInstance effect = new EffectInstance(Effect.arcaneBoots, player);
+		if (!player.worldObj.isRemote) {
+			EffectInstance.notifyPlayersAround(effect, player);
 		}
 	}
 }

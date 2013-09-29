@@ -33,6 +33,11 @@ public class Dota2Particle extends EntityFX {
 		this.motionZ = velZ;
 	}
 	
+	protected void setBaseAlpha(float value) {
+		baseAlpha = value;
+		setAlphaF(value);
+	}
+	
 	protected void setRandomScale(float min, float max) {
 		particleScale = rand.nextFloat()*(max-min) + min;
 	}

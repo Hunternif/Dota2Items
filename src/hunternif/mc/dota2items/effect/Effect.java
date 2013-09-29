@@ -13,6 +13,7 @@ public abstract class Effect {
 	public static final Effect lifesteal = new EffectLifesteal(2);
 	public static final Effect miss = new EffectMiss(3);
 	public static final Effect force = new EffectForce(4);
+	public static final Effect arcaneBoots = new EffectArcaneBoots(5);
 	
 	public final int id;
 	

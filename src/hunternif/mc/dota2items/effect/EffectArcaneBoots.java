@@ -4,6 +4,8 @@ import hunternif.mc.dota2items.client.particle.ParticleArcaneBoots;
 
 import java.util.Random;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
@@ -21,6 +23,7 @@ public class EffectArcaneBoots extends EntityEffect {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void perform(Entity entity, Object... data) {
 		World world = Minecraft.getMinecraft().theWorld;
 		EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;

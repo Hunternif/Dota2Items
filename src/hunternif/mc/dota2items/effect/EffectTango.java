@@ -4,6 +4,8 @@ import hunternif.mc.dota2items.client.particle.ParticleTango;
 
 import java.util.Random;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
@@ -17,6 +19,7 @@ public class EffectTango extends EntityEffect {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void perform(Entity entity, Object... data) {
 		Random rand = new Random();
 		if (entity.ticksExisted % (1 + rand.nextInt(3)) == 0) {

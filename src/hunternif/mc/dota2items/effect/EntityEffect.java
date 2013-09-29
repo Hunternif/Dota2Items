@@ -8,6 +8,9 @@ import net.minecraft.entity.Entity;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public abstract class EntityEffect extends Effect {
 
 	public EntityEffect(int id) {
@@ -15,6 +18,7 @@ public abstract class EntityEffect extends Effect {
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public final void perform(EffectInstance inst) {
 		if (inst.data.length > 0 && inst.data[0] instanceof Entity) {
 			Entity entity = (Entity)inst.data[0];
@@ -22,6 +26,7 @@ public abstract class EntityEffect extends Effect {
 		}
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public abstract void perform(Entity entity, Object ... data);
 
 	@Override

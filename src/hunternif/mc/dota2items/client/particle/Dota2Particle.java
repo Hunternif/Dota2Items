@@ -21,7 +21,7 @@ public class Dota2Particle extends EntityFX {
 	private float fadeOutTime = 0.8f;
 	private boolean glowing = false;
 
-	protected Dota2Particle(World world, double x, double y, double z) {
+	public Dota2Particle(World world, double x, double y, double z) {
 		this(world, x, y, z, 0, 0, 0);
 	}
 	
@@ -99,13 +99,11 @@ public class Dota2Particle extends EntityFX {
 		this.prevPosZ = this.posZ;
 		
 		float ageFraq = ((float)this.particleAge) / (float)this.particleMaxAge;
-		if (ageFraq <= fadeInTime) {
-			setAlphaF(baseAlpha * ageFraq / fadeInTime);
-		} else if (ageFraq >= fadeOutTime) {
-			setAlphaF(baseAlpha * (1f - (ageFraq - fadeOutTime) / (1f-fadeOutTime) ));
-		} else {
-			setAlphaF(baseAlpha);
-		}
+		
+		setAlphaF(alphaAtAge(ageFraq));
+		
+		particleScale = scaleAtAge(ageFraq);
+		
 		if (iconStages > 1) {
 			int stage = MathHelper.floor_float(ageFraq * (float) iconStages);
 			setParticleTextureIndex(initialIconIndex + stage);
@@ -121,5 +119,21 @@ public class Dota2Particle extends EntityFX {
 	@Override
 	public int getBrightnessForRender(float partialTick) {
 		return glowing ? 0xf000f0 : super.getBrightnessForRender(partialTick);
+	}
+	
+	/** Particle alpha as function of particle age (from 0 to 1). */
+	protected float alphaAtAge(float ageFraq) {
+		if (ageFraq <= fadeInTime) {
+			return baseAlpha * ageFraq / fadeInTime;
+		} else if (ageFraq >= fadeOutTime) {
+			return baseAlpha * (1f - (ageFraq - fadeOutTime) / (1f-fadeOutTime) );
+		} else {
+			return baseAlpha;
+		}
+	}
+	
+	/** Particle scale as function of particle age (from 0 to 1). */
+	protected float scaleAtAge(float ageFraq) {
+		return particleScale;
 	}
 }

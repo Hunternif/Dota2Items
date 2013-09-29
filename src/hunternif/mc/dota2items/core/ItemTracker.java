@@ -124,7 +124,9 @@ public class ItemTracker implements IPlayerTracker {
 	}
 	
 	private void updatePlayerInventoryBuffs(EntityPlayer player) {
-		Dota2Items.logger.fine("Updating buffs on player " + player.username);
+		if (Dota2Items.debug) {
+			Dota2Items.logger.fine("Updating buffs on player " + player.username);
+		}
 		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 		// Remove all passive item Buffs to add them again later:
 		for (BuffInstance buffInst : stats.getAppliedBuffs()) {

@@ -226,7 +226,7 @@ public class EntityStats implements IExtendedEntityProperties {
 		intMCDamage += partialDamageFloor;
 		partialDamage -= (float)partialDamageFloor;
 		partialHalfHeart = -partialDamage;
-		if (partialDamageFloor > 0) {
+		if (partialDamageFloor > 0 && Dota2Items.debug) {
 			Dota2Items.logger.info(String.format("Applied carry-over damage: %d", partialDamageFloor));
 		}
 		return intMCDamage;
@@ -309,7 +309,7 @@ public class EntityStats implements IExtendedEntityProperties {
 				damage += buffInst.buff.bonusDamage;
 			}
 		}
-		if (damage > 0) {
+		if (damage > 0 && Dota2Items.debug) {
 			Dota2Items.logger.info(String.format("Bonus damage: %.1f", damage));
 		}
 		return damage;
@@ -570,7 +570,7 @@ public class EntityStats implements IExtendedEntityProperties {
 			int curBlock = buffInst.buff.getDamageBlock(melee, isHero);
 			if (curBlock > block) block = curBlock;
 		}
-		if (block > 0) {
+		if (block > 0 && Dota2Items.debug) {
 			Dota2Items.logger.info(String.format("Blocked %d damage", block));
 		}
 		return block;

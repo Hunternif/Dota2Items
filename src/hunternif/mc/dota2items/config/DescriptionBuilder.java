@@ -35,7 +35,6 @@ public class DescriptionBuilder {
 			lines.addAll(buffDescription(buff));
 		}
 		item.setDescriptionLines(lines);
-		Dota2Items.logger.info("Built description lines for item " + config.name);
 	}
 	
 	public static List<String> wrapDescriptionString(String text) {

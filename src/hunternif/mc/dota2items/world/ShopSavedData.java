@@ -27,7 +27,9 @@ public class ShopSavedData extends WorldSavedData {
 			NBTTagCompound coordsTag = (NBTTagCompound) villagesTag.tagAt(i);
 			int[] coords = coordsTag.getIntArray(TAG_VILLAGE_COORDS);
 			visitedVillageCoords.add(new ChunkCoordinates(coords[0], coords[1], coords[2]));
-			Dota2Items.logger.info("Found shop at (" + coords[0] + ", " + coords[2] + ")");
+			if (Dota2Items.debug) {
+				Dota2Items.logger.info("Found shop at (" + coords[0] + ", " + coords[2] + ")");
+			}
 		}
 	}
 

@@ -56,6 +56,7 @@ public class Dota2Items {
 	public static Dota2Items instance;
 	
 	public static Logger logger;
+	public static boolean debug = false;
 	
 	@SidedProxy(clientSide="hunternif.mc.dota2items.ClientProxy", serverSide="hunternif.mc.dota2items.CommonProxy")
 	public static CommonProxy proxy;
@@ -65,6 +66,7 @@ public class Dota2Items {
 		logger = event.getModLog();
 		proxy.registerSounds();
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+		debug = config.get("logging", "debug", false).getBoolean(false);
 		ConfigLoader.preLoad(config, Config.class);
 	}
 	

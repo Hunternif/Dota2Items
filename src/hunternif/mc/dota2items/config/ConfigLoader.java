@@ -45,13 +45,15 @@ public class ConfigLoader {
 	}
 	
 	public static void load(Class config) {
+		CfgInfo curInfo = new CfgInfo(0, "null");
+		List<CfgInfo> itemsWithRecipes = new ArrayList<CfgInfo>();
 		try {
-			List<CfgInfo> itemsWithRecipes = new ArrayList<CfgInfo>();
 			Field[] fields = config.getFields();
 			// Parse fields to instantiate the items:
 			for (Field field : fields) {
 				if (field.getType().equals(CfgInfo.class)) {
 					CfgInfo info = (CfgInfo)field.get(null);
+					curInfo = info;
 					if (info.upgradeLevel > 0) {
 						Constructor constructor = info.type.getConstructor(int.class, int.class);
 						info.instance = constructor.newInstance(info.id, info.upgradeLevel);
@@ -85,11 +87,15 @@ public class ConfigLoader {
 							}
 						}
 					}
-					Dota2Items.logger.info("Registered item " + info.name);
 				}
 			}
+		} catch(Exception e) {
+			Dota2Items.logger.severe("Failed to load config for "+curInfo.name+": " + e.toString());
+		}
+		try {
 			// Parse fields one more time to set their recipes and base shop item, if any:
 			for (CfgInfo<? extends Dota2Item> info : itemsWithRecipes) {
+				curInfo = info;
 				if (info.baseShopItem != null) {
 					info.instance.setBaseShopItem(info.baseShopItem.instance);
 				}
@@ -109,11 +115,10 @@ public class ConfigLoader {
 				}
 				ItemStack craftResult = new ItemStack(info.instance, info.instance.getDefaultQuantity());
 				GameRegistry.addShapelessRecipe(craftResult, recipeForCraft.toArray());
-				
-				Dota2Items.logger.info("Added recipe for Dota 2 item " + info.name);
 			}
+			Dota2Items.logger.info("Added recipes for " + itemsWithRecipes.size() + " Dota 2 items");
 		} catch(Exception e) {
-			Dota2Items.logger.severe("Failed to instantiate items: " + e.toString());
+			Dota2Items.logger.severe("Failed to register recipe for "+curInfo.name+": " + e.toString());
 		}
 	}
 }

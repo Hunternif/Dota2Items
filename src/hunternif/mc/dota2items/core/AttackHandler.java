@@ -31,7 +31,7 @@ public class AttackHandler {
 		}
 		//BUG in MC: when the player is hurt, this event is posted twice!
 		// Check if the entity can attack
-		Entity entity = event.source.getEntity();
+		Entity entity = event.source.getSourceOfDamage();
 		if (!(event.source instanceof EntityDamageSourceIndirect) // Actual attack has already been performed
 				&& entity != null && entity instanceof EntityLivingBase) {
 			EntityStats stats = Dota2Items.stats.getEntityStats(entity);
@@ -54,25 +54,31 @@ public class AttackHandler {
 		
 		EntityStats targetStats = Dota2Items.stats.getEntityStats(event.entityLiving);
 		EntityStats sourceStats = null;
-		if (event.source.getEntity() instanceof EntityLivingBase) {
-			sourceStats = Dota2Items.stats.getEntityStats(event.source.getEntity());
+		if (event.source.getSourceOfDamage() instanceof EntityLivingBase) {
+			sourceStats = Dota2Items.stats.getEntityStats(event.source.getSourceOfDamage());
 		}
 		if (targetStats != null) {
 			if (targetStats.isInvulnerable()) {
-				Dota2Items.logger.info("invulnerable");
+				if (Dota2Items.debug) {
+					Dota2Items.logger.info("invulnerable");
+				}
 				event.setCanceled(true);
 				return;
 			} else if (event.source.isMagicDamage() && targetStats.isMagicImmune()) {
-				Dota2Items.logger.info("magic immune");
+				if (Dota2Items.debug) {
+					Dota2Items.logger.info("magic immune");
+				}
 				event.setCanceled(true);
 				return;
 			}
 			// Try evading the attack:
 			boolean trueStrike = sourceStats != null && sourceStats.isTrueStrike();
 			if (targetStats.canEvade() && !trueStrike) {
-				Dota2Items.logger.info("evaded");
+				if (Dota2Items.debug) {
+					Dota2Items.logger.info("evaded");
+				}
 				event.setCanceled(true);
-				if (event.source.getEntity() instanceof EntityLivingBase) { 
+				if (event.source.getSourceOfDamage() instanceof EntityLivingBase) { 
 					EffectInstance effect = new EffectInstance(Effect.miss, entity.posX, entity.posY+1.5, entity.posZ);
 					EffectInstance.notifyPlayersAround(effect, entity);
 				}
@@ -90,8 +96,8 @@ public class AttackHandler {
 		// Check if the target entity is invulnerable or if damage is magical and target is magic immune
 		EntityStats targetStats = Dota2Items.stats.getEntityStats(event.entityLiving);
 		EntityStats sourceStats = null;
-		if (event.source.getEntity() instanceof EntityLivingBase) {
-			sourceStats = Dota2Items.stats.getEntityStats(event.source.getEntity());
+		if (event.source.getSourceOfDamage() instanceof EntityLivingBase) {
+			sourceStats = Dota2Items.stats.getEntityStats(event.source.getSourceOfDamage());
 		}
 		
 		// Apply attack bonuses to the attacker
@@ -103,7 +109,9 @@ public class AttackHandler {
 				if (sourceStats.entity instanceof EntityPlayer) {
 					((EntityPlayer)sourceStats.entity).onCriticalHit(event.entityLiving);
 				}
-				Dota2Items.logger.info("crit");
+				if (Dota2Items.debug) {
+					Dota2Items.logger.info("crit");
+				}
 				dotaDamage *= critMultiplier;
 				sourceStats.entity.worldObj.playSoundAtEntity(sourceStats.entity, Sound.CRIT.getName(), 1, 1);
 			}
@@ -126,7 +134,7 @@ public class AttackHandler {
 				ItemStack targetEquippedItem = event.entityLiving.getCurrentItemOrArmor(0);
 				boolean targetIsRanged = targetEquippedItem != null &&
 						(targetEquippedItem.itemID == Item.bow.itemID || targetEquippedItem.itemID == Config.daedalus.getID());
-				boolean isHero = event.source.getEntity() instanceof EntityPlayer;
+				boolean isHero = event.source.getSourceOfDamage() instanceof EntityPlayer;
 				dotaDamage -= targetStats.getDamageBlock(!targetIsRanged, isHero);
 				if (dotaDamage < 0) dotaDamage = 0;
 				
@@ -151,7 +159,7 @@ public class AttackHandler {
 				float lifeStolen = dotaDamage * sourceStats.getLifestealMultiplier();
 				if (lifeStolen > 0) {
 					sourceStats.heal(lifeStolen);
-					Entity entity = event.source.getEntity();
+					Entity entity = event.source.getSourceOfDamage();
 					EffectInstance effect = new EffectInstance(Effect.lifesteal, entity.posX, entity.posY+1, entity.posZ);
 					EffectInstance.notifyPlayersAround(effect, entity);
 				}
@@ -173,7 +181,8 @@ public class AttackHandler {
 		if (targetStats != null) {
 			intMCDamage = targetStats.getDamageFloor(floatMCDamage);
 		}
-		if (event.entityLiving instanceof EntityPlayer || event.source.getEntity() instanceof EntityPlayer) {
+		if (Dota2Items.debug && (event.entityLiving instanceof EntityPlayer ||
+				event.source.getSourceOfDamage() instanceof EntityPlayer)) {
 			Dota2Items.logger.info(String.format("Changed damage from %.2f to %.2f", event.ammount, floatMCDamage));
 		}
 		event.ammount = intMCDamage;
@@ -186,7 +195,7 @@ public class AttackHandler {
 			EntityPlayer player = (EntityPlayer) event.entityLiving;
 			
 			// If the player is attacked by living entities, some items start cooldown:
-			if (event.source.getEntity() instanceof EntityLivingBase) {
+			if (event.source.getSourceOfDamage() instanceof EntityLivingBase) {
 				int invSize = player.inventory.getSizeInventory();
 				for (int i = 0; i < invSize; i++) {
 					ItemStack stack = player.inventory.getStackInSlot(i);

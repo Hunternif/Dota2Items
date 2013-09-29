@@ -81,8 +81,8 @@ public class GoldHandler {
 				//TODO: award some gold to non-killer players who are just chilling around
 			}
 		} else {
-			if (event.source.getEntity() instanceof EntityPlayer) {
-				EntityPlayer killer = (EntityPlayer)event.source.getEntity();
+			if (event.source.getSourceOfDamage() instanceof EntityPlayer) {
+				EntityPlayer killer = (EntityPlayer)event.source.getSourceOfDamage();
 				// Gold is dropped from monsters (IMob) and angry wolves:
 				if (!event.entity.worldObj.isRemote && (event.entity instanceof IMob ||
 						(event.entity instanceof EntityWolf && ((EntityWolf)event.entity).isAngry()))) {

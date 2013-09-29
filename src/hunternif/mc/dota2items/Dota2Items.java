@@ -42,7 +42,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 public class Dota2Items {
 	public static final String ID = "Dota2Items";
 	public static final String NAME = "Dota 2 Items";
-	public static final String VERSION = "0.8.1";
+	public static final String VERSION = "0.8.2";
 	public static final String CHANNEL = ID;
 	
 	public static CreativeTabs dota2CreativeTab;

@@ -9,6 +9,7 @@ import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 
 public class EffectArcaneBoots extends EntityEffect {
 	public static final int MAX_PARTICLE_STREAMS = 32;
@@ -21,6 +22,7 @@ public class EffectArcaneBoots extends EntityEffect {
 
 	@Override
 	public void perform(Entity entity, Object... data) {
+		World world = Minecraft.getMinecraft().theWorld;
 		EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
 		Random rand = new Random(entity.worldObj.getTotalWorldTime());
 		for (int i = 0; i < MAX_PARTICLE_STREAMS; i++) {
@@ -40,7 +42,7 @@ public class EffectArcaneBoots extends EntityEffect {
 				double velX = -sinYaw*cosPitch * 0.05D;
 				double velZ = cosYaw*cosPitch * 0.05D;
 				double velY = -sinPitch * 0.05D;
-				EntityFX particle = new ParticleArcaneBoots(entity.worldObj,
+				EntityFX particle = new ParticleArcaneBoots(world,
 						entity.posX + rX, entity.posY - entity.yOffset + 0.7 + rY, entity.posZ + rZ, 
 						velX, velY, velZ, (float)d*size);
 				effectRenderer.addEffect(particle);

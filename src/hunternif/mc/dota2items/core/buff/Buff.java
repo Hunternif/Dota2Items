@@ -2,6 +2,7 @@ package hunternif.mc.dota2items.core.buff;
 
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.config.DescriptionBuilder.BuffLineFormat;
+import hunternif.mc.dota2items.effect.Effect;
 import hunternif.mc.dota2items.effect.EntityEffect;
 import hunternif.mc.dota2items.item.Dota2Item;
 import net.minecraft.util.ResourceLocation;
@@ -92,7 +93,7 @@ public class Buff {
 	private static int lastID = 0;
 	public static final Buff[] buffList = new Buff[1024];
 	
-	public static final Buff tango = new Buff(1, "Eat Tree").setHealthRegen(115f/16f).setDoesNotStack().setIsDisplayed().setIconTexture("items/tango.png");
+	public static final Buff tango = new Buff(1, "Eat Tree").setHealthRegen(115f/16f).setDoesNotStack().setIsDisplayed().setIconTexture("items/tango.png").setEffect(Effect.tango);
 	public static final Buff inCyclone = new Buff(2, "Swept up in Cyclone").setDisableAttack().setDisableItems().setDisableMove().setInvulnerable().setMagicImmune().setIsDisplayed();
 	public static final Buff clarity = new Buff(3, "Clarity").setManaRegen(100f/30f).setIsRemovedOnHurt().setDoesNotStack().setIsDisplayed().setIconTexture("items/clarity.png");
 	public static final Buff salve = new Buff(4, "Regenerate").setHealthRegen(400f/10f).setIsRemovedOnHurt().setDoesNotStack().setIsDisplayed().setIconTexture("items/healingSalve.png");

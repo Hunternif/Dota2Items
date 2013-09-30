@@ -22,12 +22,7 @@ public class EntityDagonBolt extends Entity {
 	
 	public int level;
 	
-	// -------- Renderer stuff --------
 	public Vec3Chain chain;
-	public float innerAlpha;
-	public double innerWidth;
-	public float outerAlpha;
-	public double outerWidth;
 
 	public EntityDagonBolt(World world) {
 		super(world);
@@ -69,15 +64,6 @@ public class EntityDagonBolt extends Entity {
 		super.onUpdate();
 		if (ticksExisted > maxAge) {
 			setDead();
-		}
-		float ageFraq = ((float)ticksExisted) / (float)maxAge;
-		innerWidth = (double)level * 0.025 * (1d - ageFraq);
-		outerWidth = innerWidth * 4;
-		innerAlpha = 0.3f;
-		outerAlpha = 0.2f;
-		if (ageFraq > 0.7) {
-			innerAlpha *= 1f - (ageFraq - 0.7f)/0.3f;
-			outerAlpha *= 1f - (ageFraq - 0.7f)/0.3f;
 		}
 	}
 	

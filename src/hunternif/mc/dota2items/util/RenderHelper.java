@@ -234,4 +234,11 @@ public class RenderHelper {
 			tessellator.draw();
 		}
 	}
+	
+	public static void setGLColor(int color, float alpha) {
+		float r = (float)(color >> 16 & 0xff)/256f;
+		float g = (float)(color >> 8 & 0xff)/256f;
+		float b = (float)(color & 0xff)/256f;
+		GL11.glColor4f(r, g, b, alpha);
+	}
 }

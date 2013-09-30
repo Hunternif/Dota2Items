@@ -5,6 +5,7 @@ import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.effect.Effect;
 import hunternif.mc.dota2items.effect.EffectInstance;
+import hunternif.mc.dota2items.util.TeamUtil;
 
 import java.util.List;
 
@@ -36,10 +37,10 @@ public class ArcaneBoots extends ActiveItem {
 		if (list != null && !list.isEmpty()) {
 			for (EntityLivingBase entity : list) {
 				EntityStats stats = Dota2Items.stats.getEntityStats(entity);
-				if (stats != null && stats.entity instanceof EntityPlayer &&
-						player.getTeam().isSameTeam( ((EntityPlayer)stats.entity).getTeam() )) {
+				if (stats != null && entity instanceof EntityPlayer &&
+						TeamUtil.areTeammates(player, (EntityPlayer)entity)) {
 					stats.addMana(manaRestored);
-					stats.sendSyncPacketToClient((EntityPlayer)stats.entity);
+					stats.sendSyncPacketToClient((EntityPlayer)entity);
 				}
 			}
 		}

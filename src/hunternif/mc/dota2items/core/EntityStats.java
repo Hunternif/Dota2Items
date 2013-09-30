@@ -9,6 +9,7 @@ import hunternif.mc.dota2items.event.BuffEvent.BuffAddEvent;
 import hunternif.mc.dota2items.event.BuffEvent.BuffRemoveEvent;
 import hunternif.mc.dota2items.network.EntityStatsSyncPacket;
 import hunternif.mc.dota2items.util.MCConstants;
+import hunternif.mc.dota2items.util.NetworkUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -643,7 +644,11 @@ public class EntityStats implements IExtendedEntityProperties {
 	}
 	
 	public void sendSyncPacketToClient(EntityPlayer player) {
-		this.lastSyncTime = player.ticksExisted;
+		this.lastSyncTime = entity.ticksExisted;
 		PacketDispatcher.sendPacketToPlayer(new EntityStatsSyncPacket(this).makePacket(), (Player)player);
+	}
+	public void sendSyncPacketToAllAround(Entity entity) {
+		this.lastSyncTime = entity.ticksExisted;
+		NetworkUtil.sendToAllAround(new EntityStatsSyncPacket(this).makePacket(), entity);
 	}
 }

@@ -36,12 +36,10 @@ public class ArcaneBoots extends ActiveItem {
 		if (list != null && !list.isEmpty()) {
 			for (EntityLivingBase entity : list) {
 				EntityStats stats = Dota2Items.stats.getEntityStats(entity);
-				if (stats != null) {
+				if (stats != null && stats.entity instanceof EntityPlayer &&
+						player.getTeam().isSameTeam( ((EntityPlayer)stats.entity).getTeam() )) {
 					stats.addMana(manaRestored);
-					if (stats.entity instanceof EntityPlayer &&
-							player.getTeam().isSameTeam( ((EntityPlayer)stats.entity).getTeam() )) {
-						stats.sendSyncPacketToClient((EntityPlayer)stats.entity);
-					}
+					stats.sendSyncPacketToClient((EntityPlayer)stats.entity);
 				}
 			}
 		}

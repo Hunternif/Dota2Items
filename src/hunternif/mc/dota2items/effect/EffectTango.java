@@ -1,26 +1,33 @@
 package hunternif.mc.dota2items.effect;
 
 import hunternif.mc.dota2items.client.particle.ParticleTango;
+import hunternif.mc.dota2items.item.Tango;
+import hunternif.mc.dota2items.util.MCConstants;
 
 import java.util.Random;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public class EffectTango extends EntityEffect {
+public class EffectTango extends ContinuousEffect {
 
-	public EffectTango(int id) {
-		super(id);
+	public EffectTango(World world) {
+		super(world);
+		maxAge = (long) (Tango.duration * MCConstants.TICKS_PER_SECOND);
+	}
+	public EffectTango(Entity entity) {
+		super(entity);
+		maxAge = (long) (Tango.duration * MCConstants.TICKS_PER_SECOND);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void perform(Entity entity, Object... data) {
+	public void perform() {
 		Random rand = new Random();
 		if (entity.ticksExisted % (1 + rand.nextInt(3)) == 0) {
 			World world = Minecraft.getMinecraft().theWorld;

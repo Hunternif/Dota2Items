@@ -5,17 +5,18 @@ import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
-import hunternif.mc.dota2items.event.UseItemEvent;
+import hunternif.mc.dota2items.effect.EffectTango;
 import hunternif.mc.dota2items.network.BuffForcePacket;
+import hunternif.mc.dota2items.network.EntityWrapperPacket;
 import hunternif.mc.dota2items.util.IntVec3;
 import hunternif.mc.dota2items.util.MCConstants;
+import hunternif.mc.dota2items.util.NetworkUtil;
 import hunternif.mc.dota2items.util.SideHit;
 import hunternif.mc.dota2items.util.TreeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class Tango extends TargetBlockItem {
@@ -75,7 +76,6 @@ public class Tango extends TargetBlockItem {
 			}
 			if (trunkBase != null && trunkBase.y > 0) {
 				// Yep, found a tree
-				MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
 				TreeUtil.removeTree(world, trunkBase, true);
 				stack.stackSize --;
 				EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
@@ -85,6 +85,11 @@ public class Tango extends TargetBlockItem {
 				stats.addBuff(buffInst);
 				PacketDispatcher.sendPacketToAllPlayers(new BuffForcePacket(buffInst).makePacket());
 				player.playSound(Sound.TANGO.getName(), 1, 1);
+				if (!player.worldObj.isRemote) {
+					EffectTango effect = new EffectTango(player);
+					player.worldObj.spawnEntityInWorld(effect);
+					NetworkUtil.sendToAllAround(new EntityWrapperPacket(effect).makePacket(), player);
+				}
 			}
 		}
 	}

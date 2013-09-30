@@ -1,7 +1,6 @@
 package hunternif.mc.dota2items.item;
 
 import hunternif.mc.dota2items.Sound;
-import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.util.IntVec3;
 import hunternif.mc.dota2items.util.SideHit;
 import hunternif.mc.dota2items.util.TreeUtil;
@@ -12,7 +11,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 
 public class QuellingBlade extends TargetBlockItem {
 	// Quelling Blade is an axe, so why not make it effective against wood
@@ -86,7 +84,6 @@ public class QuellingBlade extends TargetBlockItem {
 			}
 			if (trunkBase != null && trunkBase.y > 0) {
 				// Yep, found a tree
-				MinecraftForge.EVENT_BUS.post(new UseItemEvent(player, this));
 				if (!world.isRemote) {
 					startCooldown(stack, player);
 				}

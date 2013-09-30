@@ -96,9 +96,6 @@ public class StatsTracker implements IPlayerTracker {
 		if (stats == null) {
 			return;
 		}
-		if (event.entity.worldObj.isRemote) {
-			performBuffEffects(stats);
-		}
 		if (event.entityLiving instanceof EntityPlayer) {
 			// Regenerate health and mana every second:
 			regenHealthAndMana(stats);
@@ -234,14 +231,6 @@ public class StatsTracker implements IPlayerTracker {
 			newStats.setMana(newStats.getMaxMana());
 			
 			newStats.sendSyncPacketToClient(player);
-		}
-	}
-	
-	private static void performBuffEffects(EntityStats stats) {
-		for (BuffInstance buffInst : stats.getAppliedBuffs()) {
-			if (buffInst.buff.effect != null) {
-				buffInst.buff.effect.perform(stats.entity);
-			}
 		}
 	}
 }

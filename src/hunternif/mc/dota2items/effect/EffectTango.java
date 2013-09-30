@@ -1,8 +1,7 @@
 package hunternif.mc.dota2items.effect;
 
 import hunternif.mc.dota2items.client.particle.ParticleTango;
-import hunternif.mc.dota2items.item.Tango;
-import hunternif.mc.dota2items.util.MCConstants;
+import hunternif.mc.dota2items.core.buff.Buff;
 
 import java.util.Random;
 
@@ -18,11 +17,9 @@ public class EffectTango extends ContinuousEffect {
 
 	public EffectTango(World world) {
 		super(world);
-		maxAge = (long) (Tango.duration * MCConstants.TICKS_PER_SECOND);
 	}
 	public EffectTango(Entity entity) {
 		super(entity);
-		maxAge = (long) (Tango.duration * MCConstants.TICKS_PER_SECOND);
 	}
 
 	@Override
@@ -38,6 +35,10 @@ public class EffectTango extends ContinuousEffect {
 			EntityFX particle = new ParticleTango(entity.worldObj, x, y, z);
 			effectRenderer.addEffect(particle);
 		}
+	}
+	@Override
+	public Buff getEffectProducingBuff() {
+		return Buff.tango;
 	}
 
 }

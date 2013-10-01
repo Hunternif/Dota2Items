@@ -24,7 +24,7 @@ public class EntityWrapper extends Entity {
 		this.entity = entity;
 		if (entity != null) {
 			dataWatcher.updateObject(DATA_ENTITY_ID, Integer.valueOf(entity.entityId));
-			setPositionAndRotation(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+			updatePosition();
 		}
 	}
 	public Entity getEntity() {
@@ -46,7 +46,7 @@ public class EntityWrapper extends Entity {
 	public void onEntityUpdate() {
 		super.onEntityUpdate();
 		if (entity != null) {
-			setPositionAndRotation(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+			updatePosition();
 		} else if (ticksExisted < MAX_TIME_WAITING_FOR_ENTITY) {
 			// Try getting entity:
 			int entityID = dataWatcher.getWatchableObjectInt(DATA_ENTITY_ID);
@@ -54,5 +54,15 @@ public class EntityWrapper extends Entity {
 		} else {
 			setDead();
 		}
+	}
+	
+	private void updatePosition() {
+		this.yOffset = entity.yOffset;
+		this.ySize = entity.ySize;
+		this.width = entity.width;
+		this.height = entity.height;
+		setVelocity(entity.motionX, entity.motionY, entity.motionZ);
+		setPositionAndRotation(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+		this.boundingBox.setBB(entity.boundingBox);
 	}
 }

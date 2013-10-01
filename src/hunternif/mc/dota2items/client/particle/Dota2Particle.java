@@ -9,9 +9,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class Dota2Particle extends EntityFX {
-	protected static final ResourceLocation dota2itemsParticles = new ResourceLocation(Dota2Items.ID+":textures/particles.png");
 	/** This sprite sheet must be strictly 16 by 16 icons. */
-	protected static final ResourceLocation minecraftParticles = new ResourceLocation("textures/particle/particles.png");
+	public static final ResourceLocation dota2itemsParticles = new ResourceLocation(Dota2Items.ID+":textures/particles.png");
+	public static final ResourceLocation minecraftParticles = new ResourceLocation("textures/particle/particles.png");
 	private static float ICON_U_WIDTH = 1f/16f;
 	
 	private int iconStages;

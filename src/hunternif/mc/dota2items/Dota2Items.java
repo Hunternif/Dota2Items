@@ -8,6 +8,7 @@ import hunternif.mc.dota2items.core.BowHandler;
 import hunternif.mc.dota2items.core.GoldHandler;
 import hunternif.mc.dota2items.core.ItemTracker;
 import hunternif.mc.dota2items.core.StatsTracker;
+import hunternif.mc.dota2items.effect.EffectClarity;
 import hunternif.mc.dota2items.effect.EffectTango;
 import hunternif.mc.dota2items.entity.EntityDagonBolt;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
@@ -91,9 +92,14 @@ public class Dota2Items {
 		EntityRegistry.registerGlobalEntityID(EntityDagonBolt.class, "DagonBolt", dagonBoltID);
 		EntityRegistry.registerModEntity(EntityDagonBolt.class, "DagonBolt", dagonBoltID, instance, 80, 20, false);
 		
+		// Never update the EntityWrappers because something causes them to periodically flick vertically
 		int effectTangoID = EntityRegistry.findGlobalUniqueEntityId();
 		EntityRegistry.registerGlobalEntityID(EffectTango.class, "EffectTango", effectTangoID);
-		EntityRegistry.registerModEntity(EffectTango.class, "EffectTango", effectTangoID, instance, 80, 20, false);
+		EntityRegistry.registerModEntity(EffectTango.class, "EffectTango", effectTangoID, instance, 80, 10000000, false);
+		
+		int effectClarityID = EntityRegistry.findGlobalUniqueEntityId();
+		EntityRegistry.registerGlobalEntityID(EffectClarity.class, "EffectClarity", effectClarityID);
+		EntityRegistry.registerModEntity(EffectClarity.class, "EffectClarity", effectClarityID, instance, 80, 10000000, false);
 		
 		shopSpawner.init();
 		

@@ -52,6 +52,7 @@ public abstract class ContinuousEffect extends EntityWrapper {
 		if (effectProducingBuff != null) {
 			EntityStats stats = Dota2Items.stats.getEntityStats(entity);
 			if (stats == null || !stats.hasBuff(effectProducingBuff)) {
+				onEffectEnded();
 				setDead();
 			}
 		}
@@ -61,5 +62,7 @@ public abstract class ContinuousEffect extends EntityWrapper {
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public abstract void perform();
+	protected abstract void perform();
+	
+	protected void onEffectEnded() {}
 }

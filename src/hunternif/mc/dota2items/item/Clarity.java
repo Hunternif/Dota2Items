@@ -5,6 +5,7 @@ import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
+import hunternif.mc.dota2items.effect.EffectClarity;
 import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.network.BuffForcePacket;
 import hunternif.mc.dota2items.util.MCConstants;
@@ -34,6 +35,10 @@ public class Clarity extends Dota2Item {
 		boolean buffAdded = stats.addBuff(buffInst);
 		PacketDispatcher.sendPacketToAllPlayers(new BuffForcePacket(buffInst).makePacket());
 		player.playSound(Sound.CLARITY.getName(), 0.7f, 1);
+		if (!player.worldObj.isRemote && buffAdded) {
+			EffectClarity effect = new EffectClarity(player);
+			player.worldObj.spawnEntityInWorld(effect);
+		}
 		return itemStack;
 	}
 

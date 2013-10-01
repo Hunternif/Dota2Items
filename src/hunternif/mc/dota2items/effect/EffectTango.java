@@ -23,7 +23,7 @@ public class EffectTango extends ContinuousEffect {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void perform() {
+	protected void perform() {
 		Random rand = new Random();
 		if (entity.ticksExisted % (1 + rand.nextInt(3)) == 0) {
 			World world = Minecraft.getMinecraft().theWorld;

@@ -40,6 +40,8 @@ public class EntityWrapper extends Entity {
 		super.onEntityUpdate();
 		if (entity!= null) {
 			setPositionAndRotation(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+		} else {
+			setDead();
 		}
 	}
 }

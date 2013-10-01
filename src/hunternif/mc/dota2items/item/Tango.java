@@ -81,7 +81,7 @@ public class Tango extends TargetBlockItem {
 				EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 				long startTime = world.getTotalWorldTime();
 				long endTime = startTime + (long) (duration * MCConstants.TICKS_PER_SECOND);
-				BuffInstance buffInst = new BuffInstance(Buff.tango, player.entityId, startTime, endTime, true);
+				BuffInstance buffInst = new BuffInstance(Buff.tango, player, startTime, endTime, true);
 				boolean buffAdded = stats.addBuff(buffInst);
 				PacketDispatcher.sendPacketToAllPlayers(new BuffForcePacket(buffInst).makePacket());
 				player.playSound(Sound.TANGO.getName(), 1, 1);

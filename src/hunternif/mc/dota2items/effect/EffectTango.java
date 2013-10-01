@@ -1,7 +1,6 @@
 package hunternif.mc.dota2items.effect;
 
 import hunternif.mc.dota2items.client.particle.ParticleTango;
-import hunternif.mc.dota2items.core.buff.Buff;
 
 import java.util.Random;
 
@@ -36,9 +35,4 @@ public class EffectTango extends ContinuousEffect {
 			effectRenderer.addEffect(particle);
 		}
 	}
-	@Override
-	public Buff getEffectProducingBuff() {
-		return Buff.tango;
-	}
-
 }

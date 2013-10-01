@@ -49,7 +49,7 @@ public class EulsScepter extends TargetEntityItem {
 			long startTime = entity.worldObj.getTotalWorldTime();
 			long cycloneEndTime = startTime + (long) (TileEntityCyclone.duration * MCConstants.TICKS_PER_SECOND);
 			boolean usingOnSelf = player == entity;
-			BuffInstance buffInst = new BuffInstance(Buff.inCyclone, entity.entityId, startTime, cycloneEndTime, usingOnSelf);
+			BuffInstance buffInst = new BuffInstance(Buff.inCyclone, entity, startTime, cycloneEndTime, usingOnSelf);
 			EntityStats entityStats = Dota2Items.stats.getOrCreateEntityStats((EntityLivingBase)entity);
 			entityStats.addBuff(buffInst);
 			PacketDispatcher.sendPacketToAllPlayers(new BuffPacket(buffInst).makePacket());

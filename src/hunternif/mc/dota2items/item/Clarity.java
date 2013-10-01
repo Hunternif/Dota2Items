@@ -30,8 +30,8 @@ public class Clarity extends Dota2Item {
 		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 		long startTime = world.getTotalWorldTime();
 		long endTime = startTime + (long) (duration * MCConstants.TICKS_PER_SECOND);
-		BuffInstance buffInst = new BuffInstance(Buff.clarity, player.entityId, startTime, endTime, true);
-		stats.addBuff(buffInst);
+		BuffInstance buffInst = new BuffInstance(Buff.clarity, player, startTime, endTime, true);
+		boolean buffAdded = stats.addBuff(buffInst);
 		PacketDispatcher.sendPacketToAllPlayers(new BuffForcePacket(buffInst).makePacket());
 		player.playSound(Sound.CLARITY.getName(), 0.7f, 1);
 		return itemStack;

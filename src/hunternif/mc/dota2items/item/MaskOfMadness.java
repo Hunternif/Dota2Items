@@ -25,7 +25,7 @@ public class MaskOfMadness extends ActiveItem {
 		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 		long startTime = player.worldObj.getTotalWorldTime();
 		long endTime = startTime + (long) (duration * MCConstants.TICKS_PER_SECOND);
-		BuffInstance buffInst = new BuffInstance(Buff.berserk, player.entityId, startTime, endTime, true);
+		BuffInstance buffInst = new BuffInstance(Buff.berserk, player, startTime, endTime, true);
 		stats.addBuff(buffInst);
 		PacketDispatcher.sendPacketToAllPlayers(new BuffForcePacket(buffInst).makePacket());
 		player.worldObj.playSoundAtEntity(player, Sound.MASK_OF_MADNESS.getName(), 0.6f, 1);

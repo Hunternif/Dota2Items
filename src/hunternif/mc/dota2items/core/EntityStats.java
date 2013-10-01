@@ -625,7 +625,7 @@ public class EntityStats implements IExtendedEntityProperties {
 		NBTTagList buffsList = compound.getTagList(TAG_BUFFS);
 		for (int i = 0; i < buffsList.tagCount(); i++) {
 			NBTTagCompound buffTag = (NBTTagCompound) buffsList.tagAt(i);
-			BuffInstance buffInst = BuffInstance.fromNBT(buffTag, entity.entityId);
+			BuffInstance buffInst = BuffInstance.fromNBT(buffTag, entity);
 			addBuff(buffInst);
 		}
 		NBTTagList attackersList = compound.getTagList(TAG_ATTACKERS);

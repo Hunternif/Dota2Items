@@ -43,7 +43,7 @@ public class BuffForcePacket extends BuffPacket {
 			Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(entityID);
 			if (entity != null && entity instanceof EntityLivingBase) {
 				EntityStats stats = Dota2Items.stats.getOrCreateEntityStats((EntityLivingBase)entity);
-				BuffInstance buffInst = new BuffInstance(Buff.buffList[buffID], entityID, startTime, endTime, isFriendly);
+				BuffInstance buffInst = new BuffInstance(Buff.buffList[buffID], (EntityLivingBase)entity, startTime, endTime, isFriendly);
 				buffInst.tag.setFloat(ForceStaff.TAG_YAW, yaw);
 				stats.addBuff(buffInst);
 			}

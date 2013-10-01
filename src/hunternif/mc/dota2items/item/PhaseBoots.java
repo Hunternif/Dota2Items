@@ -38,7 +38,7 @@ public class PhaseBoots extends ActiveItem {
 		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 		long startTime = player.worldObj.getTotalWorldTime();
 		long endTime = startTime + (long) (duration * MCConstants.TICKS_PER_SECOND);
-		BuffInstance buffInst = new BuffInstance(Buff.phase, player.entityId, startTime, endTime, true);
+		BuffInstance buffInst = new BuffInstance(Buff.phase, player, startTime, endTime, true);
 		stats.addBuff(buffInst);
 		PacketDispatcher.sendPacketToAllPlayers(new BuffForcePacket(buffInst).makePacket());
 		player.playSound(Sound.PHASE_BOOTS.getName(), 0.7f, 1);

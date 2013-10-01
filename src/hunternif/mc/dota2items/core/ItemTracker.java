@@ -139,7 +139,7 @@ public class ItemTracker implements IPlayerTracker {
 			if (stack != null && stack.getItem() instanceof Dota2Item) {
 				Dota2Item item = (Dota2Item) stack.getItem();
 				if (item.getPassiveBuff() != null) {
-					stats.addBuff(new BuffInstance(item.getPassiveBuff(), player.entityId, true));
+					stats.addBuff(new BuffInstance(item.getPassiveBuff(), player, true));
 				}
 			}
 		}
@@ -148,7 +148,7 @@ public class ItemTracker implements IPlayerTracker {
 		if (stack != null && stack.getItem() instanceof Dota2Item) {
 			Dota2Item item = (Dota2Item) stack.getItem();
 			if (item.getPassiveBuff() != null) {
-				stats.addBuff(new BuffInstance(item.getPassiveBuff(), player.entityId, true));
+				stats.addBuff(new BuffInstance(item.getPassiveBuff(), player, true));
 			}
 		}
 	}

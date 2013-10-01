@@ -43,7 +43,7 @@ public class ForceStaff extends TargetEntityItem {
 		if (!entity.worldObj.isRemote) {
 			boolean usingOnSelf = player == entity;
 			entity.worldObj.playSoundAtEntity(entity, Sound.FORCE_STAFF.getName(), 0.5f, 1);
-			BuffInstance buffInst = new BuffInstance(Buff.force, entity.entityId, usingOnSelf);
+			BuffInstance buffInst = new BuffInstance(Buff.force, entity, usingOnSelf);
 			buffInst.tag.setFloat(TAG_YAW, entity.rotationYaw);
 			EntityStats entityStats = Dota2Items.stats.getOrCreateEntityStats((EntityLivingBase)entity);
 			entityStats.addBuff(buffInst);

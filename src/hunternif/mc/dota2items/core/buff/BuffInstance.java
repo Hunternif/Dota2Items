@@ -1,5 +1,7 @@
 package hunternif.mc.dota2items.core.buff;
 
+import hunternif.mc.dota2items.effect.ContinuousEffect;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 
 
@@ -9,21 +11,22 @@ public final class BuffInstance {
 	private static final String TAG_END_TIME = "endTime";
 	private static final String TAG_IS_FRIENDLY = "isFriendly";
 	
-	public int entityID;
+	public EntityLivingBase entity;
 	public Buff buff;
 	public long startTime;
 	public long endTime;
 	public boolean isFriendly;
 	public NBTTagCompound tag;
+	public ContinuousEffect effect;
 	
 	/** For passive item buffs. */
-	public BuffInstance(Buff buff, int entityID, boolean isFriendly) {
-		this(buff, entityID, 0, -1, isFriendly);
+	public BuffInstance(Buff buff, EntityLivingBase entity, boolean isFriendly) {
+		this(buff, entity, 0, -1, isFriendly);
 	}
 	
-	public BuffInstance(Buff buff, int entityID, long startTime, long endTime, boolean isFriendly) {
+	public BuffInstance(Buff buff, EntityLivingBase entity, long startTime, long endTime, boolean isFriendly) {
 		this.buff = buff;
-		this.entityID = entityID;
+		this.entity = entity;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.isFriendly = isFriendly;
@@ -44,12 +47,12 @@ public final class BuffInstance {
 		return "{"+buff.toString()+"}";
 	}
 	
-	public static BuffInstance fromNBT(NBTTagCompound tag, int entityId) {
+	public static BuffInstance fromNBT(NBTTagCompound tag, EntityLivingBase entity) {
 		int buffId = tag.getInteger(TAG_BUFF_ID);
 		long startTime = tag.getLong(TAG_START_TIME);
 		long endTime = tag.getLong(TAG_END_TIME);
 		boolean isFriendly = tag.getBoolean(TAG_IS_FRIENDLY);
-		return new BuffInstance(Buff.buffList[buffId], entityId, startTime, endTime, isFriendly);
+		return new BuffInstance(Buff.buffList[buffId], entity, startTime, endTime, isFriendly);
 	}
 	
 	public NBTTagCompound toNBT() {

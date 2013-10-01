@@ -25,7 +25,7 @@ public class BuffPacket extends CustomPacket {
 	
 	public BuffPacket(BuffInstance inst) {
 		buffID = inst.buff.id;
-		entityID = inst.entityID;
+		entityID = inst.entity.entityId;
 		startTime = inst.startTime;
 		endTime = inst.endTime;
 		isFriendly = inst.isFriendly;
@@ -55,7 +55,7 @@ public class BuffPacket extends CustomPacket {
 			Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(entityID);
 			if (entity != null && entity instanceof EntityLivingBase) {
 				EntityStats stats = Dota2Items.stats.getOrCreateEntityStats((EntityLivingBase)entity);
-				BuffInstance buffInst = new BuffInstance(Buff.buffList[buffID], entityID, startTime, endTime, isFriendly);
+				BuffInstance buffInst = new BuffInstance(Buff.buffList[buffID], (EntityLivingBase)entity, startTime, endTime, isFriendly);
 				stats.addBuff(buffInst);
 			}
 		} else {

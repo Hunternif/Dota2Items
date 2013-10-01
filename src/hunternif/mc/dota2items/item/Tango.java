@@ -82,10 +82,10 @@ public class Tango extends TargetBlockItem {
 				long startTime = world.getTotalWorldTime();
 				long endTime = startTime + (long) (duration * MCConstants.TICKS_PER_SECOND);
 				BuffInstance buffInst = new BuffInstance(Buff.tango, player.entityId, startTime, endTime, true);
-				stats.addBuff(buffInst);
+				boolean buffAdded = stats.addBuff(buffInst);
 				PacketDispatcher.sendPacketToAllPlayers(new BuffForcePacket(buffInst).makePacket());
 				player.playSound(Sound.TANGO.getName(), 1, 1);
-				if (!player.worldObj.isRemote) {
+				if (!player.worldObj.isRemote && buffAdded) {
 					EffectTango effect = new EffectTango(player);
 					player.worldObj.spawnEntityInWorld(effect);
 					NetworkUtil.sendToAllAround(new EntityWrapperPacket(effect).makePacket(), player);

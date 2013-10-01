@@ -138,8 +138,9 @@ public class EntityStats implements IExtendedEntityProperties {
 	public List<BuffInstance> getAppliedBuffs() {
 		return appliedBuffs;
 	}
-	public void addBuff(BuffInstance buffInst) {
-		if (buffInst == null) { return; }
+	/** Returns true if the buff was added, false if e.g. an existing buff was updated. */
+	public boolean addBuff(BuffInstance buffInst) {
+		if (buffInst == null) { return false; }
 		if (!buffInst.buff.stacks) {
 			for (BuffInstance curBuffInst : appliedBuffs) {
 				if (curBuffInst.buff.id == buffInst.buff.id) {
@@ -147,13 +148,14 @@ public class EntityStats implements IExtendedEntityProperties {
 						curBuffInst.startTime = buffInst.startTime;
 						curBuffInst.endTime = buffInst.endTime;
 					}
-					return;
+					return false;
 				}
 			}
 		}
 		if (appliedBuffs.add(buffInst)) {
 			MinecraftForge.EVENT_BUS.post(new BuffAddEvent(buffInst, entity));
 		}
+		return true;
 	}
 	public void removeBuff(BuffInstance buffInst) {
 		if (buffInst == null) { return; }

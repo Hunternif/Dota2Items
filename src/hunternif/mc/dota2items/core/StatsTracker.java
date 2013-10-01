@@ -49,8 +49,9 @@ public class StatsTracker implements IPlayerTracker {
 		return side.isClient() ? clientEntityStats : serverEntityStats;
 	}
 	
-	/** Guaranteed to be non-null. */
+	/** Guaranteed to be non-null for non-null entities. */
 	public EntityStats getOrCreateEntityStats(EntityLivingBase entity) {
+		if (entity == null) return null;
 		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
 		EntityStats stats = entityStats.get(entity);
 		if (stats == null) {
@@ -62,6 +63,7 @@ public class StatsTracker implements IPlayerTracker {
 	
 	/** Can be null. Accepts Entity, although stats only exist for EntityLivingBase. */
 	public EntityStats getEntityStats(Entity entity) {
+		if (entity == null) return null;
 		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
 		return entityStats.get(entity);
 	}

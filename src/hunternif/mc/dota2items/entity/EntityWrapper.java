@@ -5,9 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 public class EntityWrapper extends Entity {
-	private static final String TAG_WRAPPED_ENTITY_ID = "wrappedEntityID";
-	
-	public Entity entity;
+	protected Entity entity;
 	
 	public EntityWrapper(World world) {
 		super(world);
@@ -15,25 +13,27 @@ public class EntityWrapper extends Entity {
 	
 	public EntityWrapper(Entity entity) {
 		this(entity.worldObj);
+		setEntity(entity);
+	}
+	
+	public void setEntity(Entity entity) {
 		this.entity = entity;
 		if (entity != null) {
 			setPositionAndRotation(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
 		}
+	}
+	public Entity getEntity() {
+		return entity;
 	}
 
 	@Override
 	protected void entityInit() {}
 
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound tag) {
-		int wrappedEntityID = tag.getInteger(TAG_WRAPPED_ENTITY_ID);
-		this.entity = this.worldObj.getEntityByID(wrappedEntityID);
-	}
+	protected void readEntityFromNBT(NBTTagCompound tag) {}
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound tag) {
-		tag.setInteger(TAG_WRAPPED_ENTITY_ID, entity == null ? -1 : entity.entityId);
-	}
+	protected void writeEntityToNBT(NBTTagCompound tag) {}
 	
 	@Override
 	public void onEntityUpdate() {

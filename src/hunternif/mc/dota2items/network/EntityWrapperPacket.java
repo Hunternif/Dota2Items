@@ -18,7 +18,7 @@ public class EntityWrapperPacket extends CustomPacket {
 	
 	public EntityWrapperPacket(EntityWrapper wrapper) {
 		this.wrapperID = wrapper.entityId;
-		this.wrappedEntityID = wrapper.entity == null ? -1 : wrapper.entity.entityId;
+		this.wrappedEntityID = wrapper.getEntity() == null ? -1 : wrapper.getEntity().entityId;
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class EntityWrapperPacket extends CustomPacket {
 			Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(wrapperID);
 			if (entity != null && entity instanceof EntityWrapper) {
 				EntityWrapper wrapper = (EntityWrapper) entity;
-				wrapper.entity = wrapper.worldObj.getEntityByID(wrappedEntityID);
+				wrapper.setEntity(wrapper.worldObj.getEntityByID(wrappedEntityID));
 			}
 		} else {
 			throw new ProtocolException("Cannot send this packet to the server!");

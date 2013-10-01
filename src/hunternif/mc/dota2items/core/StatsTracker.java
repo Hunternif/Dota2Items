@@ -1,6 +1,7 @@
 package hunternif.mc.dota2items.core;
 
 import hunternif.mc.dota2items.core.buff.BuffInstance;
+import hunternif.mc.dota2items.effect.ContinuousEffect;
 import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.network.BuffPacket;
 import hunternif.mc.dota2items.network.EntityHurtPacket;
@@ -202,6 +203,10 @@ public class StatsTracker implements IPlayerTracker {
 		for (BuffInstance buffInst : stats.getAppliedBuffs()) {
 			if (!buffInst.isItemPassiveBuff()) {
 				PacketDispatcher.sendPacketToAllPlayers(new BuffPacket(buffInst).makePacket());
+			}
+			if (ContinuousEffect.buffHasEffect(buffInst.buff)) {
+				ContinuousEffect effect = ContinuousEffect.construct(buffInst.buff, player);
+				player.worldObj.spawnEntityInWorld(effect);
 			}
 		}
 		stats.sendSyncPacketToClient(player);

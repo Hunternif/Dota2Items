@@ -34,6 +34,9 @@ public abstract class ContinuousEffect extends EntityWrapper {
 			return null;
 		}
 	}
+	public static boolean buffHasEffect(Buff buff) {
+		return buffMap.containsKey(buff);
+	}
 	
 	public ContinuousEffect(World world) {
 		super(world);

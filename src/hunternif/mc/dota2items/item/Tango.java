@@ -7,10 +7,8 @@ import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.effect.EffectTango;
 import hunternif.mc.dota2items.network.BuffForcePacket;
-import hunternif.mc.dota2items.network.EntityWrapperPacket;
 import hunternif.mc.dota2items.util.IntVec3;
 import hunternif.mc.dota2items.util.MCConstants;
-import hunternif.mc.dota2items.util.NetworkUtil;
 import hunternif.mc.dota2items.util.SideHit;
 import hunternif.mc.dota2items.util.TreeUtil;
 import net.minecraft.block.Block;
@@ -88,7 +86,6 @@ public class Tango extends TargetBlockItem {
 				if (!player.worldObj.isRemote && buffAdded) {
 					EffectTango effect = new EffectTango(player);
 					player.worldObj.spawnEntityInWorld(effect);
-					NetworkUtil.sendToAllAround(new EntityWrapperPacket(effect).makePacket(), player);
 				}
 			}
 		}

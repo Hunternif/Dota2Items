@@ -32,7 +32,6 @@ public abstract class CustomPacket {
 		builder.put(Integer.valueOf(7), EntityHurtPacket.class);
 		builder.put(Integer.valueOf(8), BuffForcePacket.class);
 		builder.put(Integer.valueOf(9), DagonBoltPacket.class);
-		builder.put(Integer.valueOf(10), EntityWrapperPacket.class);
 		
 		idMap = builder.build();
 	}

@@ -20,7 +20,6 @@ public abstract class ContinuousEffect extends EntityWrapper {
 		ImmutableBiMap.Builder<Buff, Class<? extends ContinuousEffect>> builder = ImmutableBiMap.builder();
 		
 		builder.put(Buff.tango, EffectTango.class);
-		builder.put(Buff.clarity, EffectClarity.class);
 		
 		buffMap = builder.build();
 	}

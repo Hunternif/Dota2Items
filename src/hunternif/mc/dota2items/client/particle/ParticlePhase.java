@@ -9,7 +9,6 @@ public class ParticlePhase extends Dota2Particle {
 	
 	public ParticlePhase(World world, double x, double y, double z) {
 		super(world, x, y, z);
-		setBaseAlpha(0.4f);
 		setTexturePositions(13, 0);
 		this.particleMaxAge = 5;
 	}
@@ -20,10 +19,16 @@ public class ParticlePhase extends Dota2Particle {
 	}
 	
 	@Override
+	public void onUpdate() {
+		super.onUpdate();
+		setRBGColorF(particleAlpha, particleAlpha, particleAlpha);
+	}
+	
+	@Override
 	public void renderParticle(Tessellator tessellator, float partialTick,
 			float rotX, float rotXZ, float rotZ, float rotYZ, float rotXY) {
 		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+		GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
 		GL11.glDepthMask(false);
 		super.renderParticle(tessellator, partialTick, rotX, rotXZ, rotZ, rotYZ, rotXY);
 		GL11.glDepthMask(true);

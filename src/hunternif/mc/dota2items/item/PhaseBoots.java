@@ -10,6 +10,7 @@ import hunternif.mc.dota2items.event.BuffEvent.BuffAddEvent;
 import hunternif.mc.dota2items.event.BuffEvent.BuffRemoveEvent;
 import hunternif.mc.dota2items.network.BuffForcePacket;
 import hunternif.mc.dota2items.util.MCConstants;
+import hunternif.mc.dota2items.util.NetworkUtil;
 
 import java.util.UUID;
 
@@ -41,6 +42,8 @@ public class PhaseBoots extends ActiveItem {
 		long endTime = startTime + (long) (duration * MCConstants.TICKS_PER_SECOND);
 		BuffInstance buffInst = new BuffInstance(Buff.phase, player, startTime, endTime, true);
 		boolean buffAdded = stats.addBuff(buffInst);
+		//TODO: refactor! Buffs are added twice on the client is SSP, and the particle effect stacks!
+		NetworkUtil.sendToAllAround(new BuffForcePacket(buffInst).makePacket(), player);
 		PacketDispatcher.sendPacketToAllPlayers(new BuffForcePacket(buffInst).makePacket());
 		player.playSound(Sound.PHASE_BOOTS.getName(), 0.7f, 1);
 		if (!player.worldObj.isRemote && buffAdded) {

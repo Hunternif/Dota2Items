@@ -26,7 +26,6 @@ public class EffectTango extends ContinuousEffect {
 	protected void perform() {
 		Random rand = new Random();
 		if (entity.ticksExisted % (1 + rand.nextInt(3)) == 0) {
-			World world = Minecraft.getMinecraft().theWorld;
 			EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
 			double x = entity.posX + (rand.nextDouble()*2-1)*0.5;
 			double y = entity.posY - entity.yOffset + entity.height - rand.nextDouble()*0.5;

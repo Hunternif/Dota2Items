@@ -8,21 +8,20 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
 import com.google.common.collect.BiMap;
-import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.HashBiMap;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class ContinuousEffect extends EntityWrapper {
-	private static final BiMap<Buff, Class<? extends ContinuousEffect>> buffMap;
+	public static final BiMap<Buff, Class<? extends ContinuousEffect>> buffMap;
 	
 	static {
-		ImmutableBiMap.Builder<Buff, Class<? extends ContinuousEffect>> builder = ImmutableBiMap.builder();
+		buffMap = HashBiMap.create();
 		
-		builder.put(Buff.tango, EffectTango.class);
-		builder.put(Buff.clarity, EffectClarity.class);
-		
-		buffMap = builder.build();
+		buffMap.put(Buff.tango, EffectTango.class);
+		buffMap.put(Buff.clarity, EffectClarity.class);
+		buffMap.put(Buff.phase, EffectPhase.class);
 	}
 	
 	public static ContinuousEffect construct(Buff buff, Entity entity) {

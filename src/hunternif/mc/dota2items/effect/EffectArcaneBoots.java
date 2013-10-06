@@ -4,14 +4,13 @@ import hunternif.mc.dota2items.client.particle.ParticleArcaneBoots;
 
 import java.util.Random;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class EffectArcaneBoots extends EntityEffect {
 	public static final int MAX_PARTICLE_STREAMS = 32;
@@ -25,7 +24,6 @@ public class EffectArcaneBoots extends EntityEffect {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void perform(Entity entity, Object... data) {
-		World world = Minecraft.getMinecraft().theWorld;
 		EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
 		Random rand = new Random(entity.worldObj.getTotalWorldTime());
 		for (int i = 0; i < MAX_PARTICLE_STREAMS; i++) {
@@ -45,7 +43,7 @@ public class EffectArcaneBoots extends EntityEffect {
 				double velX = -sinYaw*cosPitch * 0.05D;
 				double velZ = cosYaw*cosPitch * 0.05D;
 				double velY = -sinPitch * 0.05D;
-				EntityFX particle = new ParticleArcaneBoots(world,
+				EntityFX particle = new ParticleArcaneBoots(entity.worldObj,
 						entity.posX + rX, entity.posY - entity.yOffset + 0.7 + rY, entity.posZ + rZ, 
 						velX, velY, velZ, (float)d*size);
 				effectRenderer.addEffect(particle);

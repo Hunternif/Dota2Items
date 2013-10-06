@@ -5,6 +5,7 @@ import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
+import hunternif.mc.dota2items.effect.EffectPhase;
 import hunternif.mc.dota2items.event.BuffEvent.BuffAddEvent;
 import hunternif.mc.dota2items.event.BuffEvent.BuffRemoveEvent;
 import hunternif.mc.dota2items.network.BuffForcePacket;
@@ -39,9 +40,13 @@ public class PhaseBoots extends ActiveItem {
 		long startTime = player.worldObj.getTotalWorldTime();
 		long endTime = startTime + (long) (duration * MCConstants.TICKS_PER_SECOND);
 		BuffInstance buffInst = new BuffInstance(Buff.phase, player, startTime, endTime, true);
-		stats.addBuff(buffInst);
+		boolean buffAdded = stats.addBuff(buffInst);
 		PacketDispatcher.sendPacketToAllPlayers(new BuffForcePacket(buffInst).makePacket());
 		player.playSound(Sound.PHASE_BOOTS.getName(), 0.7f, 1);
+		if (!player.worldObj.isRemote && buffAdded) {
+			EffectPhase effect = new EffectPhase(player);
+			player.worldObj.spawnEntityInWorld(effect);
+		}
 	}
 	
 	@ForgeSubscribe

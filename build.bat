@@ -10,6 +10,7 @@ echo Copying "src" to MCP
 echo Copying "src" to MCP 1>>"%MOD_SRC_DIR%\build.log"
 rem 2>&1 means redirect stderr(2) to stdout(1)
 xcopy src\hunternif /s /y "%MCP_HOME%\src\minecraft\hunternif\" 1>>"%MOD_SRC_DIR%\build.log" 2>&1
+xcopy src\com /s /y "%MCP_HOME%\src\minecraft\com\" 1>>"%MOD_SRC_DIR%\build.log" 2>&1
 
 cd /d "%MCP_HOME%"
 echo Recompiling...
@@ -20,6 +21,7 @@ runtime\bin\python\python_mcp runtime\reobfuscate.py --srgnames %* 1>>"%MOD_SRC_
 echo Removing "src" from MCP
 echo Removing "src" from MCP 1>>"%MOD_SRC_DIR%\build.log"
 rmdir /s /q "%MCP_HOME%\src\minecraft\hunternif" 1>>"%MOD_SRC_DIR%\build.log" 2>&1
+rmdir /s /q "%MCP_HOME%\src\minecraft\com" 1>>"%MOD_SRC_DIR%\build.log" 2>&1
 
 echo Copying resource files to "reobf"
 echo Copying resource files to "reobf" 1>>"%MOD_SRC_DIR%\build.log"

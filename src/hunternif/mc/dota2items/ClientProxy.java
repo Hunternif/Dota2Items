@@ -51,16 +51,9 @@ public class ClientProxy extends CommonProxy {
 	public static final FontRendererContourShadow fontRContourShadow = new FontRendererContourShadow(
 			Minecraft.getMinecraft().gameSettings, new ResourceLocation("textures/font/ascii.png"), Minecraft.getMinecraft().renderEngine, false);
 	
-	public static IconInText ICON_GOLD = new IconInText("$gold$", 12, 12, Dota2Items.ID+":textures/gui/gold_coins.png", -1, -3, 2);
-	public static IconInText ICON_COOLDOWN = new IconInText("$cd$", 7, 7, Dota2Items.ID+":textures/gui/cooldown.png", 0, 0, 3);
-	public static IconInText ICON_MANACOST = new IconInText("$manacost$", 7, 7, Dota2Items.ID+":textures/gui/manacost.png", 0, 0, 3);
-	{
-		resourceManager.registerReloadListener(fontRWithIcons);
-		resourceManager.registerReloadListener(fontRContourShadow);
-		fontRWithIcons.registerIcon(ICON_GOLD);
-		fontRWithIcons.registerIcon(ICON_COOLDOWN);
-		fontRWithIcons.registerIcon(ICON_MANACOST);
-	}
+	public static final IconInText ICON_GOLD = new IconInText("$gold$", 12, 12, Dota2Items.ID+":textures/gui/gold_coins.png", -1, -3, 2);
+	public static final IconInText ICON_COOLDOWN = new IconInText("$cd$", 7, 7, Dota2Items.ID+":textures/gui/cooldown.png", 0, 0, 3);
+	public static final IconInText ICON_MANACOST = new IconInText("$manacost$", 7, 7, Dota2Items.ID+":textures/gui/manacost.png", 0, 0, 3);
 	public static GuiGold guiGold = new GuiGold();
 	public static GuiManaBar guiManaBar = new GuiManaBar(Minecraft.getMinecraft());
 	public static GuiHealthAndMana guiHpAndMana = new GuiHealthAndMana(Minecraft.getMinecraft());
@@ -84,6 +77,12 @@ public class ClientProxy extends CommonProxy {
 		} catch (Exception e) {
 			Dota2Items.logger.warning("Failed to build item description: " + e.toString());
 		}
+		
+		resourceManager.registerReloadListener(fontRWithIcons);
+		resourceManager.registerReloadListener(fontRContourShadow);
+		fontRWithIcons.registerIcon(ICON_GOLD);
+		fontRWithIcons.registerIcon(ICON_COOLDOWN);
+		fontRWithIcons.registerIcon(ICON_MANACOST);
 		
 		MinecraftForge.EVENT_BUS.register(cooldownItemRenderer);
 		MinecraftForge.EVENT_BUS.register(guiManaBar);

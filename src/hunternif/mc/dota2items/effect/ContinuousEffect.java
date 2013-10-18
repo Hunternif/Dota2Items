@@ -8,7 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
 import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableBiMap;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -17,11 +17,14 @@ public abstract class ContinuousEffect extends EntityWrapper {
 	public static final BiMap<Buff, Class<? extends ContinuousEffect>> buffMap;
 	
 	static {
-		buffMap = HashBiMap.create();
+		//TODO create a registry to initialize the map:
+		ImmutableBiMap.Builder<Buff, Class<? extends ContinuousEffect>> builder = ImmutableBiMap.builder();
 		
-		buffMap.put(Buff.tango, EffectTango.class);
-		buffMap.put(Buff.clarity, EffectClarity.class);
-		buffMap.put(Buff.phase, EffectPhase.class);
+		builder.put(Buff.tango, EffectTango.class);
+		builder.put(Buff.clarity, EffectClarity.class);
+		builder.put(Buff.phase, EffectPhase.class);
+		
+		buffMap = builder.build();
 	}
 	
 	public static ContinuousEffect construct(Buff buff, Entity entity) {
@@ -48,7 +51,7 @@ public abstract class ContinuousEffect extends EntityWrapper {
 	public void onEntityUpdate() {
 		super.onEntityUpdate();
 		Buff effectProducingBuff = buffMap.inverse().get(getClass());
-		if (effectProducingBuff != null) {
+		if (entity != null && effectProducingBuff != null) {
 			EntityStats stats = Dota2Items.stats.getEntityStats(entity);
 			if (stats == null || !stats.hasBuff(effectProducingBuff)) {
 				onEffectEnded();

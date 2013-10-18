@@ -58,6 +58,9 @@ public class StatsTracker implements IPlayerTracker {
 		if (stats == null) {
 			stats = new EntityStats(entity);
 			entityStats.put(entity, stats);
+		} else if (stats.entity != entity) {
+			// Happens when the entity is copied, e.g. when changing dimension.
+			stats.entity = entity;
 		}
 		return stats;
 	}
@@ -66,7 +69,12 @@ public class StatsTracker implements IPlayerTracker {
 	public EntityStats getEntityStats(Entity entity) {
 		if (entity == null) return null;
 		Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(entity));
-		return entityStats.get(entity);
+		EntityStats stats = entityStats.get(entity);
+		if (stats != null && stats.entity != entity) {
+			// Happens when the entity is copied, e.g. when changing dimension.
+			stats.entity = (EntityLivingBase)entity;
+		}
+		return stats;
 	}
 	
 	public void removeEntityStats(Entity entity) {

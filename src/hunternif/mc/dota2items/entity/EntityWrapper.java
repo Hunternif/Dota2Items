@@ -61,7 +61,9 @@ public class EntityWrapper extends Entity {
 		this.ySize = entity.ySize;
 		this.width = entity.width;
 		this.height = entity.height;
-		setVelocity(entity.motionX, entity.motionY, entity.motionZ);
+		this.motionX = entity.motionX;
+		this.motionY = entity.motionY;
+		this.motionZ = entity.motionZ;
 		setPositionAndRotation(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
 		this.boundingBox.setBB(entity.boundingBox);
 	}

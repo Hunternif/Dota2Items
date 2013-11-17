@@ -4,10 +4,12 @@ import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.effect.EntityMidasEffect;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 
 public class HandOfMidas extends TargetEntityItem {
@@ -18,8 +20,16 @@ public class HandOfMidas extends TargetEntityItem {
 	}
 
 	@Override
+	protected Sound canUseItem(ItemStack stack, EntityLivingBase player, Entity target) {
+		if (target instanceof EntityPlayer) {
+			return Sound.DENY_GENERAL;
+		}
+		return super.canUseItem(stack, player, target);
+	}
+	
+	@Override
 	protected void onUseOnEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity) {
-		entity.setDead();
+		entity.attackEntityFrom(DamageSource.outOfWorld, Float.MAX_VALUE);
 		player.playSound(Sound.HAND_OF_MIDAS.getName(), 0.7f, 1);
 		
 		if (!entity.worldObj.isRemote) {

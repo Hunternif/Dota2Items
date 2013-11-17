@@ -11,6 +11,7 @@ import hunternif.mc.dota2items.client.render.CooldownItemRenderer;
 import hunternif.mc.dota2items.client.render.DummyRenderer;
 import hunternif.mc.dota2items.client.render.RenderClarityEffect;
 import hunternif.mc.dota2items.client.render.RenderDagonBolt;
+import hunternif.mc.dota2items.client.render.RenderMidasEffect;
 import hunternif.mc.dota2items.client.render.RenderShopkeeper;
 import hunternif.mc.dota2items.client.render.SwingRenderer;
 import hunternif.mc.dota2items.config.CfgInfo;
@@ -19,6 +20,7 @@ import hunternif.mc.dota2items.config.DescriptionBuilder;
 import hunternif.mc.dota2items.core.ClientTickHandler;
 import hunternif.mc.dota2items.effect.EffectClarity;
 import hunternif.mc.dota2items.effect.EntityDagonBolt;
+import hunternif.mc.dota2items.effect.EntityMidasEffect;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
 import hunternif.mc.dota2items.entity.EntityWrapper;
 import hunternif.mc.dota2items.item.ActiveItem;
@@ -98,6 +100,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityDagonBolt.class, new RenderDagonBolt());
 		RenderingRegistry.registerEntityRenderingHandler(EntityWrapper.class, new DummyRenderer());
 		RenderingRegistry.registerEntityRenderingHandler(EffectClarity.class, new RenderClarityEffect());
+		RenderingRegistry.registerEntityRenderingHandler(EntityMidasEffect.class, new RenderMidasEffect());
 	}
 	
 	@Override

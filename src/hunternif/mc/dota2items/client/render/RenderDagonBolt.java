@@ -21,7 +21,7 @@ public class RenderDagonBolt extends RenderEntity {
 		GL11.glTranslated(x, y, z);
 
 		EntityDagonBolt bolt = (EntityDagonBolt) entity;
-		float ageFraq = ((float)bolt.ticksExisted + partialTick) / (float)bolt.maxAge;
+		float ageFraq = bolt.getDurationFraq(partialTick);
 		double innerWidth = (double)bolt.level * 0.025 * (1d - ageFraq);
 		double outerWidth = innerWidth * 4;
 		float innerAlpha = 0.3f;

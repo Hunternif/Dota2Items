@@ -1,20 +1,18 @@
 package hunternif.mc.dota2items.effect;
 
 import hunternif.mc.dota2items.client.particle.ParticleDagon;
+import hunternif.mc.dota2items.entity.TemporaryEntity;
 import hunternif.mc.dota2items.util.Vec3Chain;
 import hunternif.mc.dota2items.util.Vec3Chain.Segment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class EntityDagonBolt extends Entity {
+public class EntityDagonBolt extends TemporaryEntity {
 	private static final String TAG_END_X = "D2IDagonBoltEndX";
 	private static final String TAG_END_Y = "D2IDagonBoltEndY";
 	private static final String TAG_END_Z = "D2IDagonBoltEndZ";
-	
-	public static int maxAge = 8;
 	
 	public double endX;
 	public double endY;
@@ -36,6 +34,11 @@ public class EntityDagonBolt extends Entity {
 		this.level = level;
 		setPosition(startX, startY, startZ);
 		setEndCoords(endX, endY, endZ);
+	}
+	
+	@Override
+	public int getDuration() {
+		return 8;
 	}
 	
 	public void setEndCoords(double endX, double endY, double endZ) {
@@ -60,20 +63,9 @@ public class EntityDagonBolt extends Entity {
 	}
 	
 	@Override
-	public void onUpdate() {
-		super.onUpdate();
-		if (ticksExisted > maxAge) {
-			setDead();
-		}
-	}
-	
-	@Override
 	public boolean shouldRenderInPass(int pass) {
 		return pass == 1;
 	}
-
-	@Override
-	protected void entityInit() {}
 
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound tag) {

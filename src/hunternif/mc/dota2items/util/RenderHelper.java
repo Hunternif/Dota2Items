@@ -9,6 +9,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -240,5 +241,21 @@ public class RenderHelper {
 		float g = (float)(color >> 8 & 0xff)/256f;
 		float b = (float)(color & 0xff)/256f;
 		GL11.glColor4f(r, g, b, alpha);
+	}
+	
+	public static void drawTexturedCyllinder(double radius, double height, float rotation, float steps, float alpha) {
+		if (steps <= 0) return;
+		float step = 1f / steps;
+		Tessellator t = Tessellator.instance;
+		t.startDrawing(GL11.GL_QUAD_STRIP);
+		t.setColorRGBA_F(1, 1, 1, alpha);
+		for (float d = 0f; d < 1f + step/2; d += step) {
+			float angle = (rotation + d) * 2 * (float) Math.PI;
+			double px = radius * MathHelper.sin(angle);
+			double py = -radius * MathHelper.cos(angle);
+			t.addVertexWithUV(px, 0, py, d, 1);
+			t.addVertexWithUV(px, height, py, d, 0);
+		}
+		t.draw();
 	}
 }

@@ -9,7 +9,7 @@ import hunternif.mc.dota2items.core.GoldHandler;
 import hunternif.mc.dota2items.core.ItemTracker;
 import hunternif.mc.dota2items.core.StatsTracker;
 import hunternif.mc.dota2items.effect.ContinuousEffect;
-import hunternif.mc.dota2items.entity.EntityDagonBolt;
+import hunternif.mc.dota2items.effect.EntityDagonBolt;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
 import hunternif.mc.dota2items.inventory.Dota2CreativeTab;
 import hunternif.mc.dota2items.inventory.InventoryShop;

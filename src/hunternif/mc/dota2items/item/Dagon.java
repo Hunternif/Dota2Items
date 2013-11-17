@@ -4,7 +4,7 @@ import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.config.DescriptionBuilder;
 import hunternif.mc.dota2items.core.AttackHandler;
 import hunternif.mc.dota2items.core.buff.Buff;
-import hunternif.mc.dota2items.entity.EntityDagonBolt;
+import hunternif.mc.dota2items.effect.EntityDagonBolt;
 import hunternif.mc.dota2items.network.DagonBoltPacket;
 import hunternif.mc.dota2items.util.NetworkUtil;
 

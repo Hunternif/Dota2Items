@@ -1,6 +1,6 @@
 package hunternif.mc.dota2items.network;
 
-import hunternif.mc.dota2items.entity.EntityDagonBolt;
+import hunternif.mc.dota2items.effect.EntityDagonBolt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

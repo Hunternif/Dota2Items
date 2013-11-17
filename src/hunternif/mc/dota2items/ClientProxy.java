@@ -18,7 +18,7 @@ import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.config.DescriptionBuilder;
 import hunternif.mc.dota2items.core.ClientTickHandler;
 import hunternif.mc.dota2items.effect.EffectClarity;
-import hunternif.mc.dota2items.entity.EntityDagonBolt;
+import hunternif.mc.dota2items.effect.EntityDagonBolt;
 import hunternif.mc.dota2items.entity.EntityShopkeeper;
 import hunternif.mc.dota2items.entity.EntityWrapper;
 import hunternif.mc.dota2items.item.ActiveItem;

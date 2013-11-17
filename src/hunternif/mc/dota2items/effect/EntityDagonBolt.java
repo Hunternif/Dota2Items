@@ -1,4 +1,4 @@
-package hunternif.mc.dota2items.entity;
+package hunternif.mc.dota2items.effect;
 
 import hunternif.mc.dota2items.client.particle.ParticleDagon;
 import hunternif.mc.dota2items.util.Vec3Chain;

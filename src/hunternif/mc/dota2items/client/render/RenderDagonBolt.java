@@ -1,6 +1,6 @@
 package hunternif.mc.dota2items.client.render;
 
-import hunternif.mc.dota2items.entity.EntityDagonBolt;
+import hunternif.mc.dota2items.effect.EntityDagonBolt;
 import hunternif.mc.dota2items.util.RenderHelper;
 import hunternif.mc.dota2items.util.Vec3Chain.Segment;
 import net.minecraft.client.renderer.entity.RenderEntity;

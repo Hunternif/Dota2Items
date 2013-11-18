@@ -4,3 +4,7 @@ Thumbs.db
 *.zip
 *.bak
 *.log
+
+# Building:
+release
+local.properties

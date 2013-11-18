@@ -10,8 +10,5 @@ See the wiki for more.
 Building
 --------
 
-Sources from LibSchematic are included. (https://github.com/tehbeard/LibSchematic)
-
-Link the `src` folder as source to your project build path. In order to build and package the mod for release run the script `build.bat`. The script must be run in its current directory and the environment variable `MCP_HOME` must point to MCP install directory. (If you only install Minecraft Forge, then its's in forge/mcp.)
-
-TODO: make a better building solution using Ant.
+Sources from LibSchematic are included (https://github.com/tehbeard/LibSchematic),
+but the build script will not package them in the output zip.

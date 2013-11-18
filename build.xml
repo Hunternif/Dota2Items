@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<project name="Dota2Items" default="build-release">
+
+	<property file="local.properties" />
+	<property file="build.properties"/>
+
+	<property name="mcp.src" value="${dir.mcp}/src/minecraft" />
+	<property name="mcp.reobf" value="${dir.mcp}/reobf/minecraft" />
+
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="lib/ant-contrib/ant-contrib-1.0b3.jar" />
+		</classpath>
+	</taskdef>
+
+	<taskdef name="jgitversion" classname="hunternif.jgitversion.JGitVersionTask">
+		<classpath>
+			<pathelement path="lib/jgitversion-1.0.9.jar"/>
+			<pathelement path="lib/gitective/gitective-core-0.9.9.jar"/>
+			<pathelement path="lib/jgit/org.eclipse.jgit_2.2.0.201212191850-r.jar"/>
+		</classpath>
+	</taskdef>
+
+	<target name="copy and replace tokens in src">
+		<copy todir="${mcp.src}">
+			<fileset dir="src" excludes="assets/**,mcmod.info,*.png"/>
+			<filterset begintoken="@@" endtoken="@@">
+				<filter token="MOD_ID" value="${mod.id}"/>
+				<filter token="MOD_NAME" value="${mod.name}"/>
+				<filter token="MOD_VERSION" value="${mod.version}"/>
+				<filter token="MC_VERSION" value="${minecraft.version}"/>
+			</filterset>
+		</copy>
+	</target>
+	<target name="cleanup">
+		<delete>
+			<!-- delete copied sources -->
+			<fileset dir="${mcp.src}">
+				<present present="both" targetdir="src" />
+			</fileset>
+			<!-- delete empty directories -->
+			<dirset dir="${mcp.src}">
+				<present present="both" targetdir="src" />
+				<size value="0"/>
+			</dirset>
+		</delete>
+	</target>
+
+	<target name="copy and replace tokens in mcmod.info">
+		<copy file="src/mcmod.info" todir="${mcp.reobf}">
+			<filterset begintoken="@@" endtoken="@@">
+				<filter token="MOD_ID" value="${mod.id}"/>
+				<filter token="MOD_NAME" value="${mod.name}"/>
+				<filter token="MOD_VERSION" value="${mod.version}"/>
+				<filter token="MC_VERSION" value="${minecraft.version}"/>
+			</filterset>
+		</copy>
+	</target>
+
+	<target name="recompile">
+		<exec dir="${dir.mcp}" executable="cmd" osfamily="windows">
+			<arg line="/c recompile.bat" />
+		</exec>
+		<exec dir="${dir.mcp}" executable="bash" osfamily="unix">
+			<arg line="recompile.sh" />
+		</exec>
+	</target>
+	<target name="reobfuscate">
+		<exec dir="${dir.mcp}" executable="cmd" osfamily="windows">
+			<arg line="/c reobfuscate_srg.bat" />
+		</exec>
+		<exec dir="${dir.mcp}" executable="bash" osfamily="unix">
+			<arg line="reobfuscate_srg.sh" />
+		</exec>
+	</target>
+
+	<target name="package">
+		<mkdir dir="${dir.release}" />
+		<zip destfile="${dir.release}/${mod.id}-${mod.version}-mc${minecraft.version}.zip" >
+			<fileset dir="${mcp.reobf}" excludes="${mod.api.packages}"/>
+			<fileset dir="src" includes="assets/**,*.png" />
+		</zip>
+	</target>
+
+	<target name="build-release">
+		<jgitversion dir="." property="mod.version"/>
+		<echo message="${mod.version}" />
+		<antcallback target="copy and replace tokens in src" />
+		<antcallback target="recompile" />
+		<antcallback target="reobfuscate" />
+		<antcallback target="copy and replace tokens in mcmod.info" />
+		<antcallback target="package" />
+		<antcallback target="cleanup" />
+	</target>
+</project>

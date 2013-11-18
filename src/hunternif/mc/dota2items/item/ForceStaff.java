@@ -35,6 +35,7 @@ public class ForceStaff extends TargetEntityItem {
 		setCooldown(10);
 		setManaCost(25);
 		setCastRange(13);
+		setCanSelfCast(true);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 	

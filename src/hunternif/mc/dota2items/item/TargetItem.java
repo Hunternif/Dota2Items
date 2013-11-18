@@ -12,7 +12,7 @@ public abstract class TargetItem extends ActiveItem {
 	public double getCastRange() {
 		return castRange;
 	}
-	public ActiveItem setCastRange(double value) {
+	public TargetItem setCastRange(double value) {
 		this.castRange = value;
 		return this;
 	}

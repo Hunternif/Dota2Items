@@ -22,6 +22,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 public abstract class TargetEntityItem extends TargetItem {
 	private boolean canTargetEntitiesBelow = true;
+	private boolean canSelfCast = false;
 	
 	public TargetEntityItem(int id) {
 		super(id);
@@ -30,8 +31,16 @@ public abstract class TargetEntityItem extends TargetItem {
 	public boolean getCanTargetEntitiesBelow() {
 		return canTargetEntitiesBelow;
 	}
-	public ActiveItem setCanTargetEntitiesBelow(boolean value) {
+	public TargetEntityItem setCanTargetEntitiesBelow(boolean value) {
 		this.canTargetEntitiesBelow = value;
+		return this;
+	}
+	
+	public boolean getCanSelfCast() {
+		return canSelfCast;
+	}
+	public TargetEntityItem setCanSelfCast(boolean value) {
+		this.canSelfCast = value;
 		return this;
 	}
 	
@@ -58,8 +67,13 @@ public abstract class TargetEntityItem extends TargetItem {
 							(double)hit.blockX, (double)hit.blockY-0.5, (double)hit.blockZ,
 							(double)hit.blockX+1, (double)hit.blockY+1.5, (double)hit.blockZ+1);
 					List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class, box);
-					if (list != null && !list.isEmpty()) {
-						entity = list.get(0);
+					if (list != null) {
+						if (!getCanSelfCast()) {
+							list.remove(player);
+						}
+						if (!list.isEmpty()) {
+							entity = list.get(0);
+						}
 					}
 				}
 				if (tryUse(stack, player, entity)) {
@@ -87,6 +101,9 @@ public abstract class TargetEntityItem extends TargetItem {
 				if (!(target instanceof EntityLivingBase) ||
 						// ... if their health is > 0 
 						((EntityLivingBase)target).getHealth() <= 0) {
+					return Sound.DENY_GENERAL;
+				}
+				if (!getCanSelfCast() && target.equals(player)) {
 					return Sound.DENY_GENERAL;
 				}
 				EntityStats targetStats = Dota2Items.stats.getOrCreateEntityStats((EntityLivingBase)target);

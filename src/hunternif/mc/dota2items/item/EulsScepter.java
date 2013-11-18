@@ -22,6 +22,7 @@ public class EulsScepter extends TargetEntityItem {
 		setCooldown(30);
 		setManaCost(75);
 		setCastRange(12);
+		setCanSelfCast(true);
 	}
 	
 	@Override

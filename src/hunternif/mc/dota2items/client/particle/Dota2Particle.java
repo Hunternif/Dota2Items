@@ -14,8 +14,15 @@ public class Dota2Particle extends EntityFX {
 	public static final ResourceLocation minecraftParticles = new ResourceLocation("textures/particle/particles.png");
 	private static float ICON_U_WIDTH = 1f/16f;
 	
-	private int iconStages;
+	/** Total number of frames in the sequence. */
+	protected int iconStages;
+	/** Index of the first frame of the sequence. */
+	protected int iconStartIndex;
+	/** Index of the actual first frame, if selected at random. */ 
 	private int initialIconIndex;
+	/** The number of frames between initialIconIndex and the last frame index. */
+	private int remainingIconStages;
+	
 	private float fadeInTime = 0;
 	private float baseAlpha = 1;
 	private float fadeOutTime = 0.8f;
@@ -55,18 +62,23 @@ public class Dota2Particle extends EntityFX {
 	protected void setTexturePositions(int x, int y) {
 		setTexturePositions(x, y, 1, false);
 	}
+	/**
+	 * When the particle's icon has multiple stages (frames), it will "play"
+	 * the sequence until particle's death at a steady frame rate.
+	 * @param x				horizontal coordinate on the texture.
+	 * @param y				vertical coordinate on the texture.
+	 * @param stages		total number of frames.
+	 * @param randomStart	if true, the initial frame will be selected at
+	 * 		random. The remaining frames will be displayed for equal durations.
+	 */
 	protected void setTexturePositions(int x, int y, int stages, boolean randomStart) {
+		remainingIconStages = iconStages = stages;
+		initialIconIndex = iconStartIndex = y * 16 + x;
 		if (randomStart) {
 			int firstStage = rand.nextInt(stages-1);
-			x += firstStage;
-			stages -= firstStage;
-			if (x >= 16) {
-				y++;
-				x %= 16;
-			}
+			initialIconIndex += firstStage;
+			remainingIconStages -= firstStage;
 		}
-		initialIconIndex = y * 16 + x;
-		iconStages = stages;
 		setParticleTextureIndex(initialIconIndex);
 	}
 	
@@ -109,8 +121,8 @@ public class Dota2Particle extends EntityFX {
 		
 		particleScale = scaleAtAge(ageFraq);
 		
-		if (iconStages > 1) {
-			int stage = MathHelper.floor_float(ageFraq * (float) iconStages);
+		if (remainingIconStages > 1) {
+			int stage = MathHelper.floor_float(ageFraq * (float) remainingIconStages);
 			setParticleTextureIndex(initialIconIndex + stage);
 		}
 		

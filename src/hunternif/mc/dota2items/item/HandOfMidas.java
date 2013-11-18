@@ -42,7 +42,7 @@ public class HandOfMidas extends TargetEntityItem {
 			}
 			
 			// Spawn the effect:
-			EntityMidasEffect fx = new EntityMidasEffect(player.worldObj, entity);
+			EntityMidasEffect fx = new EntityMidasEffect(player.worldObj, player, entity);
 			player.worldObj.spawnEntityInWorld(fx);
 		}
 		// Add 190 reliable gold:

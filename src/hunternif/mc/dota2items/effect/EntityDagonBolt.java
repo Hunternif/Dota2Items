@@ -8,6 +8,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntityDagonBolt extends TemporaryEntity {
 	private static final String TAG_END_X = "D2IDagonBoltEndX";
@@ -46,18 +48,23 @@ public class EntityDagonBolt extends TemporaryEntity {
 		this.endY = endY;
 		this.endZ = endZ;
 		if (this.worldObj.isRemote) {
-			chain = new Vec3Chain(posX, posY, posZ, endX, endY, endZ);
-			chain.subdivide(0.3, 0.2, 0.3, 0.2);
-			for (Segment seg : chain.segments) {
-				Vec3 segVec = seg.getVector();
-				int particlesPerSegment = rand.nextInt(level*2);
-				for (int i = 0; i < particlesPerSegment; i++) {
-					ParticleDagon particle = new ParticleDagon(worldObj,
-							seg.start.xCoord + segVec.xCoord * rand.nextDouble(),
-							seg.start.yCoord + segVec.yCoord * rand.nextDouble(),
-							seg.start.zCoord + segVec.zCoord * rand.nextDouble());
-					Minecraft.getMinecraft().effectRenderer.addEffect(particle);
-				}
+			createLightning();
+		}
+	}
+	
+	@SideOnly(Side.CLIENT)
+	private void createLightning() {
+		chain = new Vec3Chain(posX, posY, posZ, endX, endY, endZ);
+		chain.subdivide(0.3, 0.2, 0.3, 0.2);
+		for (Segment seg : chain.segments) {
+			Vec3 segVec = seg.getVector();
+			int particlesPerSegment = rand.nextInt(level*2);
+			for (int i = 0; i < particlesPerSegment; i++) {
+				ParticleDagon particle = new ParticleDagon(worldObj,
+						seg.start.xCoord + segVec.xCoord * rand.nextDouble(),
+						seg.start.yCoord + segVec.yCoord * rand.nextDouble(),
+						seg.start.zCoord + segVec.zCoord * rand.nextDouble());
+				Minecraft.getMinecraft().effectRenderer.addEffect(particle);
 			}
 		}
 	}

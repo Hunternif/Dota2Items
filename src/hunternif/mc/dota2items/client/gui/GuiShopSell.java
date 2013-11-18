@@ -1,6 +1,5 @@
 package hunternif.mc.dota2items.client.gui;
 
-import hunternif.mc.dota2items.ClientProxy;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
@@ -63,7 +62,7 @@ public class GuiShopSell extends GuiShopBase {
 		this.fontRenderer.drawString("Sell price", 78, 32, TITLE_COLOR);
 		this.fontRenderer.drawString("Inventory", 8, 73, TITLE_COLOR);
 		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
-		ClientProxy.guiGold.renderGoldText(stats.getGold(), WIDTH - GuiGold.GUI_GOLD_WIDTH, 0);
+		GuiGold.renderGoldText(stats.getGold(), WIDTH - GuiGold.GUI_GOLD_WIDTH, 0);
 		ItemStack stackOnSale = ((ContainerShopSell)this.inventorySlots).getSellingSlot().getStack();
 		int sellPrice = Dota2Item.getSellPrice(stackOnSale);
 		okBtn.enabled = sellPrice > 0;

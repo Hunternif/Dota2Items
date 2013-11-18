@@ -56,12 +56,10 @@ public class ClientProxy extends CommonProxy {
 	public static final IconInText ICON_GOLD = new IconInText("$gold$", 12, 12, Dota2Items.ID+":textures/gui/gold_coins.png", -1, -3, 2);
 	public static final IconInText ICON_COOLDOWN = new IconInText("$cd$", 7, 7, Dota2Items.ID+":textures/gui/cooldown.png", 0, 0, 3);
 	public static final IconInText ICON_MANACOST = new IconInText("$manacost$", 7, 7, Dota2Items.ID+":textures/gui/manacost.png", 0, 0, 3);
-	public static GuiGold guiGold = new GuiGold();
-	public static GuiManaBar guiManaBar = new GuiManaBar(Minecraft.getMinecraft());
-	public static GuiHealthAndMana guiHpAndMana = new GuiHealthAndMana(Minecraft.getMinecraft());
-	public static GuiDotaStats guiStats = new GuiDotaStats(Minecraft.getMinecraft());
 	
 	public static SwingRenderer swingRenderer = new SwingRenderer();
+	
+	public ClientTickHandler tickHandler = new ClientTickHandler();
 	
 	@Override
 	public void registerRenderers() {
@@ -86,9 +84,12 @@ public class ClientProxy extends CommonProxy {
 		fontRWithIcons.registerIcon(ICON_COOLDOWN);
 		fontRWithIcons.registerIcon(ICON_MANACOST);
 		
+		Minecraft mc = Minecraft.getMinecraft();
 		MinecraftForge.EVENT_BUS.register(cooldownItemRenderer);
-		MinecraftForge.EVENT_BUS.register(guiManaBar);
-		MinecraftForge.EVENT_BUS.register(guiHpAndMana);
+		MinecraftForge.EVENT_BUS.register(new GuiManaBar(mc));
+		MinecraftForge.EVENT_BUS.register(new GuiHealthAndMana(mc));
+		tickHandler.registerGui(new GuiGold(mc));
+		tickHandler.registerGui(new GuiDotaStats(mc));
 		
 		for (Item item : Dota2Items.itemList) {
 			if (item instanceof ActiveItem) {
@@ -110,7 +111,7 @@ public class ClientProxy extends CommonProxy {
 	
 	@Override
 	public void registerTickHandlers() {
-		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
+		TickRegistry.registerTickHandler(tickHandler, Side.CLIENT);
 	}
 	
 	@ForgeSubscribe

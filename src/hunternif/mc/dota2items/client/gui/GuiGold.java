@@ -14,7 +14,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiGold extends Gui {
+public class GuiGold extends Gui implements HUD {
 	private static final ResourceLocation texture = new ResourceLocation(Dota2Items.ID+":textures/gui/container/shop_sell.png");
 	
 	public static final int GUI_GOLD_WIDTH = 61;
@@ -25,22 +25,20 @@ public class GuiGold extends Gui {
 	public static final int TEXT_POSITION_X = 54;
 	public static final int TEXT_POSITION_Y = 8;
 	
+	private Minecraft mc;
+	
+	public GuiGold(Minecraft mc) {
+		this.mc = mc;
+	}
+	
+	@Override
 	public void render() {
-		Minecraft mc = Minecraft.getMinecraft();
-		// Don't show if it's the shop buy/sell GUI, for it renders current gold by itself:
-		if (mc.currentScreen instanceof GuiShopBase) {
-			return;
-		}
 		int x;
 		int y;
-		if (!(mc.currentScreen instanceof GuiShopBase) && mc.theWorld != null) {
-			//TODO make this GUI placement configurable in the menu in order to not overlay other mods' GUIs.
-			ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
-			x = scaledresolution.getScaledWidth() - GUI_GOLD_WIDTH;
-			y = 0;
-		} else {
-			return;
-		}
+		//TODO make this GUI placement configurable in the menu in order to not overlay other mods' GUIs.
+		ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+		x = scaledresolution.getScaledWidth() - GUI_GOLD_WIDTH;
+		y = 0;
 		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(mc.thePlayer);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDisable(GL11.GL_LIGHTING);
@@ -50,11 +48,20 @@ public class GuiGold extends Gui {
 		renderGoldText(stats.getGold(), x, y);
 	}
 	
-	public void renderGoldText(int gold, int goldGuiX, int goldGuiY) {
+	public static void renderGoldText(int gold, int goldGuiX, int goldGuiY) {
 		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 		String text = String.valueOf(gold);
 		int x = goldGuiX + TEXT_POSITION_X - fontRenderer.getStringWidth(text);
 		int y = goldGuiY + TEXT_POSITION_Y;
 		fontRenderer.drawString(text, x, y, GOLD_COLOUR);
+	}
+
+	@Override
+	public boolean shouldRender() {
+		// Don't show if it's the shop buy/sell GUI, because it renders current gold by itself:
+		if (mc.theWorld == null || mc.currentScreen instanceof GuiShopBase) {
+			return false;
+		}
+		return true;
 	}
 }

@@ -4,20 +4,17 @@ import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.core.AttackHandler;
 import hunternif.mc.dota2items.core.EntityStats;
-import hunternif.mc.dota2items.core.StatsTracker;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.util.RenderHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -27,9 +24,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import com.google.common.collect.HashMultimap;
-
-public class GuiDotaStats {
+public class GuiDotaStats implements HUD {
 	private static final ResourceLocation texture = new ResourceLocation(Dota2Items.ID+":textures/gui/stats.png");
 	
 	public static final int WIDTH = 113;
@@ -48,11 +43,8 @@ public class GuiDotaStats {
 		this.mc = mc;
 	}
 	
+	@Override
 	public void render() {
-		// Show stats when the inventory is open:
-		if (!(mc.currentScreen instanceof GuiContainer)) {
-			return;
-		}
 		int left = 0;
 		int top = mc.currentScreen.height - HEIGHT;
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -183,5 +175,11 @@ public class GuiDotaStats {
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean shouldRender() {
+		// Show stats when the inventory is open:
+		return mc.currentScreen instanceof GuiContainer;
 	}
 }

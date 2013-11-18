@@ -1,5 +1,7 @@
 package hunternif.mc.dota2items;
 
+import hunternif.mc.dota2items.client.RenderTickHandler;
+import hunternif.mc.dota2items.client.SwingTickHandler;
 import hunternif.mc.dota2items.client.gui.FontRendererContourShadow;
 import hunternif.mc.dota2items.client.gui.FontRendererWithIcons;
 import hunternif.mc.dota2items.client.gui.GuiDotaStats;
@@ -13,11 +15,9 @@ import hunternif.mc.dota2items.client.render.RenderClarityEffect;
 import hunternif.mc.dota2items.client.render.RenderDagonBolt;
 import hunternif.mc.dota2items.client.render.RenderMidasEffect;
 import hunternif.mc.dota2items.client.render.RenderShopkeeper;
-import hunternif.mc.dota2items.client.render.SwingRenderer;
 import hunternif.mc.dota2items.config.CfgInfo;
 import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.config.DescriptionBuilder;
-import hunternif.mc.dota2items.core.ClientTickHandler;
 import hunternif.mc.dota2items.effect.EffectClarity;
 import hunternif.mc.dota2items.effect.EntityDagonBolt;
 import hunternif.mc.dota2items.effect.EntityMidasEffect;
@@ -57,9 +57,8 @@ public class ClientProxy extends CommonProxy {
 	public static final IconInText ICON_COOLDOWN = new IconInText("$cd$", 7, 7, Dota2Items.ID+":textures/gui/cooldown.png", 0, 0, 3);
 	public static final IconInText ICON_MANACOST = new IconInText("$manacost$", 7, 7, Dota2Items.ID+":textures/gui/manacost.png", 0, 0, 3);
 	
-	public static SwingRenderer swingRenderer = new SwingRenderer();
-	
-	public ClientTickHandler tickHandler = new ClientTickHandler();
+	private final RenderTickHandler hudTickHandler = new RenderTickHandler();
+	private final SwingTickHandler swingTickHandler = new SwingTickHandler();
 	
 	@Override
 	public void registerRenderers() {
@@ -88,8 +87,8 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForge.EVENT_BUS.register(cooldownItemRenderer);
 		MinecraftForge.EVENT_BUS.register(new GuiManaBar(mc));
 		MinecraftForge.EVENT_BUS.register(new GuiHealthAndMana(mc));
-		tickHandler.registerGui(new GuiGold(mc));
-		tickHandler.registerGui(new GuiDotaStats(mc));
+		hudTickHandler.registerHUD(new GuiGold(mc));
+		hudTickHandler.registerHUD(new GuiDotaStats(mc));
 		
 		for (Item item : Dota2Items.itemList) {
 			if (item instanceof ActiveItem) {
@@ -111,7 +110,9 @@ public class ClientProxy extends CommonProxy {
 	
 	@Override
 	public void registerTickHandlers() {
-		TickRegistry.registerTickHandler(tickHandler, Side.CLIENT);
+		super.registerTickHandlers();
+		TickRegistry.registerTickHandler(hudTickHandler, Side.CLIENT);
+		TickRegistry.registerTickHandler(swingTickHandler, Side.CLIENT);
 	}
 	
 	@ForgeSubscribe

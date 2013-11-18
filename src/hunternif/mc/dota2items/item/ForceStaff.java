@@ -3,6 +3,7 @@ package hunternif.mc.dota2items.item;
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
 import hunternif.mc.dota2items.core.EntityStats;
+import hunternif.mc.dota2items.core.IEntityUpdater;
 import hunternif.mc.dota2items.core.buff.Buff;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
 import hunternif.mc.dota2items.effect.Effect;
@@ -15,12 +16,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class ForceStaff extends TargetEntityItem {
+public class ForceStaff extends TargetEntityItem implements IEntityUpdater {
 	public static final String TAG_YAW = "yaw";
 	public static final String TAG_TOTAL_DISTANCE = "totalDistance";
 	
@@ -36,7 +35,6 @@ public class ForceStaff extends TargetEntityItem {
 		setManaCost(25);
 		setCastRange(13);
 		setCanSelfCast(true);
-		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
 	@Override
@@ -49,18 +47,6 @@ public class ForceStaff extends TargetEntityItem {
 			EntityStats entityStats = Dota2Items.stats.getOrCreateEntityStats((EntityLivingBase)entity);
 			entityStats.addBuff(buffInst);
 			PacketDispatcher.sendPacketToAllPlayers(new BuffForcePacket(buffInst).makePacket());
-		}
-	}
-	
-	@ForgeSubscribe
-	public void onLivingUpdate(LivingUpdateEvent event) {
-		EntityStats stats = Dota2Items.stats.getEntityStats(event.entityLiving);
-		if (stats != null) {
-			BuffInstance buffForce = stats.getBuffInstance(Buff.force);
-			if (buffForce != null) {
-				float yaw = buffForce.tag.getFloat(ForceStaff.TAG_YAW);
-				processForceMovement(event.entity, yaw);
-			}
 		}
 	}
 	
@@ -144,6 +130,15 @@ public class ForceStaff extends TargetEntityItem {
 					buffInst.tag.setDouble(TAG_TOTAL_DISTANCE, totalDistance);
 				}
 			}
+		}
+	}
+
+	@Override
+	public void update(EntityLivingBase entity, EntityStats stats, LivingUpdateEvent event) {
+		BuffInstance buffForce = stats.getBuffInstance(Buff.force);
+		if (buffForce != null) {
+			float yaw = buffForce.tag.getFloat(ForceStaff.TAG_YAW);
+			processForceMovement(entity, yaw);
 		}
 	}
 }

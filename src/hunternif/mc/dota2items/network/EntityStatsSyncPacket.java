@@ -2,9 +2,9 @@ package hunternif.mc.dota2items.network;
 
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.Sound;
+import hunternif.mc.dota2items.core.BaseStatsUpdater;
 import hunternif.mc.dota2items.core.EntityStats;
 import hunternif.mc.dota2items.core.GoldHandler;
-import hunternif.mc.dota2items.core.StatsTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -71,7 +71,7 @@ public class EntityStatsSyncPacket extends CustomPacket {
 				stats.partialHalfHeart = partialHalfHeart;
 				int oldGold = stats.getGold();
 				stats.setGold(reliableGold, unreliableGold);
-				if (stats.getGold() - oldGold > GoldHandler.GOLD_PER_SECOND * StatsTracker.SYNC_STATS_INTERVAL
+				if (stats.getGold() - oldGold > GoldHandler.GOLD_PER_SECOND * BaseStatsUpdater.SYNC_STATS_INTERVAL
 						&& stats.lastSyncTime > 0 /* Not the first sync */) {
 					Minecraft.getMinecraft().sndManager.playSoundFX(Sound.COINS.getName(), 1, 1);
 				}

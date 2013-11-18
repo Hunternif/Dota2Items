@@ -9,6 +9,7 @@ import hunternif.mc.dota2items.item.BlinkDagger;
 import hunternif.mc.dota2items.util.MCConstants;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,12 +18,18 @@ import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
-public class AttackHandler {
+/** Handles everything that has to do with attacks. */
+public class AttackHandler implements IEntityUpdater {
 	/** Equals to Base Hero health (with base strength bonuses) over Steve's base health.
 	 * This gives a zombie attack damage of 22.5~52.5. Seems fair to me. */
 	public static final float DOTA_VS_MINECRAFT_DAMAGE = (float)EntityStats.BASE_PLAYER_HP / MCConstants.MINECRAFT_PLAYER_HP;
+	
+	/** For creeper's ignite time */
+	private static final String[] timeSinceIgnitedObfFields = {"timeSinceIgnited", "d", "field_70833_d"};
 	
 	@ForgeSubscribe
 	public void onLivingAttack(LivingAttackEvent event) {
@@ -213,6 +220,16 @@ public class AttackHandler {
 			
 			// ... and some buffs are removed:
 			Dota2Items.stats.removeBuffsOnHurt(player);
+		}
+	}
+
+	@Override
+	public void update(EntityLivingBase entity, EntityStats stats, LivingUpdateEvent event) {
+		// Workaround for creepers still exploding while having their attack disabled:
+		if (!stats.canAttack() && entity instanceof EntityCreeper) {
+			EntityCreeper creeper = (EntityCreeper) entity;
+			Integer timeSinceIgnited = ReflectionHelper.getPrivateValue(EntityCreeper.class, creeper, timeSinceIgnitedObfFields);
+			ReflectionHelper.setPrivateValue(EntityCreeper.class, creeper, timeSinceIgnited.intValue()-1, timeSinceIgnitedObfFields);
 		}
 	}
 }

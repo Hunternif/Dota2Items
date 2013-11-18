@@ -4,9 +4,11 @@ import hunternif.mc.dota2items.client.gui.GuiHandler;
 import hunternif.mc.dota2items.config.Config;
 import hunternif.mc.dota2items.config.ConfigLoader;
 import hunternif.mc.dota2items.core.AttackHandler;
+import hunternif.mc.dota2items.core.BaseStatsUpdater;
 import hunternif.mc.dota2items.core.BowHandler;
 import hunternif.mc.dota2items.core.GoldHandler;
 import hunternif.mc.dota2items.core.ItemTracker;
+import hunternif.mc.dota2items.core.LivingUpdateHandler;
 import hunternif.mc.dota2items.core.StatsTracker;
 import hunternif.mc.dota2items.effect.ContinuousEffect;
 import hunternif.mc.dota2items.effect.EntityDagonBolt;
@@ -51,8 +53,6 @@ public class Dota2Items {
 	public static List<Item> itemList = new ArrayList<Item>();
 	
 	public static final StatsTracker stats = new StatsTracker();
-	public static final ItemTracker itemTracker = new ItemTracker();
-	public static final ShopSpawner shopSpawner = new ShopSpawner();
 	
 	@Instance(ID)
 	public static Dota2Items instance;
@@ -78,9 +78,9 @@ public class Dota2Items {
 		LanguageRegistry.instance().addStringLocalization("itemGroup.dota2ItemTab", "en_US", "Dota 2 Items");
 		
 		ConfigLoader.load(Config.class);
-		
 		InventoryShop.populate();
 		
+		// ============================ Entities ===============================
 		GameRegistry.registerTileEntity(TileEntityCyclone.class, "Cyclone");
 		
 		int shopkeeperID = EntityRegistry.findGlobalUniqueEntityId();
@@ -104,20 +104,40 @@ public class Dota2Items {
 			EntityRegistry.registerModEntity(effectClass, effectClass.getSimpleName(), id, instance, 80, 10000000, false);
 		}
 		
-		shopSpawner.init();
+		// ============================ Handlers ===============================
 		
 		NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());
 		
 		proxy.registerRenderers();
 		proxy.registerTickHandlers();
-		MinecraftForge.EVENT_BUS.register(itemTracker);
+		
 		MinecraftForge.EVENT_BUS.register(stats);
-		MinecraftForge.EVENT_BUS.register(shopSpawner);
-		MinecraftForge.EVENT_BUS.register(new AttackHandler());
-		MinecraftForge.EVENT_BUS.register(new BowHandler());
-		MinecraftForge.EVENT_BUS.register(new GoldHandler());
 		GameRegistry.registerPlayerTracker(stats);
+		
+		LivingUpdateHandler livingUpdateHandler = new LivingUpdateHandler(stats);
+		MinecraftForge.EVENT_BUS.register(livingUpdateHandler);
+		
+		BaseStatsUpdater baseStatsUpdater = new BaseStatsUpdater();
+		livingUpdateHandler.registerEntityUpdater(baseStatsUpdater);
+		
+		ShopSpawner shopSpawner = new ShopSpawner();
+		shopSpawner.init();
+		MinecraftForge.EVENT_BUS.register(shopSpawner);
+		
+		ItemTracker itemTracker = new ItemTracker();
+		livingUpdateHandler.registerEntityUpdater(itemTracker);
+		MinecraftForge.EVENT_BUS.register(itemTracker);
 		GameRegistry.registerPlayerTracker(itemTracker);
+		
+		AttackHandler attackHandler = new AttackHandler();
+		livingUpdateHandler.registerEntityUpdater(attackHandler);
+		MinecraftForge.EVENT_BUS.register(attackHandler);
+		
+		GoldHandler goldHandler = new GoldHandler();
+		livingUpdateHandler.registerEntityUpdater(goldHandler);
+		MinecraftForge.EVENT_BUS.register(goldHandler);
+		
+		MinecraftForge.EVENT_BUS.register(new BowHandler());
 	}
 	
 	@EventHandler

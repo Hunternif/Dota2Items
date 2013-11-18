@@ -2,10 +2,9 @@ package hunternif.mc.dota2items.client.gui;
 
 import hunternif.mc.dota2items.ClientProxy;
 import hunternif.mc.dota2items.Dota2Items;
+import hunternif.mc.dota2items.core.BaseStatsUpdater;
 import hunternif.mc.dota2items.core.EntityStats;
-import hunternif.mc.dota2items.core.StatsTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.ForgeHooks;
@@ -40,7 +39,7 @@ public class GuiHealthAndMana {
 		String hp = stats.getHealth(mc.thePlayer) + "/" + stats.getMaxHealth();
 		int strlen = fontRenderer.getStringWidth(hp);
 		fontRenderer.drawStringWithShadow(hp, left - strlen - 1, top, 0xFF1313);
-		if (StatsTracker.shouldHeal(stats)) {
+		if (BaseStatsUpdater.shouldHeal(stats)) {
 			String hpRegen = String.format("+%.2f", stats.getHealthRegen());
 			fontRenderer.drawStringWithShadow(hpRegen, left + HP_BAR_WIDTH + 1, top, 0xFF6C6C);
 		}

@@ -2,6 +2,7 @@ package hunternif.mc.dota2items.core;
 
 import hunternif.mc.dota2items.Dota2Items;
 import hunternif.mc.dota2items.core.buff.BuffInstance;
+import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.item.Dota2Item;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -22,7 +24,7 @@ import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.relauncher.Side;
 
 /** Used to retain Dota 2 Items on death. */
-public class ItemTracker implements IPlayerTracker {
+public class ItemTracker implements IPlayerTracker, IEntityUpdater {
 	private Map<EntityPlayer, List<ItemStack>> retainedItems = new ConcurrentHashMap<EntityPlayer, List<ItemStack>>();
 	
 	private Map<EntityPlayer, ItemStack[]> clientInventories = new ConcurrentHashMap<EntityPlayer, ItemStack[]>();
@@ -53,6 +55,17 @@ public class ItemTracker implements IPlayerTracker {
 					list.add(stack.copy());
 					event.entityPlayer.inventory.addItemStackToInventory(stack);
 				}
+			}
+		}
+	}
+	
+	@ForgeSubscribe
+	public void onUseDota2Item(UseItemEvent event) {
+		if (event.isCanceled()) return;
+		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(event.entityPlayer);
+		for (BuffInstance buffInst : stats.getAppliedBuffs()) {
+			if (buffInst.buff.isRemovedOnAction) {
+				stats.removeBuff(buffInst);
 			}
 		}
 	}
@@ -92,14 +105,6 @@ public class ItemTracker implements IPlayerTracker {
 		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 		stats.setMana(stats.getMaxMana());
 		stats.sendSyncPacketToClient(player);
-	}
-	
-	@ForgeSubscribe
-	public void onLivingUpdate(LivingUpdateEvent event) {
-		EntityStats stats = Dota2Items.stats.getEntityStats(event.entityLiving);
-		if (stats != null && event.entityLiving instanceof EntityPlayer) {
-			checkAndUpdatePlayerInventory((EntityPlayer)event.entityLiving);
-		}
 	}
 	
 	private void checkAndUpdatePlayerInventory(EntityPlayer player) {
@@ -167,5 +172,12 @@ public class ItemTracker implements IPlayerTracker {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public void update(EntityLivingBase entity, EntityStats stats, LivingUpdateEvent event) {
+		if (entity instanceof EntityPlayer) {
+			checkAndUpdatePlayerInventory((EntityPlayer)entity);
+		}
 	}
 }

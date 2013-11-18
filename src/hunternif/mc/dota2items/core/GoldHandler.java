@@ -8,6 +8,7 @@ import hunternif.mc.dota2items.util.MCConstants;
 import java.util.Set;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +19,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
-public class GoldHandler {
+public class GoldHandler implements IEntityUpdater {
 	public static final float GOLD_PER_MOB_HP = 2.5f;
 	public static final float GOLD_AWARDED_PER_LEVEL = 9f;
 	public static final float GOLD_LOST_PER_LEVEL = 30f;
@@ -93,14 +94,12 @@ public class GoldHandler {
 					killerStats.sendSyncPacketToClient(killer);
 				}
 			}
-			Dota2Items.stats.removeEntityStats(event.entityLiving);
 		}
 	}
-	
-	@ForgeSubscribe
-	public void onLivingUpdate(LivingUpdateEvent event) {
-		EntityStats stats = Dota2Items.stats.getEntityStats(event.entityLiving);
-		if (stats != null && stats.entity instanceof EntityPlayer) {
+
+	@Override
+	public void update(EntityLivingBase entity, EntityStats stats, LivingUpdateEvent event) {
+		if (entity instanceof EntityPlayer) {
 			// Add unreliable gold per second:
 			stats.addGold(0, GOLD_PER_SECOND / MCConstants.TICKS_PER_SECOND);
 		}

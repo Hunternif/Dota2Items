@@ -1,7 +1,7 @@
 [
 {
-  "modid": "@@MOD_ID@@",
-  "name": "@@MOD_NAME@@",
+  "modid": "dota2items",
+  "name": "Dota 2 items",
   "description": "Still a work in progress, this mod aims to recreate items from Dota 2 in Minecraft, keeping as much of their original look-and-feel as possible.",
   "version": "@@MOD_VERSION@@",
   "mcversion": "@@MC_VERSION@@",

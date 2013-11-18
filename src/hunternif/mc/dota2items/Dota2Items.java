@@ -42,8 +42,8 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 @Mod(modid=Dota2Items.ID, name=Dota2Items.NAME, version=Dota2Items.VERSION, dependencies="required-after:libschematic@[1.0,)")
 @NetworkMod(clientSideRequired=true, serverSideRequired=true, packetHandler=CustomPacketHandler.class, channels={Dota2Items.CHANNEL})
 public class Dota2Items {
-	public static final String ID = "@@MOD_ID@@";
-	public static final String NAME = "@@MOD_NAME@@";
+	public static final String ID = "dota2items";
+	public static final String NAME = "Dota 2 Items";
 	public static final String VERSION = "@@MOD_VERSION@@";
 	public static final String CHANNEL = ID;
 	

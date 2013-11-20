@@ -32,6 +32,8 @@ public class CustomPacketHandler implements IPacketHandler {
 			if (player instanceof EntityPlayerMP) {
 				((EntityPlayerMP) player).playerNetServerHandler.kickPlayerFromServer("Protocol Exception!");
 				Dota2Items.logger.log(Level.WARNING, String.format("Player %s caused a Protocl Exception and was kicked.", ((EntityPlayer)player).username), e);
+			} else {
+				Dota2Items.logger.severe(e.toString());
 			}
 		} catch (InstantiationException e) {
 			throw new RuntimeException("Unexpected InstantiationException during Packet construction!", e);

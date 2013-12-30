@@ -11,6 +11,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class HandOfMidas extends TargetEntityItem {
 
@@ -40,14 +42,19 @@ public class HandOfMidas extends TargetEntityItem {
 				exp -= expPart;
 				entity.worldObj.spawnEntityInWorld(new EntityXPOrb(entity.worldObj, entity.posX, entity.posY, entity.posZ, expPart));
 			}
-			
+		} else {
 			// Spawn the effect:
-			EntityMidasEffect fx = new EntityMidasEffect(player.worldObj, player, entity);
-			player.worldObj.spawnEntityInWorld(fx);
+			spawnParticles(player, entity);
 		}
 		// Add 190 reliable gold:
 		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 		stats.addGold(190, 0);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	private void spawnParticles(EntityPlayer player, Entity entity) {
+		EntityMidasEffect fx = new EntityMidasEffect(player.worldObj, player, entity);
+		player.worldObj.spawnEntityInWorld(fx);
 	}
 	
 }

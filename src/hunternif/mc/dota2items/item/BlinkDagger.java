@@ -7,6 +7,7 @@ import hunternif.mc.dota2items.effect.EffectInstance;
 import hunternif.mc.dota2items.event.UseItemEvent;
 import hunternif.mc.dota2items.network.EffectPacket;
 import hunternif.mc.dota2items.util.BlockUtil;
+import hunternif.mc.dota2items.util.NetworkUtil;
 import hunternif.mc.dota2items.util.PositionUtil;
 import hunternif.mc.dota2items.util.SideHit;
 import net.minecraft.block.Block;
@@ -15,14 +16,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class BlinkDagger extends ActiveItem {
 
@@ -216,11 +215,8 @@ public class BlinkDagger extends ActiveItem {
 				world.playSoundEffect(srcX, srcY, srcZ, Sound.BLINK_OUT.getName(), 1.0F, 1.0F);
 			}
 			// Send effect packets to other players
-			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-			if (server != null) {
-				server.getConfigurationManager().sendToAllNearExcept(player, srcX, srcY, srcZ, 256, player.dimension, new EffectPacket(srcEffect).makePacket());
-				server.getConfigurationManager().sendToAllNearExcept(player, destX, destY, destZ, 256, player.dimension, new EffectPacket(destEffect).makePacket());
-			}
+			NetworkUtil.sendToAllAroundExcept(new EffectPacket(srcEffect).makePacket(), srcX,  srcY, srcZ, player.dimension, player);
+			NetworkUtil.sendToAllAroundExcept(new EffectPacket(destEffect).makePacket(), destX,  destY, destZ, player.dimension, player);
 		} else {
 			// Client side. Render blink effect.
 			Minecraft.getMinecraft().sndManager.playSoundFX(Sound.BLINK_OUT.getName(), 1.0F, 1.0F);

@@ -137,6 +137,8 @@ public class Dota2Items {
 		livingUpdateHandler.registerEntityUpdater(goldHandler);
 		MinecraftForge.EVENT_BUS.register(goldHandler);
 		
+		livingUpdateHandler.registerEntityUpdater(Config.forceStaff.instance);
+		
 		MinecraftForge.EVENT_BUS.register(new BowHandler());
 	}
 	

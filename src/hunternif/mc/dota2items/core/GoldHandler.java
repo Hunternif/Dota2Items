@@ -56,13 +56,10 @@ public class GoldHandler implements IEntityUpdater {
 	
 	@ForgeSubscribe
 	public void onLivingDeath(LivingDeathEvent event) {
-		EntityStats stats = Dota2Items.stats.getEntityStats(event.entityLiving);
-		if (stats == null) {
-			return;
-		}
 		// Drop gold coins:
 		if (event.entityLiving instanceof EntityPlayer) {
 			if (!event.entityLiving.worldObj.isRemote) {
+				EntityStats stats = Dota2Items.stats.getEntityStats(event.entityLiving);
 				int level = ((EntityPlayer)event.entityLiving).experienceLevel + 1;
 				
 				// Deduct unreliable gold from the dead player:

@@ -13,6 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.IExtendedEntityProperties;
+import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -57,7 +58,7 @@ public class StatsTracker implements IPlayerTracker {
 		return stats;
 	}
 	
-	@ForgeSubscribe
+	@ForgeSubscribe(priority=EventPriority.LOWEST)
 	public void onLivingDeath(LivingDeathEvent event) {
 		if (!event.isCanceled() && !(event.entityLiving instanceof EntityPlayer)) {
 			Map<EntityLivingBase, EntityStats> entityStats = getEntityStatsMap(getSide(event.entityLiving));

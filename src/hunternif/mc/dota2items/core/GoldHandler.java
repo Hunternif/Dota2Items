@@ -7,6 +7,7 @@ import hunternif.mc.dota2items.util.MCConstants;
 
 import java.util.Set;
 
+import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.IMob;
@@ -24,6 +25,15 @@ public class GoldHandler implements IEntityUpdater {
 	public static final float GOLD_AWARDED_PER_LEVEL = 9f;
 	public static final float GOLD_LOST_PER_LEVEL = 30f;
 	public static final float GOLD_PER_SECOND = 0.25f;
+	
+	/** Selects entities for killing which you get gold. */
+	private static IEntitySelector goldIsAwardedSelector = new IEntitySelector() {
+		@Override
+		public boolean isEntityApplicable(Entity entity) {
+			return entity instanceof EntityPlayer || entity instanceof IMob ||
+				   entity instanceof EntityWolf && ((EntityWolf)entity).isAngry();
+		}
+	};
 	
 	//@ForgeSubscribe
 	/**
@@ -82,8 +92,7 @@ public class GoldHandler implements IEntityUpdater {
 			if (event.source.getSourceOfDamage() instanceof EntityPlayer) {
 				EntityPlayer killer = (EntityPlayer)event.source.getSourceOfDamage();
 				// Gold is dropped from monsters (IMob) and angry wolves:
-				if (!event.entity.worldObj.isRemote && (event.entity instanceof IMob ||
-						(event.entity instanceof EntityWolf && ((EntityWolf)event.entity).isAngry()))) {
+				if (!event.entity.worldObj.isRemote && goldIsAwardedSelector.isEntityApplicable(event.entity)) {
 					int goldAmount = MathHelper.floor_float(GOLD_PER_MOB_HP * (float)event.entityLiving.getMaxHealth());
 					EntityStats killerStats = Dota2Items.stats.getOrCreateEntityStats(killer);
 					// From npc kills - only unreliable gold:

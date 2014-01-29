@@ -8,7 +8,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
 /**
  * If you need to update entities that have EntityStats assigned to them,
- * register an IEntityUpdater into this class instead of using event handler.
+ * register an IEntityUpdater into this class instead of using an event handler.
  */
 public class LivingUpdateHandler {
 	private final StatsTracker statsTracker;
@@ -18,7 +18,6 @@ public class LivingUpdateHandler {
 		this.statsTracker = statsTracker;
 	}
 	
-	/** Only call during mod initialization! */
 	public void registerEntityUpdater(IEntityUpdater updater) {
 		if (!updaters.contains(updater)) {
 			updaters.add(updater);

@@ -23,12 +23,21 @@ import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.relauncher.Side;
 
-/** Used to retain Dota 2 Items on death. */
+/**
+ * Used for to keep track of Dota 2 Items in player's inventory for 2 purposes:
+ * <ul>
+ * <li>Retain the items upon death.</li>
+ * <li>Keep the passive buffs up-to-date.</li>
+ * </ul>
+ */
 public class ItemTracker implements IPlayerTracker, IEntityUpdater {
+	/** Hold the Dota 2 items that the player had when he died. */
 	private Map<EntityPlayer, List<ItemStack>> retainedItems = new ConcurrentHashMap<EntityPlayer, List<ItemStack>>();
 	
-	private Map<EntityPlayer, ItemStack[]> clientInventories = new ConcurrentHashMap<EntityPlayer, ItemStack[]>();
-	private Map<EntityPlayer, ItemStack[]> serverInventories = new ConcurrentHashMap<EntityPlayer, ItemStack[]>();
+	/** Maps containing players' inventory hotbars from previous ticks. Used to
+	 * keep the passive buffs up-to-date. */
+	private Map<EntityPlayer, ItemStack[]> clientInventories = new ConcurrentHashMap<EntityPlayer, ItemStack[]>(),
+										   serverInventories = new ConcurrentHashMap<EntityPlayer, ItemStack[]>();
 	private Map<EntityPlayer, ItemStack[]> getInventoryMap(Side side) {
 		return side.isClient() ? clientInventories : serverInventories;
 	}
@@ -39,7 +48,18 @@ public class ItemTracker implements IPlayerTracker, IEntityUpdater {
 	
 	@ForgeSubscribe
 	public void onPlayerDrops(PlayerDropsEvent event) {
+		if (event.entity.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory")) {
+			// If "keepInventory" is turned on, the items will return to you anyway.
+			return;
+		}
+		// Remember all the Dota 2 items the player had in inventory.
+		// In case he logs out while dead, put them back into his inventory for storage.
 		Iterator<EntityItem> iter = event.drops.iterator();
+		List<ItemStack> list = retainedItems.get(event.entityPlayer);
+		if (list == null) {
+			list = new ArrayList<ItemStack>();
+			retainedItems.put(event.entityPlayer, list);
+		}
 		while (iter.hasNext()) {
 			EntityItem entityItem = iter.next();
 			ItemStack stack = entityItem.getEntityItem();
@@ -47,11 +67,6 @@ public class ItemTracker implements IPlayerTracker, IEntityUpdater {
 				Dota2Item dota2Item = (Dota2Item) stack.getItem();
 				if (!dota2Item.getDropsOnDeath()) {
 					iter.remove();
-					List<ItemStack> list = retainedItems.get(event.entityPlayer);
-					if (list == null) {
-						list = new ArrayList<ItemStack>();
-						retainedItems.put(event.entityPlayer, list);
-					}
 					list.add(stack.copy());
 					event.entityPlayer.inventory.addItemStackToInventory(stack);
 				}
@@ -72,7 +87,9 @@ public class ItemTracker implements IPlayerTracker, IEntityUpdater {
 	
 	@Override
 	public void onPlayerLogin(EntityPlayer player) {
-		if (player.getHealth() <= 0) {
+		// If the player logged in while he was dead, need to save his Dota 2
+		// items, because they will be subsequently removed on respawn.
+		if (player.getHealth() <= 0 && !player.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory")) {
 			List<ItemStack> list = retainedItems.get(player);
 			if (list == null) {
 				list = new ArrayList<ItemStack>();
@@ -87,26 +104,36 @@ public class ItemTracker implements IPlayerTracker, IEntityUpdater {
 	}
 
 	@Override
-	public void onPlayerLogout(EntityPlayer player) {}
+	public void onPlayerLogout(EntityPlayer player) {
+		// When this player logs back in, his entityID will be different and it
+		// won't equal the one stored in the map. Besides, his items are stored
+		// back in his inventory.
+		// By doing this we prevent a memory leak:
+		retainedItems.remove(player);
+	}
 
 	@Override
 	public void onPlayerChangedDimension(EntityPlayer player) {}
 
 	@Override
 	public void onPlayerRespawn(EntityPlayer player) {
-		List<ItemStack> list = retainedItems.get(player);
-		if (list != null) {
-			for (ItemStack stack : list) {
-				player.inventory.addItemStackToInventory(stack);
+		if (!player.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory")) {
+			List<ItemStack> list = retainedItems.get(player);
+			if (list != null) {
+				for (ItemStack stack : list) {
+					player.inventory.addItemStackToInventory(stack);
+				}
 			}
-			retainedItems.remove(player);
 		}
+		retainedItems.remove(player);
 		updatePlayerInventoryBuffs(player);
 		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 		stats.setMana(stats.getMaxMana());
 		stats.sendSyncPacketToClient(player);
 	}
 	
+	/** Checks if the items in the player's inventory are the same as last time.
+	 * If not, calls {@link #updatePlayerInventoryBuffs(EntityPlayer)}. */
 	private void checkAndUpdatePlayerInventory(EntityPlayer player) {
 		Side side = getSide(player);
 		Map<EntityPlayer, ItemStack[]> inventoryMap = getInventoryMap(side);
@@ -128,9 +155,11 @@ public class ItemTracker implements IPlayerTracker, IEntityUpdater {
 		}
 	}
 	
+	/** Removes all item-induced passive buffs and add the buffs from the items
+	 * currently in the inventory. */
 	private void updatePlayerInventoryBuffs(EntityPlayer player) {
 		if (Dota2Items.debug) {
-			Dota2Items.logger.fine("Updating buffs on player " + player.username);
+			Dota2Items.logger.info("Updating buffs on player " + player.username);
 		}
 		EntityStats stats = Dota2Items.stats.getOrCreateEntityStats(player);
 		// Remove all passive item Buffs to add them again later:
@@ -158,6 +187,7 @@ public class ItemTracker implements IPlayerTracker, IEntityUpdater {
 		}
 	}
 	
+	/** Returns true if both hotbars contain the same items. */
 	private static boolean isHotbarWithSameItems(ItemStack[] bar1, ItemStack[] bar2) {
 		if (bar1.length != bar2.length) {
 			return false;

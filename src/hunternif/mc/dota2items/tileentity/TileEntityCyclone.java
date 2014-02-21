@@ -56,6 +56,7 @@ public class TileEntityCyclone extends TileEntity {
 			if (duration - elapsed < 0.5f && alpha > 0) {
 				alpha -= 0.05f;
 			}
+			//FIXME: sending an effect packet every 1/20 of a second is a BAD IDEA
 			EffectInstance effInst = new EffectInstance(Effect.cyclone, xCoord, yCoord, zCoord, yaw, pitch, alpha);
 			effInst.perform();
         }
